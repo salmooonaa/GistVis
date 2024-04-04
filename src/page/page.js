@@ -9,6 +9,10 @@ import {
   Button,
   Input
 } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWandMagicSparkles } from "@fortawesome/free-solid-svg-icons";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 import React, { useEffect, useRef, useState } from "react";
 import { Sparkline, Trend } from "./components/sparkline";
@@ -50,6 +54,7 @@ const useOption = () => {
 const ArticleEditor = ({ changeArticle }) => {
   // const myRef = useRef(null);
   const [inputText, setInputText] = useState("");
+  const [userInput, setUserInput] = useState("");
   // const handleInputChange = (event) => {
   //   setInputText(event.target.value);
   // };
@@ -65,9 +70,21 @@ const ArticleEditor = ({ changeArticle }) => {
 
   return (
     <div>
-      <TextArea size="large" rows={8} onChange={updateInputText} />
+      <Row gutter={[16, 16]}>
+        <Col span={20}>
+          <Text>The TextArea should only be used for testing llm output.
+            When functionality of LLM is in this frontend application, use the editor instead!
+          </Text>
+          <TextArea size="large" rows={6} onChange={updateInputText} />
 
-      {/* <input
+          <Text>Remember to update the button click funtion when switching to editor.
+            The editor is a markdown editor that basically uses HTML format. So its as close as 
+            it can get to the real html rendered webpages.
+          </Text>
+          <ReactQuill theme="snow" style={{height: "350px"}}value={userInput} onChange={setUserInput} />
+        </Col>
+
+        {/* <input
         type="text"
         placeholder="Enter your text here"
         value={inputText}
@@ -75,9 +92,16 @@ const ArticleEditor = ({ changeArticle }) => {
         ref={myRef}
         onChange={handleInputChange}
       /> */}
-      <Button onClick={() => submitInputchange(inputText)}>
-        Generate
-      </Button>
+        <Col span={2}>
+          <Button
+            shape="circle"
+            size="large"
+            onClick={() => submitInputchange(inputText)}
+          >
+            <FontAwesomeIcon icon={faWandMagicSparkles} />
+          </Button>
+        </Col>
+      </Row>
     </div>
   );
 };
