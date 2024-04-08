@@ -66,6 +66,33 @@ const Barchart = ({option, text, highLIndex, rankrange}) =>{
           return ''; 
         }
       });
+    
+    if (highlightIndex < newData.length - 1) {
+      const x1 = highlightIndex * barWidth + barWidth / 2;
+      const y1 = heightVis - y(newData[highlightIndex]);
+      const x2 = (highlightIndex + 1) * barWidth + barWidth / 2;
+      const y2 = heightVis - y(newData[highlightIndex + 1]);
+
+      svg.append('line')
+        .attr('x1', x1)
+        .attr('y1', y1)
+        .attr('x2', x2)
+        .attr('y2', y2)
+        .attr('stroke', 'black')
+        .attr('stroke-width', 1)
+        .attr('marker-end', 'url(#arrowhead)');
+
+      svg.append('marker')
+        .attr('id', 'arrowhead')
+        .attr('markerWidth', 10)
+        .attr('markerHeight', 7)
+        .attr('refX', 0)
+        .attr('refY', 3.5)
+        .attr('orient', 'auto')
+        .append('path')
+        .attr('d', 'M0,0 V7 L10,3.5 Z')
+        .attr('fill', 'black');
+    }
 
     bar.merge(gBar)
       .attr('transform', function(d, i) { return 'translate(' + i * barWidth + ',' + (heightVis - y(d)) + ')'; });

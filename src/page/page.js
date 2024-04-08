@@ -15,6 +15,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 import React, { useEffect, useRef, useState } from "react";
+import LlmLink from "./llm";
 import { Sparkline, Trend } from "./components/sparkline";
 import Barchart from "./components/barchart";
 import Piechart from "./components/piechart";
@@ -55,6 +56,10 @@ const ArticleEditor = ({ changeArticle }) => {
   // const myRef = useRef(null);
   const [inputText, setInputText] = useState("");
   const [userInput, setUserInput] = useState("");
+  const changeUserInput = (userInput) => {
+    setUserInput(userInput);
+  }
+  console.dir(userInput);
   // const handleInputChange = (event) => {
   //   setInputText(event.target.value);
   // };
@@ -67,6 +72,7 @@ const ArticleEditor = ({ changeArticle }) => {
   const updateInputText = (e) => {
     setInputText(e.target.value);
   }
+
 
   return (
     <div>
@@ -81,7 +87,8 @@ const ArticleEditor = ({ changeArticle }) => {
             The editor is a markdown editor that basically uses HTML format. So its as close as 
             it can get to the real html rendered webpages.
           </Text>
-          <ReactQuill theme="snow" style={{height: "350px"}}value={userInput} onChange={setUserInput} />
+          <ReactQuill theme="snow" style={{height: "350px"}} value={userInput} onChange={changeUserInput} />
+          <LlmLink userInput={userInput}/>
         </Col>
 
         {/* <input

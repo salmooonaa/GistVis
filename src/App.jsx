@@ -13,7 +13,6 @@ import {
 import THEME from "./style/theme";
 
 import { ArticleWithImage, ArticleEditor } from "./page/page.js";
-
 import "./page/page.css";
 import React, { useRef, useState } from "react";
 
@@ -31,6 +30,7 @@ const useGetarticle = () => {
 };
 
 const App = () => {
+  // const [userInput, setUserInput] = useState("");
   const { article, setArticle } = useGetarticle();
   const changeArticle = (inputText) => {
     setArticle(inputText);
