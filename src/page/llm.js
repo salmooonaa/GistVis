@@ -2,8 +2,9 @@ import { StructuredOutputParser, ResponseSchema, RegexParser, CombiningOutputPar
 import { PromptTemplate } from "langchain/prompts";
 import { RunnableSequence } from "langchain/schema/runnable";
 import { OpenAI } from "langchain/llms/openai";
-import getToken from "./generateToken";
-// import { ChatZhipuAI } from "@langchain/community/chat_models/zhipuai";
+// import getToken from "./generateToken";
+import { ChatZhipuAI } from "@langchain/community/chat_models/zhipuai";
+import { HumanMessage } from "@langchain/core/messages";
 import React, { useEffect, useRef, useState } from "react";
 
 const rundiv = async (model, textContent) => {
@@ -384,15 +385,21 @@ const LlmLink = (userInput) => {
     //     new Calculator(),
     // ];
     
-    const token = getToken();
-    const model = new OpenAI({
-        model_name:"glm-3-turbo",
-        openai_api_base: "https://open.bigmodel.cn/api/paas/v4",
-        openai_api_key: token,
-        streaming: false,
-        temperature: 0.01,
+    // const token = getToken();
+
+    const model = new ChatZhipuAI({
+      modelName: "glm-3-turbo", // Available models:
+      temperature: 0.01,
+      zhipuAIApiKey: "4c64c9bef6ad9c3b04b0116c4313cfff.ca1pDnEjpNzXQFou", // In Node.js defaults to process.env.ZHIPUAI_API_KEY
     });
-    
+    // const model = new OpenAI({
+    //     model_name:"glm-3-turbo",
+    //     openai_api_base: "https://open.bigmodel.cn/api/paas/v4",
+    //     openai_api_key: token,
+    //     streaming: false,
+    //     temperature: 0.01,
+    // });
+
     const divtextContent = []
     textContent.forEach((part)=>{ divtextContent.push(rundiv(model, part)) });
     const typetextContent = []
