@@ -12,7 +12,7 @@ import {
 } from "antd";
 import THEME from "./style/theme";
 
-import { ArticleWithImage, ArticleEditor } from "./page/page.js";
+import { ArticleWithImage, ArticleEditor, ArtcleProcess } from "./page/page.js";
 import "./page/page.css";
 import React, { useRef, useState } from "react";
 
@@ -29,11 +29,24 @@ const useGetarticle = () => {
   };
 };
 
+const useGetLlmarticle = () => {
+  const [llmarticle, setLlmArticle] = useState([{ text: "" }]);
+  return {
+    llmarticle,
+    setLlmArticle,
+  };
+};
+
 const App = () => {
   // const [userInput, setUserInput] = useState("");
   const { article, setArticle } = useGetarticle();
+  const { llmarticle, setLlmArticle } = useGetLlmarticle();
   const changeArticle = (inputText) => {
     setArticle(inputText);
+  };
+
+  const changeLlmArticle = (inputText) => {
+    setLlmArticle(inputText);
   };
 
   return (
@@ -52,7 +65,10 @@ const App = () => {
                   Input Article
                 </Text>
                 <Divider style={{ margin: "0 0 2% 0" }} />
-                <ArticleEditor changeArticle={changeArticle} />
+                <ArticleEditor
+                  changeArticle={changeArticle}
+                  changeLlmArticle={changeLlmArticle}
+                />
               </Col>
               <Col span={12}>
                 <Text style={{ fontSize: "20px", fontWeight: "bold" }}>
@@ -60,6 +76,7 @@ const App = () => {
                 </Text>
                 <Divider style={{ margin: "0 0 2% 0" }} />
                 <ArticleWithImage article={article} />
+                <ArtcleProcess llmarticle={llmarticle} />
               </Col>
             </Row>
           </Layout>
