@@ -189,7 +189,7 @@ const Barchart = ({ option, text, highLIndex, rankrange }) => {
   const newtext = text !== undefined ? text : "";
   return (
     <span>
-      <span class={className}>{text}</span>
+      <span className={className}>{text}</span>
       <span
         style={{ width: option.width, height: option.height }}
         ref={myRef}

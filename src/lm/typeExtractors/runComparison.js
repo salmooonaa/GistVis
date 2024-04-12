@@ -1,0 +1,38 @@
+import {
+  StructuredOutputParser,
+  RegexParser,
+  CombiningOutputParser
+} from "langchain/output_parsers";
+import { PromptTemplate } from "@langchain/core/prompts";
+import { RunnableSequence } from "@langchain/core/runnables";
+
+const runComparison = async (model, textContent, index) => {
+  const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
+    id: "unique id of text block",
+    text: "original text provided by the user",
+  });
+  const typeParser = new RegexParser(/Type: (comparison|)/, ["type"], "noType");
+  const parser = new CombiningOutputParser(answerParser, typeParser);
+
+  const compchain = RunnableSequence.from([
+    PromptTemplate.fromTemplate(`
+        As a professional text preprocessing assistant specializing in text visualization, your task is to provide a well-structured response to the user's text chunk, strictly adhering to certain rules. The user aims to generate corresponding charts based on your response. To accomplish this, you need to check if the user's text contains any comparative relationships. If included, type is comparison; if not included, type is null.\n
+        Comparison refers to the act of comparing two data attributes or comparing the target object with previous values, especially along a time series. Typically, comparisons involve two or more entities or values that exhibit significant differences. Comparative relationships are often expressed in phrases containing multiple entities or values that highlight notable disparities. (eg1: "China on Wednesday posted a robust GDP growth of 5.2 percent for 2023, successfully beating the government's pre-set yearly target of around 5 percent."; eg2:"There are more blocked beds in the Royal London Hospital compared with the UK average")
+        \n{format_instructions}\n{index}\n{paragraph}
+        `),
+    model,
+    parser,
+  ]);
+
+  const response = await compchain.invoke({
+    index: "id:" + index,
+    paragraph: "User:" + textContent,
+    format_instructions: parser.getFormatInstructions(),
+  });
+  // console.log(response);
+  // console.log(response.type);
+
+  return response;
+};
+
+export default runComparison;

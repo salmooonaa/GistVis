@@ -110,7 +110,7 @@ const Sparkline = ({ options, text }) => {
 
   return (
     <span>
-      <span class="r_text">{text}</span>
+      <span className="r_text">{text}</span>
       <span
         style={{ width: options.width, height: options.height }}
         ref={myRef}
@@ -131,7 +131,7 @@ const Trend = ({ options, text, type, centerValue }) => {
 
   return (
     <span>
-      <span class={className}>{text}</span>
+      <span className={className}>{text}</span>
       <span
         style={{ width: options.width, height: options.height }}
         ref={myRef}

@@ -18,7 +18,7 @@ const Piechart = ({ option, text, highLIndex }) => {
     newData = option.data.slice(0, 6);
   }
 
-  console.log(newData);
+  // console.log(newData);
 
   useEffect(() => {
     const arc = d3
@@ -65,7 +65,7 @@ const Piechart = ({ option, text, highLIndex }) => {
 
   return (
     <span>
-      <span class="r_text">{text}</span>
+      <span className="r_text">{text}</span>
       <span
         style={{ width: option.width, height: option.height }}
         ref={myRef}

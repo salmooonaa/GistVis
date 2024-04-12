@@ -1,19 +1,8 @@
-import {
-  ConfigProvider,
-  Layout,
-  Space,
-  Typography,
-  Row,
-  Col,
-  Divider,
-  Button,
-  Switch,
-  Flex,
-} from "antd";
+import { ConfigProvider, Layout, Typography, Row, Col, Divider } from "antd";
 import THEME from "./style/theme";
-
-import { ArticleWithImage, ArticleEditor, ArtcleProcess } from "./page/page.js";
-import "./page/page.css";
+import { ArtcleProcess } from "./components/page.jsx";
+import { Editor } from "./components/index.jsx";
+import "./components/page.css";
 import React, { useRef, useState } from "react";
 
 const { Header, Content, Footer } = Layout;
@@ -65,7 +54,7 @@ const App = () => {
                   Input Article
                 </Text>
                 <Divider style={{ margin: "0 0 2% 0" }} />
-                <ArticleEditor
+                <Editor
                   changeArticle={changeArticle}
                   changeLlmArticle={changeLlmArticle}
                 />
@@ -75,7 +64,7 @@ const App = () => {
                   Rendered Result
                 </Text>
                 <Divider style={{ margin: "0 0 2% 0" }} />
-                <ArticleWithImage article={article} />
+                {/* <ArticleWithImage article={article} /> */}
                 <ArtcleProcess llmarticle={llmarticle} />
               </Col>
             </Row>
