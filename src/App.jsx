@@ -1,20 +1,8 @@
-import {
-  ConfigProvider,
-  Layout,
-  Space,
-  Typography,
-  Row,
-  Col,
-  Divider,
-  Button,
-  Switch,
-  Flex,
-} from "antd";
+import { ConfigProvider, Layout, Typography, Row, Col, Divider } from "antd";
 import THEME from "./style/theme";
-
-import { ArticleWithImage, ArticleEditor } from "./page/page.js";
-
-import "./page/page.css";
+import { ArtcleProcess } from "./components/page.jsx";
+import { Editor } from "./components/index.jsx";
+import "./components/page.css";
 import React, { useRef, useState } from "react";
 
 const { Header, Content, Footer } = Layout;
@@ -30,10 +18,24 @@ const useGetarticle = () => {
   };
 };
 
+const useGetLlmarticle = () => {
+  const [llmarticle, setLlmArticle] = useState([{ text: "" }]);
+  return {
+    llmarticle,
+    setLlmArticle,
+  };
+};
+
 const App = () => {
+  // const [userInput, setUserInput] = useState("");
   const { article, setArticle } = useGetarticle();
+  const { llmarticle, setLlmArticle } = useGetLlmarticle();
   const changeArticle = (inputText) => {
     setArticle(inputText);
+  };
+
+  const changeLlmArticle = (inputText) => {
+    setLlmArticle(inputText);
   };
 
   return (
@@ -52,14 +54,18 @@ const App = () => {
                   Input Article
                 </Text>
                 <Divider style={{ margin: "0 0 2% 0" }} />
-                <ArticleEditor changeArticle={changeArticle} />
+                <Editor
+                  changeArticle={changeArticle}
+                  changeLlmArticle={changeLlmArticle}
+                />
               </Col>
               <Col span={12}>
                 <Text style={{ fontSize: "20px", fontWeight: "bold" }}>
                   Rendered Result
                 </Text>
                 <Divider style={{ margin: "0 0 2% 0" }} />
-                <ArticleWithImage article={article} />
+                {/* <ArticleWithImage article={article} /> */}
+                <ArtcleProcess llmarticle={llmarticle} />
               </Col>
             </Row>
           </Layout>
