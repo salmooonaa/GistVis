@@ -39,7 +39,7 @@
 
 .spec_value {
   font-family: sans-serif;
-  font-size: 2.5ch;
+  font-size: 2ch;
   font-style: normal;
   font-weight: 550;
 }
@@ -109,6 +109,6 @@
 }
 
 span {
-  line-height: 30px; 
+  line-height: 25px; 
+  /* white-space: pre-wrap; */
 }
-

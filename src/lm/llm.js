@@ -71,7 +71,6 @@ const generateGistVisMarkup = async (input) => {
       const models = [
         runComparison,
         runTrend,
-        runAsso,
         runRank,
         runProportion,
         runExtreme,
@@ -121,10 +120,10 @@ const generateGistVisMarkup = async (input) => {
         llmoptio = await specTrend(model, part);
         llmoption.push(llmoptio);
         break;
-      case "association":
-        llmoptio = await specAssociation(model, part);
-        llmoption.push(llmoptio);
-        break;
+      // case "association":
+      //   llmoptio = await specAssociation(model, part);
+      //   llmoption.push(llmoptio);
+      //   break;
       case "rank":
         llmoptio = await specRank(model, part);
         llmoption.push(llmoptio);

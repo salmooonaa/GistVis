@@ -23,12 +23,13 @@ const runMatch = async (model, textContent) => {
   const matchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
         You are a professional text preprocessing assistant specializing in text visualization. Please provide a well-structured response to the user's chunk of the text strictly according to rules. The user's goal is to generate corresponding charts based on your response. 
-        The text chunk provided by the user is matched with two or more types, and you need to choose the most suitable type based on the following definitions.
+        The text chunk provided by the user is matched with two or more types, and you need to choose only one most suitable type based on the following definitions and return it as the type.
+
         Comparison refers to the act of comparing two data attributes.
         Trend presents a general tendency over a time segment.
-        Association refers to y the useful relationship between two data attributes or among multiple attributes and can be categorized as positive, negative, or neutral sentiment. 
+        Association refers to the useful relationship between two data attributes or among multiple attributes and can be categorized as positive, negative, or neutral sentiment. 
         Rank refers to sort the data attributes based on their values and show the breakdown of selected data attributes. 
-        Proportion refers to measure the proportion of selected data attribute(s) within a specified set.
+        Proportion refers to measure the proportion of selected data attribute(s) within a specified set, usually a ratio or a fraction less than or equal to 10.
         Extreme refers to the extreme data cases along with the data attributes or within a certain range, such as maximum and minimum. 
         Anomalies are usually data points that are significantly different from expected patterns. 
         Values are usually a numerical value with special meaning that have a significant impact on entities. 

@@ -4,6 +4,8 @@ import Barchart from "./widgets/barchart";
 import Piechart from "./widgets/piechart";
 import Extremechart from "./widgets/maxmin";
 import "./page.css";
+import { demo2_1 } from "../demo/demo2_1";
+import { demo1_1 } from "../demo/demo1_1";
 
 const ArtcleProcess = (llmarticle) => {
   let optionsDefault = {
@@ -12,14 +14,18 @@ const ArtcleProcess = (llmarticle) => {
     data: [20, 20, 25, 40, 45, 40, 46, 50, 60, 80, 85, 92, 99],
   };
   // console.log(llmarticle);
-  const llm = llmarticle.llmarticle;
-  console.log(llm);
+  // const llm = llmarticle.llmarticle;
+  // console.log(llm);
   const renderParts = () => {
     return llmarticle.llmarticle.map((part, index) => {
+      // return demo2_1.map((part, index) => {
       if (part.type === undefined) {
         return (
-          <span key={index} className="text">
-            {part.text}
+          <span key={part.id}>
+            {/s0/.test(part.id) && <br />}
+            <span key={index} className="text">
+              {part.text}
+            </span>
           </span>
         );
       } else {
@@ -27,20 +33,30 @@ const ArtcleProcess = (llmarticle) => {
           case "comparison":
             // console.log("运行到compl");
             const newdataset = [100, 20];
-            if (part.value1 !== "null" && part.value2 !== "null") {
-              newdataset[0] = parseFloat(part.value1);
-              newdataset[1] = parseFloat(part.value2);
+            if (part.value1 !== "NAN" && part.value2 !== "NAN") {
+              newdataset[0] = Math.max(parseFloat(part.value1), parseFloat(part.value2));
+              newdataset[1] = Math.min(parseFloat(part.value1), parseFloat(part.value2));
+            }
+            let delta1;
+            if (part.value3 !== "NAN") {
+              delta1 = part.value3
+            } else {
+              if (part.value1 !== "NAN" && part.value2 !== "NAN")
+              delta1 = Math.abs(
+                parseFloat(part.value1) - parseFloat(part.value2)
+              );
             }
             const newoptionsDefault = {
               ...optionsDefault,
               data: newdataset,
-              delta: part.value3,
+              delta: delta1,
             };
             // console.log(newoptionsDefault);
             return (
               <span key={part.id}>
+                {/s0/.test(part.id) && <br />}
                 <span className="text">{part.text}</span>
-                <Barchart key={part.id + "-chart"} option={newoptionsDefault} />
+                <Barchart key={part.id + "-chart"} option={newoptionsDefault} delta = {"true"} />
               </span>
             );
           case "trend":
@@ -59,7 +75,7 @@ const ArtcleProcess = (llmarticle) => {
 
             // console.dir(newoptionsDefault6);
             if (part.value3 === "NAN") {
-              if (part.start !== "NAN" && part.end !== "NAN") {
+              if (part.value1 !== "NAN" && part.value2 !== "NAN") {
                 centerValue = Math.abs(
                   parseFloat(part.value1) - parseFloat(part.value2)
                 );
@@ -69,6 +85,7 @@ const ArtcleProcess = (llmarticle) => {
             }
             return (
               <span key={part.id}>
+                {/s0/.test(part.id) && <br />}
                 <span className="text">{part.text}</span>
                 <Trend
                   options={newoptionsDefault6}
@@ -77,33 +94,33 @@ const ArtcleProcess = (llmarticle) => {
                 />
               </span>
             );
-          case "association":
-            const regex3 = new RegExp("(" + part.pos + ")", "g");
-            const parts3 = part.text.split(regex3);
-            const attribute1 = part.attribute;
-            let classna = "pos_text";
-            if (attribute1 === "negative") {
-              classna = "neg_text";
-            }
-            return (
-              <span key={part.id}>
-                {parts3.map((item, index) => {
-                  if (index % 2 === 1) {
-                    return (
-                      <span key={index} className={classna}>
-                        {item}
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span key={index} className="text">
-                        {item}
-                      </span>
-                    );
-                  }
-                })}
-              </span>
-            );
+          // case "association":
+          //   const regex3 = new RegExp("(" + part.pos + ")", "g");
+          //   const parts3 = part.text.split(regex3);
+          //   const attribute1 = part.attribute;
+          //   let classna = "pos_text";
+          //   if (attribute1 === "negative") {
+          //     classna = "neg_text";
+          //   }
+          //   return (
+          //     <span key={part.id}>
+          //       {parts3.map((item, index) => {
+          //         if (index % 2 === 1) {
+          //           return (
+          //             <span key={index} className={classna}>
+          //               {item}
+          //             </span>
+          //           );
+          //         } else {
+          //           return (
+          //             <span key={index} className="text">
+          //               {item}
+          //             </span>
+          //           );
+          //         }
+          //       })}
+          //     </span>
+          //   );
           case "rank":
             let highLIndex1 = 0;
             const value2 = parseInt(part.value1);
@@ -140,6 +157,7 @@ const ArtcleProcess = (llmarticle) => {
 
             return (
               <span key={part.id}>
+                {/s0/.test(part.id) && <br />}
                 <span className="text">{part.text}</span>
                 <Barchart
                   option={newoptionsDefault4}
@@ -174,6 +192,7 @@ const ArtcleProcess = (llmarticle) => {
             };
             return (
               <span key={part.id}>
+                {/s0/.test(part.id) && <br />}
                 <span className="text">{part.text}</span>
                 {renderPieCharts()}
               </span>
@@ -193,6 +212,7 @@ const ArtcleProcess = (llmarticle) => {
             }
             return (
               <span key={part.id}>
+                {/s0/.test(part.id) && <br />}
                 {parts2.map((item, index) => {
                   if (index % 2 === 1) {
                     return (
@@ -222,6 +242,7 @@ const ArtcleProcess = (llmarticle) => {
             // console.log(parts1);
             return (
               <span key={part.id}>
+                {/s0/.test(part.id) && <br />}
                 {parts1.map((item, index) => {
                   if (index % 2 === 1) {
                     return (
@@ -245,6 +266,7 @@ const ArtcleProcess = (llmarticle) => {
             // console.log(parts);
             return (
               <span key={part.id}>
+                {/s0/.test(part.id) && <br />}
                 {parts.map((item, index) => {
                   if (index % 2 === 1) {
                     return (

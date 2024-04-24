@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import React, { useRef, useEffect } from "react";
 
-const Barchart = ({ option, text, highLIndex, rankrange }) => {
+const Barchart = ({ option, text, highLIndex, rankrange, delta }) => {
   let className = "text";
   if (highLIndex === 1) {
     className = "neg_text";
@@ -21,7 +21,7 @@ const Barchart = ({ option, text, highLIndex, rankrange }) => {
   // const widthVis = options.width - margin.left - margin.right;
   const heightVis = option.height - margin.top - margin.bottom;
   const newWidth =
-    typeof option.delta === "undefined"
+    typeof delta === "undefined"
       ? newData.length * barWidth
       : newData.length * barWidth + 25;
   const highlightIndex = highLIndex;
@@ -99,7 +99,7 @@ const Barchart = ({ option, text, highLIndex, rankrange }) => {
         }
       });
 
-    if (typeof option.delta !== "undefined") {
+    if (typeof delta !== "undefined") {
       const x1 = 0 * barWidth + barWidth / 2;
       const y1 = heightVis - y(newData[0]);
       const x2 = 1 * barWidth + barWidth / 2;

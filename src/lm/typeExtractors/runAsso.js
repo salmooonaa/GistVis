@@ -22,7 +22,7 @@ const runAsso = async (model, textContent, index) => {
     PromptTemplate.fromTemplate(`
         You are a professional text preprocessing assistant specializing in text visualization. Please provide a well-structured response to the user's 
         chunk of the text strictly according to rules,  The user's goal is to generate corresponding charts based on your response. To achieve this, please 
-        check if the text provided by the user contains association relationships. If included, type is comparison; if not included, type is null.\n
+        check if the text provided by the user contains association relationships. If included, type is association; if not included, type is null.\n
         Association refers to y the useful relationship between two data attributes or among multiple attributes and can be categorized as positive, 
         negative, or neutral sentiment. Association are usually phrases with positive and negative semantics such as "smooth" or "hard".(eg1: "But the EV 
         market has nevertheless become a major disappointment."; eg2:"There is a negative correlation between the number of quality food and the distance 
