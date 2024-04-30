@@ -9,7 +9,8 @@
 
 .text {
   font-size: medium;
-  font-style: normal;
+  font-style: bold;
+  font-weight: bold;
 }
 
 .pos_text {
@@ -109,6 +110,7 @@
 }
 
 span {
-  line-height: 25px; 
+  line-height: 30px; 
   /* white-space: pre-wrap; */
+  font-weight: bold;
 }

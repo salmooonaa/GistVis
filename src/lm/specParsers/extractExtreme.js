@@ -5,21 +5,31 @@ import {
 } from "langchain/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
+import { z } from "zod";
 
 const extrExtreme = async (model, textContent) => {
-  const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
-    id: "unique id of text block",
-    text: "original text provided by the user",
-    value1:
-      "the extreme(already converted into numbers). If it does not exist, return NAN",
-    pos: "the words containing the value of extreme",
-  });
+  // const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
+  //   id: "unique id of text block",
+  //   text: "original text provided by the user",
+  //   value1:
+  //     "the extreme(already converted into numbers). If it does not exist, return NAN",
+  //   pos: "the words containing the value of extreme",
+  // });
+  const specParser = StructuredOutputParser.fromZodSchema(z.object({
+    id: z.string().describe("unique id of text block"),
+    context: z.string().describe("original text provided by the user"),
+    spec: z.object({
+      value1: z.string().describe("the extreme(already converted into numbers). If it does not exist, return NAN"),
+      pos: z.string().describe("the words containing the value of extreme"),
+      attribute: z.string().describe("maximum|minimum"),
+    }),
+  }));
   const typeParser = new RegexParser(
-    /Type: (extreme), Attribute: (maximum|minimum)/,
-    ["type", "attribute"],
+    /Type: (extreme)/,
+    ["type"],
     "noType"
   );
-  const parser = new CombiningOutputParser(answerParser, typeParser);
+  const parser = new CombiningOutputParser(specParser, typeParser);
 
   const extrextrechain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
@@ -41,7 +51,7 @@ const extrExtreme = async (model, textContent) => {
     paragraph: "User:" + textContent.text,
   });
   // console.dir(response);
-
+  
   return response;
 };
 

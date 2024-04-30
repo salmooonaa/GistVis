@@ -5,25 +5,38 @@ import {
 } from "langchain/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
+import { z } from "zod";
 
 const extrTrend = async (model, textContent) => {
-  const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
-    id: "unique id of text block",
-    text: "original text provided by the user",
-    entity1: "subject of trend, usually an entity",
-    value1:
-      "the start data point of the trend(already converted into numbers without units). If it does not exist, return NAN",
-    value2:
-      "the end data point of the trend(already converted into numbers without units). If it does not exist, return NAN",
-    value3: "the delta of the trend. If it does not exist, return NAN",
-    pos: "The previous word in the recommended location",
-  });
+  // const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
+  //   id: "unique id of text block",
+  //   text: "original text provided by the user",
+  //   entity1: "subject of trend, usually an entity",
+  //   value1:
+  //     "the start data point of the trend(already converted into numbers without units). If it does not exist, return NAN",
+  //   value2:
+  //     "the end data point of the trend(already converted into numbers without units). If it does not exist, return NAN",
+  //   value3: "the delta of the trend. If it does not exist, return NAN",
+  //   pos: "The previous word in the recommended location",
+  // });
+  const specParser = StructuredOutputParser.fromZodSchema(z.object({
+    id: z.string().describe("unique id of text block"),
+    context: z.string().describe("original text provided by the user"),
+    spec: z.object({
+      entity1: z.string().describe("subject of trend, usually an entity"),
+      value1: z.string().describe("the start data point of the trend(already converted into numbers without units). If it does not exist, return NAN"),
+      value2: z.string().describe("the end data point of the trend(already converted into numbers without units). If it does not exist, return NAN"),
+      value3: z.string().describe("the delta of the trend. If it does not exist, return NAN"),
+      pos: z.string().describe("The previous word in the recommended location"),
+      attribute: z.string().describe("positive|negative"),
+    }),
+  }));
   const typeParser = new RegexParser(
-    /Type: (trend), Attribute: (positive|negative|neutral)/,
-    ["type", "attribute"],
+    /Type: (trend)/,
+    ["type"],
     "noType"
   );
-  const parser = new CombiningOutputParser(answerParser, typeParser);
+  const parser = new CombiningOutputParser(specParser, typeParser);
 
   const extrtrendchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`

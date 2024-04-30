@@ -5,17 +5,26 @@ import {
 } from "langchain/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
+import { z } from "zod";
 
 const extrAnomaly = async (model, textContent) => {
-  const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
-    id: "unique id of text block",
-    text: "original text provided by the user",
-    value1:
-      "the anomaly(already converted into numbers). If it does not exist, return NAN",
-    pos: "the words containing the value of anomaly",
-  });
+  // const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
+  //   id: "unique id of text block",
+  //   text: "original text provided by the user",
+  //   // value1:
+  //   //   "the anomaly(already converted into numbers). If it does not exist, return NAN",
+  //   // pos: "the words containing the value of anomaly",
+  // });
+  const specParser = StructuredOutputParser.fromZodSchema(z.object({
+    id: z.string().describe("unique id of text block"),
+    context: z.string().describe("original text provided by the user"),
+    spec: z.object({
+      value1: z.string().describe("the anomaly(already converted into numbers). If it does not exist, return NAN"),
+      pos: z.string().describe("the words containing the value of anomaly"),
+    })
+  }));
   const typeParser = new RegexParser(/Type: (anomaly)/, ["type"], "noType");
-  const parser = new CombiningOutputParser(answerParser, typeParser);
+  const parser = new CombiningOutputParser(specParser, typeParser);
 
   const extrAnochain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`

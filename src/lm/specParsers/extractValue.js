@@ -5,17 +5,26 @@ import {
 } from "langchain/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
+import { z } from "zod";
 
 const extrVal = async (model, textContent) => {
-  const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
-    id: "unique id of text block",
-    text: "original text provided by the user",
-    value1:
-      "the value(already converted into numbers). If it does not exist, return NAN",
-    pos: "the numeric word(value)",
-  });
+  // const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
+  //   id: "unique id of text block",
+  //   text: "original text provided by the user",
+  //   value1:
+  //     "the value(already converted into numbers). If it does not exist, return NAN",
+  //   pos: "the numeric word(value)",
+  // });
+  const specParser = StructuredOutputParser.fromZodSchema(z.object({
+    id: z.string().describe("unique id of text block"),
+    context: z.string().describe("original text provided by the user"),
+    spec: z.object({
+      value1: z.string().describe("the value(already converted into numbers). If it does not exist, return NAN"),
+      pos: z.string().describe("the numeric word(value)"),
+    }),
+  }));
   const typeParser = new RegexParser(/Type: (value)/, ["type"], "noType");
-  const parser = new CombiningOutputParser(answerParser, typeParser);
+  const parser = new CombiningOutputParser(specParser, typeParser);
 
   const extrvalchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`

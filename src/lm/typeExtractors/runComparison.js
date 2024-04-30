@@ -16,8 +16,18 @@ const runComparison = async (model, textContent, index) => {
 
   const compchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
-        As a professional text preprocessing assistant specializing in text visualization, your task is to provide a well-structured response to the user's text chunk, strictly adhering to certain rules. The user aims to generate corresponding charts based on your response. To accomplish this, you need to check if the user's text contains any comparative relationships. If included, type is comparison; if not included, type is null.\n
-        Comparison refers to the act of comparing two data attributes or comparing the target object with previous values, especially along a time series. Typically, comparisons involve two or more entities or values that exhibit significant differences. Comparative relationships are often expressed in phrases containing multiple entities or values that highlight notable disparities. (eg1: "China on Wednesday posted a robust GDP growth of 5.2 percent for 2023, successfully beating the government's pre-set yearly target of around 5 percent."; eg2:"There are more blocked beds in the Royal London Hospital compared with the UK average")
+        As a professional text preprocessing assistant specializing in text visualization, your task is to provide a well-structured response to the user's text chunk, strictly adhering to certain rules. The user aims to generate corresponding charts based on your response. To accomplish this, you need to check if the user's text contains any comparative relationships. If included, the type is a comparison; if not included, the type is null.
+        Comparison refers to the act of comparing two data attributes or comparing the target object with previous values, especially along a time series. Typically, comparisons involve two or more entities or values that exhibit significant differences. Comparative relationships are often expressed in phrases containing multiple entities or values that highlight notable disparities. 
+
+        User: China on Wednesday posted a robust GDP growth of 5.2 percent for 2023, successfully beating the government's pre-set yearly target of around 5 percent.
+        Assistant: """Type: comparison"""
+
+        User: There are more blocked beds in the Royal London Hospital compared with the UK average.
+        Assistant: """Type: comparison"""
+
+        User: The little boy was careful enough to come first in the exam.
+        Assistant: """Type: null"""
+
         \n{format_instructions}\n{index}\n{paragraph}
         `),
     model,

@@ -5,25 +5,38 @@ import {
 } from "langchain/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
+import { z } from "zod";
 
 const extrComp = async (model, textContent) => {
-  const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
-    id: "unique id of text block",
-    text: "original text provided by the user",
-    entity1:
-      "The subject of comparison with a higher value, usually an entity. If it does not exist, return an empty string",
-    entity2:
-      "The subject of comparison with a lower value, usually an entity. If it does not exist, return an empty string",
-    value1:
-      "the higher value in the comparison(already converted into numbers or percentages). If it does not exist or is uncertain, return NAN",
-    value2:
-      "the lower value in the comparison(already converted into numbers or percentages). If it does not exist or is uncertain, return NAN",
-    value3:
-      "the delta in the comparison(already converted into numbers). If it does not exist, return NAN",
-    pos: "The previous word in the recommended location",
-  });
+  // const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
+  //   id: "unique id of text block",
+  //   text: "original text provided by the user",
+  //   entity1:
+  //     "The subject of comparison with a higher value, usually an entity. If it does not exist, return an empty string",
+  //   entity2:
+  //     "The subject of comparison with a lower value, usually an entity. If it does not exist, return an empty string",
+  //   value1:
+  //     "the higher value in the comparison(already converted into numbers or percentages). If it does not exist or is uncertain, return NAN",
+  //   value2:
+  //     "the lower value in the comparison(already converted into numbers or percentages). If it does not exist or is uncertain, return NAN",
+  //   value3:
+  //     "the delta in the comparison(already converted into numbers). If it does not exist, return NAN",
+  //   pos: "The previous word in the recommended location",
+  // });
+  const specParser = StructuredOutputParser.fromZodSchema(z.object({
+    id: z.string().describe("unique id of text block"),
+    context: z.string().describe("original text provided by the user"),
+    spec: z.object({
+      entity1: z.string().describe("The subject of comparison with a higher value, usually an entity. If it does not exist, return an empty string"),
+      entity2: z.string().describe("The subject of comparison with a lower value, usually an entity. If it does not exist, return an empty string"),
+      value1: z.string().describe("the higher value in the comparison(already converted into numbers or percentages). If it does not exist or is uncertain, return NAN"),
+      value2: z.string().describe("the lower value in the comparison(already converted into numbers or percentages). If it does not exist or is uncertain, return NAN"),
+      value3: z.string().describe("the delta in the comparison(already converted into numbers). If it does not exist, return NAN"),
+      pos: z.string().describe("The previous word in the recommended location"),
+    }),
+  }));
   const typeParser = new RegexParser(/Type: (comparison)/, ["type"], "noType");
-  const parser = new CombiningOutputParser(answerParser, typeParser);
+  const parser = new CombiningOutputParser(specParser, typeParser);
 
   const extrcompchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
@@ -45,6 +58,7 @@ const extrComp = async (model, textContent) => {
     paragraph: "User:" + textContent.text,
   });
   // console.dir(response);
+  // console.log(response);
 
   return response;
 };

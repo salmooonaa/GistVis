@@ -5,18 +5,27 @@ import {
 } from "langchain/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
+import { z } from "zod";
 
 const extrRank = async (model, textContent) => {
-  const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
-    id: "unique id of text block",
-    text: "original text provided by the user",
-    entity1: "subject of rank, usually an entity",
-    value1:
-      "the ranking of the entity(already converted into numbers). If it does not exist, return NAN",
-    pos: "The previous word in the recommended location",
-  });
+  // const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
+  //   id: "unique id of text block",
+  //   text: "original text provided by the user",
+  //   entity1: "subject of rank, usually an entity",
+  //   value1:
+  //     "the ranking of the entity(already converted into numbers). If it does not exist, return NAN",
+  //   pos: "The previous word in the recommended location",
+  // });
+  const specParser = StructuredOutputParser.fromZodSchema(z.object({
+    id: z.string().describe("unique id of text block"),
+    context: z.string().describe("original text provided by the user"),
+    spec: z.object({
+      value1: z.string().describe("the ranking of the entity(already converted into numbers). If it does not exist, return NAN"),
+      pos: z.string().describe("The previous word in the recommended location"),
+    }),
+  }));
   const typeParser = new RegexParser(/Type: (rank)/, ["type"], "noType");
-  const parser = new CombiningOutputParser(answerParser, typeParser);
+  const parser = new CombiningOutputParser(specParser, typeParser);
   // console.log(textContent);
   const extrrankchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`

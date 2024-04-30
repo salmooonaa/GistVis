@@ -5,17 +5,26 @@ import {
 } from "langchain/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
+import { z } from "zod";
 
 const extrProp = async (model, textContent) => {
-  const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
-    id: "unique id of text block",
-    text: "original text provided by the user",
-    value1:
-      "the value of proportion(already converted into decimals). If it does not exist, return NAN",
-    pos: "The previous word in the recommended location",
-  });
+  // const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
+  //   id: "unique id of text block",
+  //   text: "original text provided by the user",
+  //   value1:
+  //     "the value of proportion(already converted into decimals). If it does not exist, return NAN",
+  //   pos: "The previous word in the recommended location",
+  // });
+  const specParser = StructuredOutputParser.fromZodSchema(z.object({
+    id: z.string().describe("unique id of text block"),
+    context: z.string().describe("original text provided by the user"),
+    spec: z.object({
+      value1: z.string().describe("the value of proportion(already converted into decimals). If it does not exist, return NAN"),
+      pos: z.string().describe("The previous word in the recommended location"),
+    }),
+  }));
   const typeParser = new RegexParser(/Type: (proportion)/, ["type"], "noType");
-  const parser = new CombiningOutputParser(answerParser, typeParser);
+  const parser = new CombiningOutputParser(specParser, typeParser);
 
   const extrpropchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
