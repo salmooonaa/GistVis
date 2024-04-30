@@ -10,8 +10,8 @@ import {
   runRank,
   runExtreme,
   runAnomaly,
-} from "./typeExtractors/extractorsList.js";
-import splitInsight from "./splitInsight.js";
+} from "./typeChecker/typeCheckerList.js";
+import splitInsight from "./discoverer.js";
 import {
   specAnomoly,
   specAssociation,
@@ -21,8 +21,8 @@ import {
   specRank,
   specTrend,
   specValue,
-} from "./specParsers/specParsersList.js";
-import runMatch from "./combineType.js";
+} from "./extractor/specParsersList.js";
+import runMatch from "./typeModerator.js";
 
 const removeHTML = (input) => {
   const plainText = convert(input, {

@@ -5,7 +5,6 @@ import Piechart from "./widgets/piechart";
 import Extremechart from "./widgets/maxmin";
 import "./page.css";
 import { demo2_1 } from "../demo/demo2_1";
-import { demo1_1 } from "../demo/demo1_1";
 
 const ArtcleProcess = (llmarticle) => {
   let optionsDefault = {
