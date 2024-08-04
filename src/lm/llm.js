@@ -57,7 +57,6 @@ const generateGistVisMarkup = async (input) => {
       const result = await splitInsight(model, part);
       divtextContent.push(result);
     }
-    console.log(divtextContent);
   }
 
   await processTextContent();
@@ -108,6 +107,7 @@ const generateGistVisMarkup = async (input) => {
   // console.log(typetextContent);
 
   const llmoption = [];
+  console.log(typetextContent)
   for (const part of typetextContent) {
     let llmoptio;
     switch (part.type) {

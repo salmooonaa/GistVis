@@ -18,11 +18,21 @@ const extrVal = async (model, textContent) => {
   const specParser = StructuredOutputParser.fromZodSchema(z.object({
     id: z.string().describe("unique id of text block"),
     context: z.string().describe("original text provided by the user"),
-    spec: z.object({
-      value1: z.string().describe("the value(already converted into numbers). If it does not exist, return NAN"),
-      pos: z.string().describe("the numeric word(value)"),
-    }),
+    dataspec: z.array(z.object({
+      category_key: z.string().describe("The category of the entity of the data item according to the context. If it does not exist, return an empty string"),
+      category_value: z.string().describe("The entity of the data item. If it does not exist, return an empty string"),
+      value_key: z.string().describe("The definition of the value of the data item according to the context. If it does not exist or is uncertain, return an empty string"),
+      value_value: z.string().describe("The numeric word(value). If it does not exist or is uncertain, return an empty string"),
+    })),
   }));
+  // const specParser = StructuredOutputParser.fromZodSchema(z.object({
+  //   id: z.string().describe("unique id of text block"),
+  //   context: z.string().describe("original text provided by the user"),
+  //   spec: z.object({
+  //     value1: z.string().describe("the value(already converted into numbers). If it does not exist, return NAN"),
+  //     pos: z.string().describe("the numeric word(value)"),
+  //   }),
+  // }));
   const typeParser = new RegexParser(/Type: (value)/, ["type"], "noType");
   const parser = new CombiningOutputParser(specParser, typeParser);
 
@@ -33,6 +43,8 @@ const extrVal = async (model, textContent) => {
         This sentence contains value. Values are usually a numerical value with special meaning that have a significant impact on entities. 
         First, you should extract the value. Then you should convert it into numbers.
         The user intends to highlight the value. Please output the position of the value.
+        Specifically, for 'category_key', identify the subject of comparison with its context, e.g., "the category of GDP growth" instead of just "entity". But the 'value_key' of all data items should keep the same.
+        For 'value_key', specify the exact context of the value being compared, e.g., "the GDP growth rate" instead of just "value". But the 'category_key' of all data items should keep the same.
         \n{format_instructions}\n{index}\n{type}\n{paragraph}
         `),
     model,
@@ -46,8 +58,16 @@ const extrVal = async (model, textContent) => {
     paragraph: "User:" + textContent.text,
   });
   // console.dir(response);
-
-  return response;
+  const newResponse = {
+    ...response,
+    dataspec: response.dataspec.map(({ category_key, category_value, value_key, value_value }) => {
+      return {
+        [category_key]: category_value,
+        [value_key]: value_value
+      };
+    })
+  };
+  return newResponse;
 };
 
 export default extrVal;
