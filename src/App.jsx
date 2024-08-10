@@ -2,6 +2,7 @@ import { ConfigProvider, Layout, Typography, Row, Col, Divider } from "antd";
 import THEME from "./style/theme";
 import { ArtcleProcess } from "./components/page.jsx";
 import { Editor } from "./components/index.jsx";
+import { DesignSpace } from "./visualizer/index.tsx"
 import "./components/page.css";
 import React, { useRef, useState } from "react";
 
@@ -48,6 +49,14 @@ const App = () => {
         </Header>
         <Content style={{ padding: "2%", margin: "0 auto" }}>
           <Layout dir="vertical">
+            <Row gutter={[16, 16]}>
+              <Col span={24}>
+                <Text style={{ fontSize: "20px", fontWeight: "bold" }}>
+                  Design Space
+                </Text>
+                <DesignSpace />
+              </Col>
+            </Row>
             <Row gutter={[16, 16]}>
               <Col span={12}>
                 <Text style={{ fontSize: "20px", fontWeight: "bold" }}>

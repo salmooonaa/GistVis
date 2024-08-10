@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+      "jsx": "react",
       "target": "es6",                // 编译到 ES5
       "module": "commonjs",           // 使用的模块系统
       "strict": true,                 // 启用所有严格类型检查选项

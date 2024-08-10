@@ -1,6 +1,8 @@
 import { convert } from "html-to-text";
 import { API_KEY } from "../api_key.js";
 import { ChatZhipuAI } from "@langchain/community/chat_models/zhipuai";
+import { ChatOpenAI } from "@langchain/openai";
+import { OpenAI } from "@langchain/openai";
 import {
   runValue,
   runComparison,
@@ -44,11 +46,26 @@ const removeHTML = (input) => {
 const generateGistVisMarkup = async (input) => {
   const textContent = removeHTML(input);
 
-  const model = new ChatZhipuAI({
-    modelName: "glm-3-turbo", // Available models:
-    temperature: 0.01,
-    zhipuAIApiKey: API_KEY, // In Node.js defaults to process.env.ZHIPUAI_API_KEY
-    verbose: true,
+  // const model = new ChatZhipuAI({
+  //   modelName: "glm-3-turbo", // Available models:
+  //   temperature: 0.01,
+  //   zhipuAIApiKey: API_KEY, // In Node.js defaults to process.env.ZHIPUAI_API_KEY
+  //   verbose: true,
+  // });
+  const model = new ChatOpenAI({
+    temperature: 0.2,
+    topP: 1,
+    frequency_penalty: 0.75,
+    presence_penalty: 0,
+    n: 1,
+    streaming: false,
+    openAIApiKey: process.env.REACT_APP_LLM_API_KEY,
+    modelName: process.env.REACT_APP_LLM_MODEL_NAME,
+    configuration: {
+      apiKey: process.env.REACT_APP_LLM_API_KEY,
+      modelName: process.env.REACT_APP_LLM_MODEL_NAME,
+      baseURL: process.env.REACT_APP_LLM_URL_BASE,
+    },
   });
 
   const divtextContent = [];
