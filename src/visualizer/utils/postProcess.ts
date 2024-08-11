@@ -61,7 +61,7 @@ export const getProductionVisSpec = (text: string, entityPos: EntitySpec[]) => {
     }
     contentArray.push({
       displayType: "entity",
-      content: text.slice(entity.postion.start, entity.postion.end + 1),
+      content: text.slice(entity.postion.start, entity.postion.end),
       entity: entity.entity,
     });
     lastEnd = entity.postion.end;

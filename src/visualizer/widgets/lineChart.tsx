@@ -7,27 +7,16 @@ import {
   SCALE_CONST,
   SVG_UNIT_WIDTH,
 } from "../constants";
-import { DataSpec, GistvisSpec, TrendAttribute } from "../types";
+import { ChartProps, DataPoint, DataSpec, GistvisSpec, TrendAttribute } from "../types";
 import { Tooltip } from "antd";
-
-interface HorizontalStackedBarProps {
-  gistvisSpec: GistvisSpec;
-  colorScale: d3.ScaleOrdinal<string, string, never>;
-  selectedEntity: string;
-  setSelectedEntity: (entity: string) => void;
-}
-
-interface DataPoint {
-  x: number;
-  y: number;
-}
+import { capitalizeFirstLetter } from "../utils/helpers";
 
 const Line = ({
   gistvisSpec,
   colorScale,
   selectedEntity,
   setSelectedEntity,
-}: HorizontalStackedBarProps) => {
+}: ChartProps) => {
   const dataSpec = gistvisSpec.dataSpec ?? [];
   const direction =
     (gistvisSpec.unitSegmentSpec.attribute as TrendAttribute) ?? "";
@@ -88,16 +77,29 @@ const Line = ({
   const getTooltipContnet = (selectionVal: number | null) => {
     if (hasNaN) {
       return (
-        <div style={{ lineHeight: 1.1, fontSize: "14px", color: "#000000" }}>
-          {hasNaN
-            ? gistvisSpec.unitSegmentSpec.attribute
-            : dataSpec[0].categoryValue}
+        <div
+          style={{ lineHeight: 1.1, fontSize: "14px", color: `${lineColor}`, fontWeight: "bold" }}
+        >
+          {gistvisSpec.unitSegmentSpec.attribute === "positive"
+            ? "↗ increasing"
+            : "↘ decreasing"}
         </div>
       );
     } else {
       return (
-        <div style={{ lineHeight: 1.1, fontSize: "14px", color: "#000000" }}>
-          {selectionVal}
+        <div
+          style={{
+            lineHeight: 1.1,
+            fontSize: "14px",
+            color: `${lineColor}`,
+            fontWeight: "bold",
+          }}
+        >
+          {capitalizeFirstLetter(dataSpec[0].valueKey) +
+            " of " +
+            dataSpec[0].categoryValue +
+            ": " +
+            selectionVal}
         </div>
       );
     }

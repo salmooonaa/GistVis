@@ -5,10 +5,14 @@ import { fuzzySearch } from "../utils/fuzzySearch";
 import * as d3 from "d3";
 import _ from "lodash";
 import HoverText from "../widgets/hoverText";
-import { HorizontalStackedBarChart } from "../widgets/chartList";
-import { getEntityPos, getProductionVisSpec, getUniqueEntities } from "../utils/postProcess";
+import { GlyphMaxMin, HorizontalStackedBarChart } from "../widgets/chartList";
+import {
+  getEntityPos,
+  getProductionVisSpec,
+  getUniqueEntities,
+} from "../utils/postProcess";
 
-const ProportionTextRenderer = ({
+const ExtremeTextRenderer = ({
   gistvisSpec,
 }: {
   gistvisSpec: GistvisSpec;
@@ -29,8 +33,8 @@ const ProportionTextRenderer = ({
     .domain(uniqueEntities);
 
   const proportionVis = (
-    <HorizontalStackedBarChart 
-      gistvisSpec={gistvisSpec}
+    <GlyphMaxMin
+      dataSpec={dataSpec}
       colorScale={colorScale}
       selectedEntity={currentEntity}
       setSelectedEntity={setCurrentEntity}
@@ -70,5 +74,4 @@ const ProportionTextRenderer = ({
   );
 };
 
-export default ProportionTextRenderer;
-
+export default ExtremeTextRenderer;

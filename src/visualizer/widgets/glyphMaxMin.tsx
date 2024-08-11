@@ -1,17 +1,16 @@
 import React from "react";
 import * as d3 from "d3";
 import { SVG_WIDTH, SVG_HEIGHT } from "../constants";
-import { ChartProps, DataSpec } from "../types";
+import { DataSpec } from "../types";
 import { Tooltip } from "antd";
 import { HorizontalStackedBarProps } from "../props";
 
-const HorizontalStackedBar = ({
-  gistvisSpec,
+const GlyphsMaxMin = ({
+  dataSpec,
   colorScale,
   selectedEntity,
   setSelectedEntity,
-}: ChartProps) => {
-  const dataSpec = gistvisSpec.dataSpec ?? [];
+}: HorizontalStackedBarProps) => {
   const xScale = d3.scaleLinear().domain([0, 1]).range([0, SVG_WIDTH]);
   let curSum = 0;
   const knownCategories = dataSpec.map((d: DataSpec, i: number) => {
@@ -94,4 +93,4 @@ const HorizontalStackedBar = ({
   return <>{visElement}</>;
 };
 
-export default HorizontalStackedBar;
+export default GlyphsMaxMin;

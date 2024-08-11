@@ -2,35 +2,35 @@ import { ConfigProvider, Layout, Typography, Row, Col, Divider } from "antd";
 import React, { useRef, useState } from "react";
 import { GistvisSpec, InsightType, paragraphSpec } from "./types";
 import {
+  ExtremeTextRenderer,
   PlainTextRenderer,
   ProportionTextRenderer,
+  RankTextRenderer,
 } from "./renderer/rendererList";
 import TrendTextRenderer from "./renderer/trendTextRenderer";
 
 const renderMap: { [key in InsightType]: (item: GistvisSpec) => JSX.Element } =
   {
     noType: (item: GistvisSpec) => <PlainTextRenderer gistvisSpec={item} />,
-    comparison: (item: GistvisSpec) => <PlainTextRenderer gistvisSpec={item} />,
     trend: (item: GistvisSpec) => <TrendTextRenderer gistvisSpec={item} />,
-    rank: (item: GistvisSpec) => <PlainTextRenderer gistvisSpec={item} />,
+    rank: (item: GistvisSpec) => <RankTextRenderer gistvisSpec={item} />,
     proportion: (item: GistvisSpec) => (
       <ProportionTextRenderer gistvisSpec={item} />
     ),
-    anomoly: (item: GistvisSpec) => <PlainTextRenderer gistvisSpec={item} />,
-    extreme: (item: GistvisSpec) => <PlainTextRenderer gistvisSpec={item} />,
+    comparison: (item: GistvisSpec) => <PlainTextRenderer gistvisSpec={item} />,
+    extreme: (item: GistvisSpec) => <ExtremeTextRenderer gistvisSpec={item} />,
     value: (item: GistvisSpec) => <PlainTextRenderer gistvisSpec={item} />,
   };
 
 export const DesignSpace = () => {
   const sampleArticle: paragraphSpec[] = [
     {
-      paragraphIdx: 0,
+      paragraphIdx: 1,
       paragraphContent: [
         {
           id: "1",
           unitSegmentSpec: {
             insightType: "noType",
-            paragraphIdx: 1,
             segmentIdx: 1,
             context:
               "Electric cars manufactures are competing hard in the global market.",
@@ -45,7 +45,6 @@ export const DesignSpace = () => {
           id: "2",
           unitSegmentSpec: {
             insightType: "proportion",
-            paragraphIdx: 2,
             segmentIdx: 1,
             context:
               "The percentage of the sales of BYD is 30%, while the rest of the top 5 companies only consist of 25%.",
@@ -69,7 +68,6 @@ export const DesignSpace = () => {
           id: "3",
           unitSegmentSpec: {
             insightType: "trend",
-            paragraphIdx: 2,
             segmentIdx: 2,
             context:
               "The sales of BYD have been steadily increasing over the past 5 years.",
@@ -88,7 +86,6 @@ export const DesignSpace = () => {
           id: "4",
           unitSegmentSpec: {
             insightType: "trend",
-            paragraphIdx: 2,
             segmentIdx: 3,
             context:
               "Specifically, the sales of BYD was 10k, 5k, 30k, 80k, and 50k respectively.",
@@ -127,16 +124,32 @@ export const DesignSpace = () => {
             },
           ],
         },
+        {
+          id: "5",
+          unitSegmentSpec: {
+            insightType: "extreme",
+            segmentIdx: 4,
+            context:
+              "The top seller for BYD, Qin series, could do a maximum range of 2000 kilometers, making it the longest ranged plug-in hybrid you can buy on the market.",
+          },
+          dataSpec: [
+            {
+              categoryKey: "The category of vehicle range",
+              categoryValue: "Qin series",
+              valueKey: "The vehicle range",
+              valueValue: 2000,
+            },
+          ],
+        },
       ],
     },
     {
       paragraphIdx: 3,
       paragraphContent: [
         {
-          id: "5",
+          id: "6",
           unitSegmentSpec: {
             insightType: "rank",
-            paragraphIdx: 3,
             segmentIdx: 1,
             context:
               "Conversly, the top 5 seller for traditional NCE vehicles are Toyota, VW, Stellantis, Nissan and Geely.",
@@ -162,7 +175,7 @@ export const DesignSpace = () => {
             },
             {
               categoryKey: "seller",
-              categoryValue: "Nisssan",
+              categoryValue: "Nissan",
               valueKey: "rank in top 5 sellers for traditional NCE vehicles",
               valueValue: 4,
             },

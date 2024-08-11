@@ -4,12 +4,11 @@ export type InsightType =
   | "trend"
   | "rank"
   | "proportion"
-  | "anomoly"
   | "extreme"
   | "value"
   | "noType";
 
-export type ExtremeAttribute = "max" | "min";
+export type ExtremeAttribute = "maximum" | "minimum";
 export type TrendAttribute = "positive" | "negative";
 export type Attribute = ExtremeAttribute | TrendAttribute;
 
@@ -22,10 +21,10 @@ export type DataSpec = {
 
 export type UnitSegmentSpec = {
   insightType: InsightType,
-  paragraphIdx: number,
   segmentIdx: number,
   context: string,
   attribute?: Attribute
+  inSituPosition?: string[]
 }
 
 export interface GistvisSpec {
@@ -58,4 +57,16 @@ export type DisplaySpec = {
   content: string;
   entity?: string;
   displayPosition?: DisplayPosition; // currently not supported
+}
+
+export interface ChartProps {
+  gistvisSpec: GistvisSpec;
+  colorScale: d3.ScaleOrdinal<string, string, never>;
+  selectedEntity: string;
+  setSelectedEntity: (entity: string) => void;
+}
+
+export interface DataPoint {
+  x: number;
+  y: number;
 }
