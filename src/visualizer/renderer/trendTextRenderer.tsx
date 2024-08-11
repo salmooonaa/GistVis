@@ -1,14 +1,16 @@
 import React, { useRef, useState, useEffect } from "react";
 import { DataSpec, DisplaySpec, EntitySpec, GistvisSpec } from "../types";
-import { SVG_HEIGHT, SVG_WIDTH } from "../constants";
-import { fuzzySearch } from "../utils/fuzzySearch";
 import * as d3 from "d3";
 import _ from "lodash";
 import HoverText from "../widgets/hoverText";
-import { HorizontalStackedBarChart } from "../widgets/chartList";
-import { getEntityPos, getProductionVisSpec, getUniqueEntities } from "../utils/postProcess";
+import { LineChart } from "../widgets/chartList";
+import {
+  getEntityPos,
+  getProductionVisSpec,
+  getUniqueEntities,
+} from "../utils/postProcess";
 
-const ProportionTextRenderer = ({
+const TrendTextRenderer = ({
   gistvisSpec,
 }: {
   gistvisSpec: GistvisSpec;
@@ -28,9 +30,9 @@ const ProportionTextRenderer = ({
     .scaleOrdinal(d3.schemeCategory10)
     .domain(uniqueEntities);
 
-  const proportionVis = (
-    <HorizontalStackedBarChart 
-      dataSpec={dataSpec}
+  const lineVis = (
+    <LineChart
+      gistvisSpec={gistvisSpec}
       colorScale={colorScale}
       selectedEntity={currentEntity}
       setSelectedEntity={setCurrentEntity}
@@ -61,7 +63,7 @@ const ProportionTextRenderer = ({
           return (
             <span key={index}>
               {content.content}
-              {proportionVis}
+              {lineVis}
             </span>
           );
         }
@@ -70,5 +72,4 @@ const ProportionTextRenderer = ({
   );
 };
 
-export default ProportionTextRenderer;
-
+export default TrendTextRenderer;

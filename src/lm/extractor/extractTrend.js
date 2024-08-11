@@ -1,7 +1,7 @@
 import {
   StructuredOutputParser,
   RegexParser,
-  CombiningOutputParser
+  CombiningOutputParser,
 } from "langchain/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
@@ -19,16 +19,42 @@ const extrTrend = async (model, textContent) => {
   //   value3: "the delta of the trend. If it does not exist, return NAN",
   //   pos: "The previous word in the recommended location",
   // });
-  const specParser = StructuredOutputParser.fromZodSchema(z.object({
-    id: z.string().describe("unique id of text block"),
-    context: z.string().describe("original text provided by the user"),
-    dataspec: z.array(z.object({
-      category_key: z.string().describe("The category of the entity of the data item according to the context. If it does not exist, return an empty string"),
-      category_value: z.string().describe("The entity of the data item. If it does not exist, return an empty string"),
-      value_key: z.string().describe("The definition of the value of the data item according to the context. If it does not exist or is uncertain, return an empty string"),
-      value_value: z.number().describe("The value of data point of the trend(already converted into numbers without units).  If it does not exist or is uncertain, return NAN"),
-    })),
-  }));
+  const specParser = StructuredOutputParser.fromZodSchema(
+    z.object({
+      id: z.string().describe("unique id of text block"),
+      context: z.string().describe("original text provided by the user"),
+      dataspec: z.array(
+        z.object({
+          category_key: z
+            .string()
+            .describe(
+              "The category of the entity of the data item according to the context. If it does not exist, return an empty string"
+            ),
+          category_value: z
+            .string()
+            .describe(
+              "The entity of the data item. If it does not exist, return an empty string"
+            ),
+          value_key: z
+            .string()
+            .describe(
+              "The definition of the value of the data item according to the context. If it does not exist or is uncertain, return an empty string"
+            ),
+          value_value: z
+            .union([z.number(), z.string()])
+            .transform((value) => {
+              if (typeof value === "string" && value.toUpperCase() === "NAN") {
+                return NaN;
+              }
+              return parseFloat(value);
+            })
+            .describe(
+              "The value of data point of the trend(already converted into numbers without units).  If it does not exist or is uncertain, return NAN"
+            ),
+        })
+      ),
+    })
+  );
   // const specParser = StructuredOutputParser.fromZodSchema(z.object({
   //   id: z.string().describe("unique id of text block"),
   //   context: z.string().describe("original text provided by the user"),
@@ -73,14 +99,16 @@ const extrTrend = async (model, textContent) => {
 
   const newResponse = {
     ...response,
-    dataspec: response.dataspec.map(({ category_key, category_value, value_key, value_value }) => {
-      return {
-        [category_key]: category_value,
-        [value_key]: value_value
-      };
-    })
+    dataspec: response.dataspec.map(
+      ({ category_key, category_value, value_key, value_value }) => {
+        return {
+          [category_key]: category_value,
+          [value_key]: value_value,
+        };
+      }
+    ),
   };
-  console.log(newResponse)
+  console.log(newResponse);
   return newResponse;
 };
 
