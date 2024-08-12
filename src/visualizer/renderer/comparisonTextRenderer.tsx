@@ -12,23 +12,25 @@ import {
   getUniqueEntities,
 } from "../utils/postProcess";
 
-const RankTextRenderer = ({
+const ComparisonTextRenderer = ({
   gistvisSpec,
 }: {
   gistvisSpec: GistvisSpec;
 }) => {
   const [currentEntity, setCurrentEntity] = useState<string>("");
 
-  // check entity counts in the dataSpec, if less than 3, add dummy data
-  let dataSpec: DataSpec[] = gistvisSpec.dataSpec ? gistvisSpec.dataSpec.map((item) => ({ ...item, entrySource: "extracted" })) : [];
-  if (dataSpec.length < 3 && dataSpec.length > 0) {
-    for (let i = dataSpec.length; i < 3; i++) {
-      dataSpec.push({
-        categoryKey: dataSpec[i - 1].categoryKey,
-        categoryValue: "placeholder",
-        valueKey: dataSpec[i - 1].valueKey,
-        valueValue: i + 1, // rank
-      })
+  // check entity counts in the dataSpec, if 2 and one valueValue is 0, transform data for better visualization
+  let dataSpec: DataSpec[] = gistvisSpec.dataSpec ?? [];
+  if (dataSpec.length < 2) {
+    console.warn("Not enough data entities to perform transformation.");
+  } else if (dataSpec.length === 2) {
+    const hasZeroValue = dataSpec.some((d) => d.valueValue === 0);
+    if (hasZeroValue) {
+      const maxValue = Math.max(...dataSpec.map((d) => d.valueValue));
+      dataSpec = dataSpec.map((d) => ({
+        ...d,
+        valueValue: maxValue + d.valueValue,
+      }))
     }
   }
 
@@ -91,4 +93,4 @@ const RankTextRenderer = ({
   );
 };
 
-export default RankTextRenderer;
+export default ComparisonTextRenderer;

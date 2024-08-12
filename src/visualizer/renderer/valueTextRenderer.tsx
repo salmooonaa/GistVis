@@ -1,57 +1,43 @@
 import React, { useRef, useState, useEffect } from "react";
-import { DataSpec, DisplaySpec, EntitySpec, ExtendedDataSpec, GistvisSpec } from "../types";
+import { DataSpec, DisplaySpec, EntitySpec, GistvisSpec } from "../types";
 import { SVG_HEIGHT, SVG_WIDTH } from "../constants";
 import { fuzzySearch } from "../utils/fuzzySearch";
 import * as d3 from "d3";
 import _ from "lodash";
 import HoverText from "../widgets/hoverText";
-import { HorizontalStackedBarChart, VerticalBarChart } from "../widgets/chartList";
+import { GlyphMaxMin, GlyphText, HorizontalStackedBarChart } from "../widgets/chartList";
 import {
   getEntityPos,
+  getInsituPos,
   getProductionVisSpec,
   getUniqueEntities,
 } from "../utils/postProcess";
 
-const RankTextRenderer = ({
+const ValueTextRenderer = ({
   gistvisSpec,
 }: {
   gistvisSpec: GistvisSpec;
 }) => {
   const [currentEntity, setCurrentEntity] = useState<string>("");
+  const dataSpec = gistvisSpec.dataSpec ?? [];
 
-  // check entity counts in the dataSpec, if less than 3, add dummy data
-  let dataSpec: DataSpec[] = gistvisSpec.dataSpec ? gistvisSpec.dataSpec.map((item) => ({ ...item, entrySource: "extracted" })) : [];
-  if (dataSpec.length < 3 && dataSpec.length > 0) {
-    for (let i = dataSpec.length; i < 3; i++) {
-      dataSpec.push({
-        categoryKey: dataSpec[i - 1].categoryKey,
-        categoryValue: "placeholder",
-        valueKey: dataSpec[i - 1].valueKey,
-        valueValue: i + 1, // rank
-      })
-    }
-  }
-
-  const gistvisSpecForVis = {
-    ...gistvisSpec,
-    dataSpec: dataSpec,
-  }
-
+  const inSituPos: EntitySpec[] = getInsituPos(gistvisSpec);
   const entityPos: EntitySpec[] = getEntityPos(gistvisSpec);
   const uniqueEntities = getUniqueEntities(entityPos);
 
   const vis = getProductionVisSpec(
     gistvisSpec.unitSegmentSpec.context,
-    entityPos
+    inSituPos,
+    "right"
   );
 
   const colorScale = d3
     .scaleOrdinal(d3.schemeCategory10)
     .domain(uniqueEntities);
 
-  const rankVis = (
-    <VerticalBarChart
-      gistvisSpec={gistvisSpecForVis}
+  const valueVis = (
+    <GlyphText
+      gistvisSpec={gistvisSpec}
       colorScale={colorScale}
       selectedEntity={currentEntity}
       setSelectedEntity={setCurrentEntity}
@@ -82,7 +68,7 @@ const RankTextRenderer = ({
           return (
             <span key={index}>
               {content.content}
-              {rankVis}
+              {valueVis}
             </span>
           );
         }
@@ -91,4 +77,4 @@ const RankTextRenderer = ({
   );
 };
 
-export default RankTextRenderer;
+export default ValueTextRenderer;

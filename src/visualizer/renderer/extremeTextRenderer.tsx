@@ -8,6 +8,7 @@ import HoverText from "../widgets/hoverText";
 import { GlyphMaxMin, HorizontalStackedBarChart } from "../widgets/chartList";
 import {
   getEntityPos,
+  getInsituPos,
   getProductionVisSpec,
   getUniqueEntities,
 } from "../utils/postProcess";
@@ -20,12 +21,14 @@ const ExtremeTextRenderer = ({
   const [currentEntity, setCurrentEntity] = useState<string>("");
   const dataSpec = gistvisSpec.dataSpec ?? [];
 
+  const inSituPos: EntitySpec[] = getInsituPos(gistvisSpec);
   const entityPos: EntitySpec[] = getEntityPos(gistvisSpec);
   const uniqueEntities = getUniqueEntities(entityPos);
 
   const vis = getProductionVisSpec(
     gistvisSpec.unitSegmentSpec.context,
-    entityPos
+    inSituPos,
+    "right"
   );
 
   const colorScale = d3
@@ -34,7 +37,7 @@ const ExtremeTextRenderer = ({
 
   const proportionVis = (
     <GlyphMaxMin
-      dataSpec={dataSpec}
+      gistvisSpec={gistvisSpec}
       colorScale={colorScale}
       selectedEntity={currentEntity}
       setSelectedEntity={setCurrentEntity}

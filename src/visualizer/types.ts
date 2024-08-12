@@ -19,6 +19,16 @@ export type DataSpec = {
   valueValue: number,
 }
 
+export type SourceData = "extracted" | "artificial" 
+
+export type ExtendedDataSpec = {
+  categoryKey: string,
+  categoryValue: string,
+  valueKey: string,
+  valueValue: number,
+  entrySource: SourceData
+}
+
 export type UnitSegmentSpec = {
   insightType: InsightType,
   segmentIdx: number,
@@ -30,7 +40,7 @@ export type UnitSegmentSpec = {
 export interface GistvisSpec {
   id: string,
   unitSegmentSpec: UnitSegmentSpec,
-  dataSpec?: DataSpec[]
+  dataSpec?: DataSpec[] | ExtendedDataSpec[],
 }
 
 export type paragraphSpec = {

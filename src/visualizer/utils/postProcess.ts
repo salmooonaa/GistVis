@@ -1,6 +1,32 @@
-import { DataSpec, DisplaySpec, EntitySpec, GistvisSpec } from "../types";
+import {
+  DataSpec,
+  DisplayPosition,
+  DisplaySpec,
+  EntitySpec,
+  GistvisSpec,
+} from "../types";
 import { fuzzySearch } from "./fuzzySearch";
 import _ from "lodash";
+
+export const getInsituPos = (gistVisSpec: GistvisSpec): EntitySpec[] => {
+  let inSituPosition: string[] =
+    gistVisSpec.unitSegmentSpec.inSituPosition ?? [];
+  return inSituPosition
+    .map((str: string) => {
+      const pos = fuzzySearch(str, gistVisSpec.unitSegmentSpec.context, false);
+      const posArray = pos.map((p) => {
+        return {
+          entity: str,
+          postion: {
+            start: p[0],
+            end: p[1],
+          },
+        };
+      });
+      return posArray;
+    })
+    .flat();
+};
 
 export const getEntityPos = (gistvisSpec: GistvisSpec): EntitySpec[] => {
   let dataSpec: DataSpec[] = gistvisSpec.dataSpec ?? [];
@@ -19,7 +45,7 @@ export const getEntityPos = (gistvisSpec: GistvisSpec): EntitySpec[] => {
             start: p[0],
             end: p[1],
           },
-        };
+        } as EntitySpec;
       });
       return posArray;
     })
@@ -33,7 +59,7 @@ export const getUniqueEntities = (entityPos: EntitySpec[]) => {
   );
 };
 
-export const getProductionVisSpec = (text: string, entityPos: EntitySpec[]) => {
+export const getNonOverlappingEntities = (entityPos: EntitySpec[]) => {
   // Sort entityPos by start position using lodash
   const sortedEntityPos = _.sortBy(entityPos, ["postion.start"]);
   // Filter out overlapping entities using reduce
@@ -49,6 +75,15 @@ export const getProductionVisSpec = (text: string, entityPos: EntitySpec[]) => {
     },
     []
   );
+  return nonOverlappingEntities;
+};
+
+export const getProductionVisSpec = (
+  text: string,
+  entityPos: EntitySpec[],
+  displayPos: DisplayPosition = "none"
+) => {
+  const nonOverlappingEntities = getNonOverlappingEntities(entityPos);
 
   const contentArray: DisplaySpec[] = [];
   let lastEnd = 0;
@@ -64,6 +99,12 @@ export const getProductionVisSpec = (text: string, entityPos: EntitySpec[]) => {
       content: text.slice(entity.postion.start, entity.postion.end),
       entity: entity.entity,
     });
+    if (displayPos === "right") {
+      contentArray.push({
+        displayType: "word-scale-vis",
+        content: " ",
+      });
+    }
     lastEnd = entity.postion.end;
   });
 
@@ -72,10 +113,12 @@ export const getProductionVisSpec = (text: string, entityPos: EntitySpec[]) => {
       displayType: "text",
       content: text.slice(lastEnd, text.length - 1),
     });
-    contentArray.push({
-      displayType: "word-scale-vis",
-      content: " ",
-    });
+    if (displayPos === "none") {
+      contentArray.push({
+        displayType: "word-scale-vis",
+        content: " ",
+      });
+    }
     contentArray.push({
       displayType: "text",
       content: text.slice(text.length - 1) + " ",

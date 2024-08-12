@@ -2,10 +2,12 @@ import { ConfigProvider, Layout, Typography, Row, Col, Divider } from "antd";
 import React, { useRef, useState } from "react";
 import { GistvisSpec, InsightType, paragraphSpec } from "./types";
 import {
+  ComparisonTextRenderer,
   ExtremeTextRenderer,
   PlainTextRenderer,
   ProportionTextRenderer,
   RankTextRenderer,
+  ValueTextRenderer,
 } from "./renderer/rendererList";
 import TrendTextRenderer from "./renderer/trendTextRenderer";
 
@@ -17,9 +19,9 @@ const renderMap: { [key in InsightType]: (item: GistvisSpec) => JSX.Element } =
     proportion: (item: GistvisSpec) => (
       <ProportionTextRenderer gistvisSpec={item} />
     ),
-    comparison: (item: GistvisSpec) => <PlainTextRenderer gistvisSpec={item} />,
+    comparison: (item: GistvisSpec) => <ComparisonTextRenderer gistvisSpec={item} />,
     extreme: (item: GistvisSpec) => <ExtremeTextRenderer gistvisSpec={item} />,
-    value: (item: GistvisSpec) => <PlainTextRenderer gistvisSpec={item} />,
+    value: (item: GistvisSpec) => <ValueTextRenderer gistvisSpec={item} />,
   };
 
 export const DesignSpace = () => {
@@ -131,6 +133,8 @@ export const DesignSpace = () => {
             segmentIdx: 4,
             context:
               "The top seller for BYD, Qin series, could do a maximum range of 2000 kilometers, making it the longest ranged plug-in hybrid you can buy on the market.",
+            attribute: "maximum",
+            inSituPosition: ["maximum range of 2000 kilometers"],
           },
           dataSpec: [
             {
@@ -187,6 +191,47 @@ export const DesignSpace = () => {
             },
           ],
         },
+        {
+          id: "7",
+          unitSegmentSpec: {
+            insightType: "comparison",
+            segmentIdx: 2,
+            context:
+              "The difference in sales between Toyota and VW is 5 million cars per year.",
+          },
+          dataSpec: [
+            {
+              categoryKey: "The category of car sales",
+              categoryValue: "Toyota",
+              valueKey: "The number of cars sold per year",
+              valueValue: 5000000,
+            },
+            {
+              categoryKey: "The category of car sales",
+              categoryValue: "VW",
+              valueKey: "The number of cars sold per year",
+              valueValue: 0,
+            },
+          ],
+        },
+        {
+          id: "8",
+          unitSegmentSpec: {
+            insightType: "value",
+            segmentIdx: 3,
+            context:
+              "The average price for a Toyota car is 25000 pounds.",
+            inSituPosition: ["25000 pounds"],
+          },
+          dataSpec: [
+            {
+              categoryKey: "the category of car prices",
+              categoryValue: "Toyota car",
+              valueKey: "the average price",
+              valueValue: 25000,
+            }
+          ]
+        }
       ],
     },
   ];
