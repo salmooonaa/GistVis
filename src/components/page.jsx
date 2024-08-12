@@ -31,20 +31,33 @@ const ArtcleProcess = (llmarticle) => {
         switch (part.type.trim()) {
           case "comparison":
             // console.log("运行到compl");
-            const newdataset = [100, 20];
-            if (part.spec.value1 !== "NAN" && part.spec.value2 !== "NAN") {
-              newdataset[0] = Math.max(parseFloat(part.spec.value1), parseFloat(part.spec.value2));
-              newdataset[1] = Math.min(parseFloat(part.spec.value1), parseFloat(part.spec.value2));
-            }
+            let newdataset
+            const secondKeyValues = part.dataspec.reduce((accumulator, item, index) => {
+              const keys = Object.keys(item);
+              if (keys.length < 2) {
+                // console.error(`Object at index ${index} does not have a second key.`);
+                return accumulator; 
+              }
+              const secondKey = keys[1];
+              const value = item[secondKey];
+              if (value === undefined || value === "NAN" || isNaN(value)) {
+                // console.error(`Invalid or empty value encountered for the second key "${secondKey}" at index ${index}:`, value);
+                return accumulator; 
+              }
+              // console.log(value)
+              accumulator.push(value);
+              return accumulator;
+            }, []);
             let delta1;
-            if (part.spec.value3 !== "NAN") {
-              delta1 = part.spec.value3
+            if (secondKeyValues.length > 1) {
+              newdataset = secondKeyValues;
+              delta1 = Math.abs(Math.max(...secondKeyValues) - Math.min(...secondKeyValues));
             } else {
-              if (part.spec.value1 !== "NAN" && part.spec.value2 !== "NAN")
-              delta1 = Math.abs(
-                parseFloat(part.spec.value1) - parseFloat(part.spec.value2)
-              );
+              newdataset = [100, 20];
+              delta1 = 80;
             }
+            delta1 = parseFloat(delta1.toFixed(2));
+
             const newoptionsDefault = {
               ...optionsDefault,
               data: newdataset,
@@ -59,10 +72,26 @@ const ArtcleProcess = (llmarticle) => {
               </span>
             );
           case "trend":
+            const trendvalues = part.dataspec.reduce((accumulator, item, index) => {
+              const keys = Object.keys(item);
+              if (keys.length < 2) {
+                // console.error(`Object at index ${index} does not have a second key.`);
+                return accumulator; 
+              }
+              const secondKey = keys[1];
+              const value = item[secondKey];
+              if (value === undefined || value === "NAN" || isNaN(value)) {
+                // console.error(`Invalid or empty value encountered for the second key "${secondKey}" at index ${index}:`, value);
+                return accumulator; 
+              }
+              // console.log(value)
+              accumulator.push(value);
+              return accumulator;
+            }, []);
             let newData5 = [0, 100, 50, 150, 100, 300];
             let type = "positive-trend";
             let centerValue = undefined;
-            if (part.spec.attribute === "negative") {
+            if (part.attribute === "negative") {
               newData5 = [300, 100, 150, 50, 100, 0];
               type = "negative-trend";
             }
@@ -71,17 +100,19 @@ const ArtcleProcess = (llmarticle) => {
               ...optionsDefault,
               data: newData5,
             };
-
-            // console.dir(newoptionsDefault6);
-            if (part.spec.value3 === "NAN") {
-              if (part.spec.value1 !== "NAN" && part.spec.value2 !== "NAN") {
-                centerValue = Math.abs(
-                  parseFloat(part.spec.value1) - parseFloat(part.spec.value2)
-                );
-              }
-            } else {
-              centerValue = part.spec.value3;
+            if (trendvalues.length>1) {
+              centerValue = Math.max(...trendvalues) - Math.min(...trendvalues)
             }
+            // console.dir(newoptionsDefault6);
+            // if (part.spec.value3 === "NAN") {
+            //   if (part.spec.value1 !== "NAN" && part.spec.value2 !== "NAN") {
+            //     centerValue = Math.abs(
+            //       parseFloat(part.spec.value1) - parseFloat(part.spec.value2)
+            //     );
+            //   }
+            // } else {
+            //   centerValue = part.spec.value3;
+            // }
             return (
               <span key={part.id}>
                 {/s0/.test(part.id) && <br />}
@@ -121,14 +152,31 @@ const ArtcleProcess = (llmarticle) => {
           //     </span>
           //   );
           case "rank":
+            const rankvalues = part.dataspec.reduce((accumulator, item, index) => {
+              const keys = Object.keys(item);
+              if (keys.length < 2) {
+                // console.error(`Object at index ${index} does not have a second key.`);
+                return accumulator; 
+              }
+              const secondKey = keys[1];
+              const value = item[secondKey];
+              if (value === undefined || value === "NAN" || isNaN(value)) {
+                // console.error(`Invalid or empty value encountered for the second key "${secondKey}" at index ${index}:`, value);
+                return accumulator; 
+              }
+              // console.log(value)
+              accumulator.push(value);
+              return accumulator;
+            }, []);
             let highLIndex1 = 0;
-            const value2 = parseInt(part.spec.value1);
-            const newdataset4 = [100, 66, 33];
+            const value2 = parseInt(Math.max(...rankvalues));
+            highLIndex1 = rankvalues[rankvalues.length - 1] - 1;
+            let newdataset4 = [100, 66, 33];
             let rankrange = [1, 2, 3];
             if (value2 > 3) {
               rankrange.push(value2);
             }
-            const ranklength = Math.max(rankrange);
+            const ranklength = Math.max(...rankrange);
             function range(start, end, step = 1) {
               const result = [];
               for (let i = start; i <= end; i += step) {
@@ -137,7 +185,7 @@ const ArtcleProcess = (llmarticle) => {
               return result;
             }
             if (ranklength > 3) {
-              rankrange = range(1, ranklength + 1);
+              rankrange = range(1, ranklength);
             }
             if (ranklength > 3) {
               const increment = Math.round(100 / ranklength);
@@ -147,6 +195,7 @@ const ArtcleProcess = (llmarticle) => {
               }
               newdataset4 = result;
             }
+            console.log(newdataset4)
 
             const newoptionsDefault4 = {
               ...optionsDefault,
@@ -166,8 +215,21 @@ const ArtcleProcess = (llmarticle) => {
               </span>
             );
           case "proportion":
+            const propvalues = part.dataspec.reduce((accumulator, item, index) => {
+              const keys = Object.keys(item);
+              if (keys.length < 2) {
+                return accumulator; 
+              }
+              const secondKey = keys[1];
+              const value = item[secondKey];
+              if (value === undefined || value === "NAN" || isNaN(value)) {
+                return accumulator; 
+              }
+              accumulator.push(value);
+              return accumulator;
+            }, []);
             let highLIndex = 0;
-            let value = parseFloat(part.spec.value1);
+            let value = parseFloat(propvalues[0]);
             const pieCharts = [];
             while (value > 1) {
               const percentage1 = Math.min(value, 1);
@@ -177,7 +239,8 @@ const ArtcleProcess = (llmarticle) => {
               value -= 1;
             }
             if (value <= 1) {
-              const newDataset3 = [value, 1 - value];
+              const sum = propvalues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+              const newDataset3 = [...propvalues, 1 - sum];
               pieCharts.push(newDataset3);
             }
             const renderPieCharts = () => {
@@ -197,13 +260,26 @@ const ArtcleProcess = (llmarticle) => {
               </span>
             );
           case "extreme":
-            const regex2 = new RegExp("(" + part.spec.pos + ")", "g");
+            const extrevalues = part.dataspec.reduce((accumulator, item, index) => {
+              const keys = Object.keys(item);
+              if (keys.length < 2) {
+                return accumulator; 
+              }
+              const secondKey = keys[1];
+              const value = item[secondKey];
+              if (value === undefined || value === "NAN" || isNaN(value)) {
+                return accumulator; 
+              }
+              accumulator.push(value);
+              return accumulator;
+            }, []);
+            const regex2 = new RegExp("(" + part.pos + ")", "g");
             const parts2 = part.context.split(regex2);
-            const attribute = part.spec.attribute;
-            const newdataset5 = [part.value1];
+            const attribute = part.attribute;
+            // const newdataset5 = extrevalues;
             const newoptionsDefault5 = {
               ...optionsDefault,
-              data: newdataset5,
+              data: extrevalues,
             };
             let classn = "max_value";
             if (attribute === "minimum") {
@@ -236,7 +312,23 @@ const ArtcleProcess = (llmarticle) => {
               </span>
             );
           case "anomaly":
-            const regex1 = new RegExp("(" + part.spec.pos + ")", "g");
+            const splitPoints = part.dataspec.reduce((accumulator, item, index) => {
+              const keys = Object.keys(item);
+              if (keys.length < 2) {
+                // console.error(`Object at index ${index} does not have a second key.`);
+                return accumulator; 
+              }
+              const secondKey = keys[1];
+              const value = item[secondKey];
+              if (value === undefined || value === "NAN" || isNaN(value)) {
+                // console.error(`Invalid or empty value encountered for the second key "${secondKey}" at index ${index}:`, value);
+                return accumulator; 
+              }
+              accumulator.push(value);
+              return accumulator;
+            }, []);
+            // const regex1 = new RegExp("(" + part.pos + ")", "g");
+            const regex1 = new RegExp(splitPoints.join("|"), "g");
             const parts1 = part.context.split(regex1);
             // console.log(parts1);
             return (
@@ -260,7 +352,23 @@ const ArtcleProcess = (llmarticle) => {
               </span>
             );
           case "value":
-            const regex = new RegExp("(" + part.spec.pos + ")", "g");
+            const splitPoints1 = part.dataspec.reduce((accumulator, item, index) => {
+              const keys = Object.keys(item);
+              if (keys.length < 2) {
+                // console.error(`Object at index ${index} does not have a second key.`);
+                return accumulator; 
+              }
+              const secondKey = keys[1];
+              const value = item[secondKey];
+              if (value === undefined || value === "NAN" || isNaN(value)) {
+                // console.error(`Invalid or empty value encountered for the second key "${secondKey}" at index ${index}:`, value);
+                return accumulator; 
+              }
+              accumulator.push(value);
+              return accumulator;
+            }, []);
+            const regex = new RegExp(splitPoints1.join("|"), "g");
+            // const regex = new RegExp("(" + part.spec.pos + ")", "g");
             const parts = part.context.split(regex);
             // console.log(parts);
             return (

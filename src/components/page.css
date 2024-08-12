@@ -109,8 +109,8 @@
   transition: background-color 0.3s;
 }
 
-span {
+/* span {
   line-height: 30px; 
-  /* white-space: pre-wrap; */
+  white-space: pre-wrap;
   font-weight: bold;
-}
+} */

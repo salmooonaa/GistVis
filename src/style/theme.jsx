@@ -4,9 +4,10 @@ const THEME = {
     colorPrimary: "rgb(200, 200, 200)",
     colorBgLayout: "#ffffff",
     borderRadius: 4,
-    fontSize: 16,
+    fontSize: 20,
+    lineHeight: 1.2,
     fontFamily:
-      "Maven Pro, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue'",
+      "Roberto, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue'",
   },
   components: {
     Layout: {
