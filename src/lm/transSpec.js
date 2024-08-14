@@ -6,20 +6,34 @@ export default function TransformData(inputData) {
       throw new Error('ID format is incorrect.');
     }
 
-    const paragraphIdx = parseInt(match[1], 10);
-    const segmentIdx = parseInt(match[2], 10);
-  
-
-    const transformedData = {
-      id:inputData.id,
-      paragraphSpec: {
-        insightType: inputData.insightType,
+    const paragraphIdx = parseInt(match[1], 10) + 1;
+    const segmentIdx = parseInt(match[2], 10) + 1 ;
+    let transformedData;
+      // paragraphIdx: paragraphIdx,
+    if (inputData.insightType === "trend" || inputData.insightType === "extreme") {
+      transformedData = {
         paragraphIdx: paragraphIdx,
-        segmentIdx: segmentIdx,
-        context: inputData.context
-      },
-      dataSpec: inputData.dataSpec
-    };
+        id:inputData.id,
+        unitSegmentSpec: {
+          insightType: inputData.insightType,    
+          segmentIdx: segmentIdx,
+          context: inputData.context,
+          attribute: inputData.attribute
+        },
+        dataSpec: inputData.dataSpec
+      };
+    } else {    
+      transformedData = {
+        paragraphIdx: paragraphIdx,
+        id:inputData.id,
+        unitSegmentSpec: {
+          insightType: inputData.insightType,    
+          segmentIdx: segmentIdx,
+          context: inputData.context
+        },
+        dataSpec: inputData.dataSpec
+      };
+    }
   
     return transformedData;
   }

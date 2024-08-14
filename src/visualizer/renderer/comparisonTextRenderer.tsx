@@ -17,6 +17,7 @@ const ComparisonTextRenderer = ({
 }: {
   gistvisSpec: GistvisSpec;
 }) => {
+  console.log("cc")
   const [currentEntity, setCurrentEntity] = useState<string>("");
 
   // check entity counts in the dataSpec, if 2 and one valueValue is 0, transform data for better visualization

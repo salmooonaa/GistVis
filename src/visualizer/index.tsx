@@ -46,7 +46,7 @@ export const DesignSpace = () => {
         {
           id: "2",
           unitSegmentSpec: {
-            insightType: "proportion",
+            insightType: "proportion",  
             segmentIdx: 1,
             context:
               "The percentage of the sales of BYD is 30%, while the rest of the top 5 companies only consist of 25%.",

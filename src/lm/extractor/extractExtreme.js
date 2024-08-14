@@ -30,15 +30,15 @@ const extrExtreme = async (model, textContent) => {
     pos: z.string().describe("The words containing the value of extreme"),
 
     dataspec: z.array(z.object({
-      category_key: z.string().describe("The category of the entity of the data item according to the context. If it does not exist, return an empty string"),
-      category_value: z.string().describe("The entity of the data item. If it does not exist, return an empty string"),
-      value_key: z.string().describe("The definition of the value of the data item according to the context. If it does not exist or is uncertain, return an empty string"),
-      value_value: z.number().describe("The extreme(already converted into numbers).  If it does not exist or is uncertain, return NAN"),
+      categoryKey: z.string().describe("The category of the entity of the data item according to the context. If it does not exist, return an empty string"),
+      categoryValue: z.string().describe("The entity of the data item. If it does not exist, return an empty string"),
+      valueKey: z.string().describe("The definition of the value of the data item according to the context. If it does not exist or is uncertain, return an empty string"),
+      valueValue: z.number().describe("The extreme(already converted into numbers).  If it does not exist or is uncertain, return NAN"),
     })),
   }));
   const typeParser = new RegexParser(
-    /insightType: (extreme), insightAttribute: (maximum|minimum)/,
-    ["type","insightAttribute"],
+    /insightType: (extreme), attribute: (maximum|minimum)/,
+    ["type","attribute"],
     "noType"
   );
   const parser = new CombiningOutputParser(specParser, typeParser);

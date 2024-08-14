@@ -54,7 +54,7 @@ const extrProp = async (model, textContent) => {
   const response = await extrpropchain.invoke({
     format_instructions: parser.getFormatInstructions(),
     index: "id:" + textContent.id,
-    insightType: "type:" + textContent.type,
+    insightType: "insightType:" + textContent.type,
     paragraph: "User:" + textContent.text,
   });
   // console.dir(response);

@@ -60,18 +60,9 @@ const extrComp = async (model, textContent) => {
     insightType: "insightType:" + textContent.type,
     paragraph: "User:" + textContent.text,
   });
-  console.log(response);
+  // console.log(response);
 
   const newResponse = TransformData(response);
-  // {
-  //   ...response,
-  //   dataspec: response.dataspec.map(({ category_key, category_value, value_key, value_value }) => {
-  //     return {
-  //       [category_key]: category_value,
-  //       [value_key]: value_value
-  //     };
-  //   })
-  // };
   console.log(newResponse);
   return newResponse;
 };

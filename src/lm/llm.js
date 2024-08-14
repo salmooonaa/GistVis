@@ -26,6 +26,7 @@ import {
   specValue,
 } from "./extractor/specParsersList.js";
 import runMatch from "./typeModerator.js";
+import { transData } from './transData.js'
 
 const removeHTML = (input) => {
   const plainText = convert(input, {
@@ -134,10 +135,17 @@ const generateGistVisMarkup = async (input) => {
       if (item.type.length > 1) {
         newitem = await runMatch(model, item);
       } else {
-        newitem = {
-          ...item,
-          type: item.type[0],
-        };
+        if (item.type==""||item.type==undefined) {
+          newitem = {
+            ...item,
+            type: "noType",
+          };
+        } else {  
+          newitem = {
+            ...item,
+            type: item.type[0],
+          };
+        }
       }
       typetextContent.push(newitem);
       setTimeout(() => {
@@ -195,8 +203,9 @@ const generateGistVisMarkup = async (input) => {
     }, 3000);
   }
   // console.log(llmoption);
-
-  return llmoption;
+  const transLlmoption = transData(llmoption);
+  console.log(transLlmoption)
+  return transLlmoption;
 };
 
 export default generateGistVisMarkup;
