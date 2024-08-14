@@ -4,7 +4,10 @@ import Barchart from "./widgets/barchart";
 import Piechart from "./widgets/piechart";
 import Extremechart from "./widgets/maxmin";
 import "./page.css";
+import { GistvisSpec, InsightType } from "../visualizer/types";
+import { PlainTextRenderer, ProportionTextRenderer } from '../visualizer/renderer/rendererList'
 import { demo2_1 } from "../demo/demo2_1";
+import { configConsumerProps } from "antd/es/config-provider";
 
 const ArtcleProcess = (llmarticle) => {
   let optionsDefault = {
@@ -18,7 +21,7 @@ const ArtcleProcess = (llmarticle) => {
   const renderParts = () => {
     return llmarticle.llmarticle.map((part, index) => {
       // return demo1_1.map((part, index) => {
-      if (part.type === undefined) {
+      if (!part.paragraphSpec) {
         return (
           <span key={part.id}>
             {/s0/.test(part.id) && <br />}
@@ -28,18 +31,17 @@ const ArtcleProcess = (llmarticle) => {
           </span>
         );
       } else {
-        switch (part.type.trim()) {
+        switch (part.paragraphSpec.insightType.trim()) {
           case "comparison":
             // console.log("运行到compl");
             let newdataset
-            const secondKeyValues = part.dataspec.reduce((accumulator, item, index) => {
-              const keys = Object.keys(item);
-              if (keys.length < 2) {
-                // console.error(`Object at index ${index} does not have a second key.`);
-                return accumulator; 
-              }
-              const secondKey = keys[1];
-              const value = item[secondKey];
+            const secondKeyValues = part.dataSpec.reduce((accumulator, item, index) => {
+              // const keys = Object.keys(item);
+              // if (keys.length < 2) {
+              //    return accumulator; 
+              // }
+              // const secondKey = keys[1];
+              const value = item.valueValue;
               if (value === undefined || value === "NAN" || isNaN(value)) {
                 // console.error(`Invalid or empty value encountered for the second key "${secondKey}" at index ${index}:`, value);
                 return accumulator; 
@@ -54,20 +56,19 @@ const ArtcleProcess = (llmarticle) => {
               delta1 = Math.abs(Math.max(...secondKeyValues) - Math.min(...secondKeyValues));
             } else {
               newdataset = [100, 20];
-              delta1 = 80;
+              delta1 = undefined;
             }
             delta1 = parseFloat(delta1.toFixed(2));
-
             const newoptionsDefault = {
               ...optionsDefault,
               data: newdataset,
               delta: delta1,
             };
-            // console.log(newoptionsDefault);
+            console.log(secondKeyValues)
             return (
               <span key={part.id}>
                 {/s0/.test(part.id) && <br />}
-                <span className="text">{part.context}</span>
+                <span className="text">{part.paragraphSpec.context}</span>
                 <Barchart key={part.id + "-chart"} option={newoptionsDefault} delta = {"true"} />
               </span>
             );
@@ -215,49 +216,51 @@ const ArtcleProcess = (llmarticle) => {
               </span>
             );
           case "proportion":
-            const propvalues = part.dataspec.reduce((accumulator, item, index) => {
-              const keys = Object.keys(item);
-              if (keys.length < 2) {
-                return accumulator; 
-              }
-              const secondKey = keys[1];
-              const value = item[secondKey];
-              if (value === undefined || value === "NAN" || isNaN(value)) {
-                return accumulator; 
-              }
-              accumulator.push(value);
-              return accumulator;
-            }, []);
-            let highLIndex = 0;
-            let value = parseFloat(propvalues[0]);
-            const pieCharts = [];
-            while (value > 1) {
-              const percentage1 = Math.min(value, 1);
-              const percentage2 = 1 - percentage1;
-              const newDataset2 = [percentage1, percentage2];
-              pieCharts.push(newDataset2);
-              value -= 1;
-            }
-            if (value <= 1) {
-              const sum = propvalues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-              const newDataset3 = [...propvalues, 1 - sum];
-              pieCharts.push(newDataset3);
-            }
-            const renderPieCharts = () => {
-              return pieCharts.map((dataset, index) => (
-                <Piechart
-                  key={part.id + "-pie-" + index}
-                  highLIndex={highLIndex}
-                  option={{ ...optionsDefault, data: dataset }}
-                />
-              ));
-            };
+            // const propvalues = part.dataSpec.reduce((accumulator, item, index) => {
+            //   const keys = Object.keys(item);
+            //   if (keys.length < 2) {
+            //     return accumulator; 
+            //   }
+            //   const secondKey = keys[1];
+            //   const value = item[secondKey];
+            //   if (value === undefined || value === "NAN" || isNaN(value)) {
+            //     return accumulator; 
+            //   }
+            //   accumulator.push(value);
+            //   return accumulator;
+            // }, []);
+            // let highLIndex = 0;
+            // let value = parseFloat(propvalues[0]);
+            // const pieCharts = [];
+            // while (value > 1) {
+            //   const percentage1 = Math.min(value, 1);
+            //   const percentage2 = 1 - percentage1;
+            //   const newDataset2 = [percentage1, percentage2];
+            //   pieCharts.push(newDataset2);
+            //   value -= 1;
+            // }
+            // if (value <= 1) {
+            //   const sum = propvalues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+            //   const newDataset3 = [...propvalues, 1 - sum];
+            //   pieCharts.push(newDataset3);
+            // }pieCharts.map((dataset, index) => (
+            // const renderPieCharts = () => {
+            //   return (
+            //     // <Piechart
+            //     //   key={part.id + "-pie-" + index}
+            //     //   highLIndex={highLIndex}
+            //     //   option={{ ...optionsDefault, data: dataset }}
+            //     // />
+            //     <ProportionTextRenderer gistvisSpec={part} />
+            //   );
+            // };        
+            // <span key={part.id}>
+                {/* {/s0/.test(part.id) && <br />}
+                <span className="text">{part.context}</span> */}
+                // {renderPieCharts()}
+              // </span>
             return (
-              <span key={part.id}>
-                {/s0/.test(part.id) && <br />}
-                <span className="text">{part.context}</span>
-                {renderPieCharts()}
-              </span>
+              <ProportionTextRenderer gistvisSpec={part}/>
             );
           case "extreme":
             const extrevalues = part.dataspec.reduce((accumulator, item, index) => {
@@ -394,7 +397,7 @@ const ArtcleProcess = (llmarticle) => {
           default:
             return (
               <span key={index} className="text">
-                {part.context}
+                {part.paragraphSpec.context}
               </span>
             );
         }

@@ -5,6 +5,7 @@ import {
 } from "langchain/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
+import TransformData from "../transSpec";
 import { z } from "zod";
 
 const extrExtreme = async (model, textContent) => {
@@ -36,8 +37,8 @@ const extrExtreme = async (model, textContent) => {
     })),
   }));
   const typeParser = new RegexParser(
-    /Type: (extreme),attribute: (maximum|minimum)/,
-    ["type","attribute"],
+    /insightType: (extreme), insightAttribute: (maximum|minimum)/,
+    ["type","insightAttribute"],
     "noType"
   );
   const parser = new CombiningOutputParser(specParser, typeParser);
@@ -51,7 +52,7 @@ const extrExtreme = async (model, textContent) => {
         Specifically, for 'category_key', identify the subject of comparison with its context, e.g., "the category of GDP growth" instead of just "entity". But the 'value_key' of all data items should keep the same.
         For 'value_key', specify the exact context of the value being compared, e.g., "the GDP growth rate" instead of just "value". But the 'category_key' of all data items should keep the same.
         The user intends to highlight the value of extreme. Please output the position of the extreme.
-        \n{format_instructions}\n{index}\n{type}\n{paragraph}
+        \n{format_instructions}\n{index}\n{insightType}\n{paragraph}
         `),
     model,
     parser,
@@ -60,20 +61,22 @@ const extrExtreme = async (model, textContent) => {
   const response = await extrextrechain.invoke({
     format_instructions: parser.getFormatInstructions(),
     index: "id:" + textContent.id,
-    type: "type:" + textContent.type,
+    insightType: "insightType:" + textContent.type,
     paragraph: "User:" + textContent.text,
   });
   // console.dir(response);
   
-  const newResponse = {
-    ...response,
-    dataspec: response.dataspec.map(({ category_key, category_value, value_key, value_value }) => {
-      return {
-        [category_key]: category_value,
-        [value_key]: value_value
-      };
-    })
-  };
+  const newResponse = TransformData(response);
+
+  // {
+  //   ...response,
+  //   dataspec: response.dataspec.map(({ category_key, category_value, value_key, value_value }) => {
+  //     return {
+  //       [category_key]: category_value,
+  //       [value_key]: value_value
+  //     };
+  //   })
+  // };
   console.log(newResponse)
   return newResponse;
 };

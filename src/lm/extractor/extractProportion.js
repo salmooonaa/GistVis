@@ -6,6 +6,7 @@ import {
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
 import { z } from "zod";
+import TransformData from "../transSpec";
 
 const extrProp = async (model, textContent) => {
   // const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
@@ -18,11 +19,11 @@ const extrProp = async (model, textContent) => {
   const specParser = StructuredOutputParser.fromZodSchema(z.object({
     id: z.string().describe("unique id of text block"),
     context: z.string().describe("original text provided by the user"),
-    dataspec: z.array(z.object({
-      category_key: z.string().describe("The category of the entity of the data item according to the context. If it does not exist, return an empty string"),
-      category_value: z.string().describe("The entity of the data item. If it does not exist, return an empty string"),
-      value_key: z.string().describe("The definition of the value of the data item according to the context. If it does not exist or is uncertain, return an empty string"),
-      value_value: z.number().describe("The value of proportion(already converted into decimals). If it does not exist or is uncertain, return NAN"),
+    dataSpec: z.array(z.object({
+      categoryKey: z.string().describe("The category of the entity of the data item according to the context. If it does not exist, return an empty string"),
+      categoryValue: z.string().describe("The entity of the data item(must be the original context). If it does not exist, return an empty string"),
+      valueKey: z.string().describe("The definition of the value of the data item according to the context. If it does not exist or is uncertain, return an empty string"),
+      valueValue: z.number().describe("The value of proportion(already converted into decimals). If it does not exist or is uncertain, return NAN"),
     })),
   }));
   // const specParser = StructuredOutputParser.fromZodSchema(z.object({
@@ -33,7 +34,7 @@ const extrProp = async (model, textContent) => {
   //     pos: z.string().describe("The previous word in the recommended location"),
   //   }),
   // }));
-  const typeParser = new RegexParser(/Type: (proportion)/, ["type"], "noType");
+  const typeParser = new RegexParser(/insightType: (proportion)/, ["insightType"], "noType");
   const parser = new CombiningOutputParser(specParser, typeParser);
 
   const extrpropchain = RunnableSequence.from([
@@ -44,7 +45,7 @@ const extrProp = async (model, textContent) => {
         Specifically, for 'category_key', identify the subject of comparison with its context, e.g., "the category of GDP growth" instead of just "entity". But the 'value_key' of all data items should keep the same.
         For 'value_key', specify the exact context of the value being compared, e.g., "the GDP growth rate" instead of just "value". But the 'category_key' of all data items should keep the same.
         The user intends to use a pie chart to represent the proportion. Please find the most suitable location for placing the pie chart and output it.
-        \n{format_instructions}\n{index}\n{type}\n{paragraph}
+        \n{format_instructions}\n{index}\n{insightType}\n{paragraph}
         `),
     model,
     parser,
@@ -53,20 +54,21 @@ const extrProp = async (model, textContent) => {
   const response = await extrpropchain.invoke({
     format_instructions: parser.getFormatInstructions(),
     index: "id:" + textContent.id,
-    type: "type:" + textContent.type,
+    insightType: "type:" + textContent.type,
     paragraph: "User:" + textContent.text,
   });
   // console.dir(response);
 
-  const newResponse = {
-    ...response,
-    dataspec: response.dataspec.map(({ category_key, category_value, value_key, value_value }) => {
-      return {
-        [category_key]: category_value,
-        [value_key]: value_value
-      };
-    })
-  };
+  const newResponse = TransformData(response);
+  // {
+  //   ...response,
+  //   dataSpec: response.dataSpec.map(({ categoryKey, categoryValue, valueKey, valueValue }) => {
+  //     return {
+  //       [category_key]: category_value,
+  //       [value_key]: value_value
+  //     };
+  //   })
+  // };
   console.log(newResponse)
   return newResponse;
 };

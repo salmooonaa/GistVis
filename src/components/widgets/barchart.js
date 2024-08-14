@@ -100,25 +100,27 @@ const Barchart = ({ option, text, highLIndex, rankrange, delta }) => {
       });
 
     if (typeof delta !== "undefined") {
-      const x1 = 0 * barWidth + barWidth / 2;
-      const y1 = heightVis - y(newData[0]);
-      const x2 = 1 * barWidth + barWidth / 2;
-      const y2 = heightVis - y(newData[1]);
-
+      const x_right = (newData.length - 1) * barWidth + barWidth / 2;
+      const maxIndex = newData.indexOf(Math.max(...newData));
+      const minIndex = newData.indexOf(Math.min(...newData));
+      const x1 = (maxIndex-1) * barWidth + barWidth / 2;
+      const y1 = heightVis - y(Math.max(...newData));
+      const x2 = (minIndex - 1) * barWidth + barWidth / 2;
+      const y2 = heightVis - y(Math.min(...newData));
       svg
         .append("line")
         .attr("x1", x1)
         .attr("y1", y1)
-        .attr("x2", x2 + 5)
+        .attr("x2", x_right + 5)
         .attr("y2", y1)
         .attr("stroke", "black")
         .attr("stroke-width", 0.5);
 
       svg
         .append("line")
-        .attr("x1", x1)
+        .attr("x1", x2)
         .attr("y1", y2)
-        .attr("x2", x2 + 5)
+        .attr("x2", x_right + 5)
         .attr("y2", y2)
         .attr("stroke", "black")
         .attr("stroke-width", 0.5);
@@ -154,18 +156,17 @@ const Barchart = ({ option, text, highLIndex, rankrange, delta }) => {
 
       svg
         .append("line")
-        .attr("x1", centerX + 4)
+        .attr("x1", x_right + 4)
         .attr("y1", y1)
-        .attr("x2", centerX + 4)
+        .attr("x2", x_right + 4)
         .attr("y2", y2)
         .attr("stroke", "red")
         .attr("stroke-width", 1)
         .attr("marker-start", "url(#arrowhead-top)")
         .attr("marker-end", "url(#arrowhead-bottom)");
-
       svg
         .append("text")
-        .attr("x", centerX + 8)
+        .attr("x", x_right + 8)
         .attr("y", centerY + 5)
         .style("font-size", "12px")
         .style("fill", "red")
