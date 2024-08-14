@@ -5,10 +5,15 @@ import { fuzzySearch } from "../utils/fuzzySearch";
 import * as d3 from "d3";
 import _ from "lodash";
 import HoverText from "../widgets/hoverText";
-import { HorizontalStackedBarChart } from "../widgets/chartList";
-import { getEntityPos, getProductionVisSpec, getUniqueEntities } from "../utils/postProcess";
+import { GlyphMaxMin, GlyphText, HorizontalStackedBarChart } from "../widgets/chartList";
+import {
+  getEntityPos,
+  getInsituPos,
+  getProductionVisSpec,
+  getUniqueEntities,
+} from "../utils/postProcess";
 
-const ProportionTextRenderer = ({
+const ValueTextRenderer = ({
   gistvisSpec,
 }: {
   gistvisSpec: GistvisSpec;
@@ -16,20 +21,22 @@ const ProportionTextRenderer = ({
   const [currentEntity, setCurrentEntity] = useState<string>("");
   const dataSpec = gistvisSpec.dataSpec ?? [];
 
+  const inSituPos: EntitySpec[] = getInsituPos(gistvisSpec);
   const entityPos: EntitySpec[] = getEntityPos(gistvisSpec);
   const uniqueEntities = getUniqueEntities(entityPos);
 
   const vis = getProductionVisSpec(
     gistvisSpec.unitSegmentSpec.context,
-    entityPos
+    inSituPos,
+    "right"
   );
 
   const colorScale = d3
     .scaleOrdinal(d3.schemeCategory10)
     .domain(uniqueEntities);
 
-  const proportionVis = (
-    <HorizontalStackedBarChart 
+  const valueVis = (
+    <GlyphText
       gistvisSpec={gistvisSpec}
       colorScale={colorScale}
       selectedEntity={currentEntity}
@@ -61,7 +68,7 @@ const ProportionTextRenderer = ({
           return (
             <span key={index}>
               {content.content}
-              {proportionVis}
+              {valueVis}
             </span>
           );
         }
@@ -70,5 +77,4 @@ const ProportionTextRenderer = ({
   );
 };
 
-export default ProportionTextRenderer;
-
+export default ValueTextRenderer;

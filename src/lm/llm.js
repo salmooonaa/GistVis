@@ -53,7 +53,7 @@ const generateGistVisMarkup = async (input) => {
   //   zhipuAIApiKey: API_KEY, // In Node.js defaults to process.env.ZHIPUAI_API_KEY
   //   verbose: true,
   // });
-  const model = new ChatOpenAI({
+  const modelVanilla = new ChatOpenAI({
     temperature: 0.2,
     topP: 1,
     frequency_penalty: 0.75,
@@ -69,18 +69,12 @@ const generateGistVisMarkup = async (input) => {
     },
   });
 
-  // const model = new ChatAlibabaTongyi({
-  //   temperature: 0.2,
-  //   topP: 1,
-  //   // frequency_penalty: 0.75,
-  //   // presence_penalty: 0,
-  //   // n: 1,
-  //   streaming: false,
-  //   alibabaApiKey: process.env.REACT_APP_LLM_API_KEY,
-  //   modelName: process.env.REACT_APP_LLM_MODEL_NAME,
-  //   apiUrl: process.env.REACT_APP_LLM_URL_BASE,
-    
-  // });
+  const model = modelVanilla;
+  const model_json = modelVanilla.bind({
+    response_format: {
+      type: "json_object",
+    },
+  });
 
   const divtextContent = [];
   async function processTextContent() {
@@ -107,19 +101,35 @@ const generateGistVisMarkup = async (input) => {
         runAnomaly,
         runValue,
       ];
-      for (const runModel of models) {
-        try {
-          const current = await runModel(model, value, id);
-          console.log(current);
-          if (current.type) {
-            item.type.push(current.type);
-          }
-        } catch (error) {
-          console.error("An error occurred:", error);
-          continue;
-        }
-      }
+      // for (const runModel of models) {
+      //   try {
+      //     const current = await runModel(model_no_json, value, id);
+      //     console.log(current);
+      //     if (current.type) {
+      //       item.type.push(current.type);
+      //     }
+      //   } catch (error) {
+      //     console.error("An error occurred:", error);
+      //     continue;
+      //   }
+      // }
       // console.log(item.type);
+
+      const modelPromises = models.map((runModel) => {
+        return runModel(model, value, id)
+          .then((current) => {
+            console.log(current);
+            if (current.type) {
+              item.type.push(current.type);
+            }
+          })
+          .catch((error) => {
+            console.error("An error occurred:", error);
+          });
+      });
+
+      const promises = await Promise.all(modelPromises);
+
       let newitem;
       if (item.type.length > 1) {
         newitem = await runMatch(model, item);
@@ -138,7 +148,7 @@ const generateGistVisMarkup = async (input) => {
   // console.log(typetextContent);
 
   const llmoption = [];
-  console.log(typetextContent)
+  console.log(typetextContent);
   for (const part of typetextContent) {
     let llmoptio;
     switch (part.type) {

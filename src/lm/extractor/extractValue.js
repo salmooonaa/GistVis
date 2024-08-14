@@ -22,7 +22,7 @@ const extrVal = async (model, textContent) => {
       category_key: z.string().describe("The category of the entity of the data item according to the context. If it does not exist, return an empty string"),
       category_value: z.string().describe("The entity of the data item. If it does not exist, return an empty string"),
       value_key: z.string().describe("The definition of the value of the data item according to the context. If it does not exist or is uncertain, return an empty string"),
-      value_value: z.string().describe("The numeric word(value). If it does not exist or is uncertain, return an empty string"),
+      value_value: z.number().describe("The numeric word(value). If it does not exist or is uncertain, return an empty string"),
     })),
   }));
   // const specParser = StructuredOutputParser.fromZodSchema(z.object({
@@ -67,6 +67,8 @@ const extrVal = async (model, textContent) => {
       };
     })
   };
+
+  console.dir(newResponse);
   return newResponse;
 };
 

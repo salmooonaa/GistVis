@@ -9,9 +9,7 @@ const styles = {
     display: "inline-block",
   },
   hoveredText: {
-    fontWeight: "bold",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-    backgroundColor: "white",
   },
 };
 
@@ -31,6 +29,7 @@ const HoverText = ({text, isHovered, color, onMouseOver, onMouseOut}: HoverTextP
         ...styles.text,
         ...(isHovered ? styles.hoveredText : {}),
         color: color,
+        backgroundColor: isHovered ? `${color}19` : "transparent",
       }}
       onMouseOver={onMouseOver}
       onMouseOut={onMouseOut}
