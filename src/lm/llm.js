@@ -2,7 +2,6 @@ import { convert } from "html-to-text";
 import { API_KEY } from "../api_key.js";
 import { ChatZhipuAI } from "@langchain/community/chat_models/zhipuai";
 import { ChatOpenAI } from "@langchain/openai";
-import { ChatAlibabaTongyi } from "@langchain/community/chat_models/alibaba_tongyi"
 import { OpenAI } from "@langchain/openai";
 import {
   runValue,

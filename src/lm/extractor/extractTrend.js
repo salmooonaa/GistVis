@@ -83,6 +83,9 @@ const extrTrend = async (model, textContent) => {
         First, you should extract the subject of trend, usually an entity. Then, you should also extract data points of this trend. If none, mark as NAN. Finally, indicate whether its attribute(sentiment polarity) is positive or negative or neutral.
         Specifically, for 'category_key', identify the subject of comparison with its context, e.g., "the category of GDP growth" instead of just "entity". But the 'value_key' of all data items should keep the same.
         For 'value_key', specify the exact context of the value being compared, e.g., "the GDP growth rate" instead of just "value". But the 'category_key' of all data items should keep the same.
+        First, you should extract the subject of trend, usually an entity. Then, you should also extract data points of this trend. If none, mark as NAN. Finally, indicate whether its attribute(sentiment polarity) is positive or negative or neutral.
+        Specifically, for 'category_key', identify the subject of comparison with its context, e.g., "the category of GDP growth" instead of just "entity". But the 'value_key' of all data items should keep the same.
+        For 'value_key', specify the exact context of the value being compared, e.g., "the GDP growth rate" instead of just "value". But the 'category_key' of all data items should keep the same.
         The user intends to use a line chart to represent the trend. Please find the most suitable location for placing the line chart and output the previous word in the recommended location.
         \n{format_instructions}\n{index}\n{insightType}\n{paragraph}
         `),
