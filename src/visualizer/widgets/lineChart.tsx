@@ -29,7 +29,7 @@ const Line = ({
   const lineChartHeight = SVG_HEIGHT;
 
   const transformData = (): DataPoint[] => {
-    if (hasNaN) {
+    if (hasNaN || dataSpec.length < 2) {
       const dummyDataMap: { [key in TrendAttribute]: DataPoint[] } = {
         positive: [
           { x: 1, y: 1 },

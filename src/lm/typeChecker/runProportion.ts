@@ -5,8 +5,12 @@ import {
 } from "langchain/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
-
-const runProp = async (model, textContent, index) => {
+import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
+import { GistFactTypeAnnotation } from "../types";
+const runProp = async (
+  model: ChatOpenAI<ChatOpenAICallOptions>,
+  textContent: string,
+) => {
   const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
     id: "unique id of text block",
     text: "original text provided by the user",
@@ -28,7 +32,7 @@ const runProp = async (model, textContent, index) => {
       User: The little boy was careful enough to come first in the exam.
       Assistant: """Type: null"""
       
-      \n{format_instructions}\n{index}\n{paragraph}
+      \n{format_instructions}\n{paragraph}
       `),
     model,
     parser,
@@ -36,12 +40,11 @@ const runProp = async (model, textContent, index) => {
 
   const response = await propchain.invoke({
     format_instructions: parser.getFormatInstructions(),
-    index: "id:" + index,
     paragraph: "User:" + textContent,
   });
   // console.dir(response);
 
-  return response;
+  return response as GistFactTypeAnnotation;
 };
 
 export default runProp;

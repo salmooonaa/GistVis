@@ -21,6 +21,8 @@ const ExtremeTextRenderer = ({
   const [currentEntity, setCurrentEntity] = useState<string>("");
   const dataSpec = gistvisSpec.dataSpec ?? [];
 
+  console.log(gistvisSpec);
+
   const inSituPos: EntitySpec[] = getInsituPos(gistvisSpec);
   const entityPos: EntitySpec[] = getEntityPos(gistvisSpec);
   const uniqueEntities = getUniqueEntities(entityPos);

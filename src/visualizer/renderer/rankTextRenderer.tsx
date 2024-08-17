@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
-import { DataSpec, DisplaySpec, EntitySpec, ExtendedDataSpec, GistvisSpec } from "../types";
+import { DataSpec, DisplaySpec, EntitySpec, GistvisSpec } from "../types";
 import { SVG_HEIGHT, SVG_WIDTH } from "../constants";
 import { fuzzySearch } from "../utils/fuzzySearch";
 import * as d3 from "d3";
 import _ from "lodash";
 import HoverText from "../widgets/hoverText";
-import { HorizontalStackedBarChart, VerticalBarChart } from "../widgets/chartList";
+import { VerticalBarChart } from "../widgets/chartList";
 import {
   getEntityPos,
   getProductionVisSpec,
@@ -20,7 +20,7 @@ const RankTextRenderer = ({
   const [currentEntity, setCurrentEntity] = useState<string>("");
 
   // check entity counts in the dataSpec, if less than 3, add dummy data
-  let dataSpec: DataSpec[] = gistvisSpec.dataSpec ? gistvisSpec.dataSpec.map((item) => ({ ...item, entrySource: "extracted" })) : [];
+  let dataSpec: DataSpec[] = gistvisSpec.dataSpec ? gistvisSpec.dataSpec : [];
   if (dataSpec.length < 3 && dataSpec.length > 0) {
     for (let i = dataSpec.length; i < 3; i++) {
       dataSpec.push({
@@ -30,6 +30,13 @@ const RankTextRenderer = ({
         valueValue: i + 1, // rank
       })
     }
+  }
+
+  // check if the valueValue is NaN, if so, add dummy data
+  if (dataSpec.some((item) => isNaN(item.valueValue as number))) {
+    dataSpec = dataSpec.map((item, i) => (
+      { ...item, valueValue: i + 1 }
+    ))
   }
 
   const gistvisSpecForVis = {

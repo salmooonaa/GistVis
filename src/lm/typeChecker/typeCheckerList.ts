@@ -1,5 +1,4 @@
-export { default as runAnomaly } from "./runAnomaly";
-export { default as runAsso } from "./runAsso";
+// export { default as runAnomaly } from "./runAnomaly";
 export { default as runComparison } from "./runComparison";
 export { default as runExtreme } from "./runExtreme";
 export { default as runProportion } from "./runProportion";

@@ -5,15 +5,20 @@ import { faWandMagicSparkles } from "@fortawesome/free-solid-svg-icons";
 import generateGistVisMarkup from "../lm/llm";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { paragraphSpec } from "../visualizer/types";
 
 const { Text } = Typography;
 const { TextArea } = Input;
 
-const Editor = ({ changeArticle, changeLlmArticle }) => {
+interface EditorProps {
+  changeLlmArticle: React.Dispatch<React.SetStateAction<paragraphSpec[]>>;
+}
+
+const Editor = ({ changeLlmArticle }: EditorProps) => {
   // const myRef = useRef(null);
-  const [inputText, setInputText] = useState("");
+  // const [inputText, setInputText] = useState("");
   const [userInput, setUserInput] = useState("");
-  const changeUserInput = (userInput) => {
+  const changeUserInput = (userInput: string) => {
     setUserInput(userInput);
   };
   const submitUserInput = () => {
@@ -27,15 +32,15 @@ const Editor = ({ changeArticle, changeLlmArticle }) => {
   // const handleInputChange = (event) => {
   //   setInputText(event.target.value);
   // };
-  const submitInputchange = (inputText) => {
-    changeArticle(inputText);
-    // setInputText("");
-    // myRef.current.focus();
-  };
+  // const submitInputchange = (inputText: string) => {
+  //   changeArticle(inputText);
+  //   // setInputText("");
+  //   // myRef.current.focus();
+  // };
 
-  const updateInputText = (e) => {
-    setInputText(e.target.value);
-  };
+  // const updateInputText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  //   setInputText(e.target.value);
+  // };
 
   return (
     <div>

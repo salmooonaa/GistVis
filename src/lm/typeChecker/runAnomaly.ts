@@ -5,8 +5,14 @@ import {
 } from "langchain/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
+import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
+import { GistFactTypeAnnotation } from "../types";
 
-const runAnomaly = async (model, textContent, index) => {
+const runAnomaly = async (
+  model: ChatOpenAI<ChatOpenAICallOptions>,
+  textContent: string,
+  index: string
+) => {
   const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
     id: "unique id of text block",
     text: "original text provided by the user",
@@ -41,7 +47,7 @@ const runAnomaly = async (model, textContent, index) => {
   });
   // console.dir(response);
 
-  return response;
+  return response as GistFactTypeAnnotation;
 };
 
 export default runAnomaly;

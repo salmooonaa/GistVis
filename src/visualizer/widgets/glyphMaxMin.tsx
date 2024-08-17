@@ -63,7 +63,9 @@ const GlyphsMaxMin = ({
         fontWeight: "bold",
       }}
     >
-      {"The " + attribute + " of " + dataSpec[0].categoryKey}
+      {dataSpec.length > 0
+        ? "The " + attribute + " of " + dataSpec[0].categoryKey
+        : attribute}
     </div>
   );
 

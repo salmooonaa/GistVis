@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { DataSpec, DisplaySpec, EntitySpec, ExtendedDataSpec, GistvisSpec } from "../types";
+import { DataSpec, DisplaySpec, EntitySpec, GistvisSpec } from "../types";
 import { SVG_HEIGHT, SVG_WIDTH } from "../constants";
 import { fuzzySearch } from "../utils/fuzzySearch";
 import * as d3 from "d3";

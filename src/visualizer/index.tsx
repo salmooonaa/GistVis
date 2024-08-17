@@ -2,6 +2,7 @@ import { ConfigProvider, Layout, Typography, Row, Col, Divider } from "antd";
 import React, { useRef, useState } from "react";
 import { GistvisSpec, InsightType, paragraphSpec } from "./types";
 import {
+  TrendTextRenderer,
   ComparisonTextRenderer,
   ExtremeTextRenderer,
   PlainTextRenderer,
@@ -9,7 +10,6 @@ import {
   RankTextRenderer,
   ValueTextRenderer,
 } from "./renderer/rendererList";
-import TrendTextRenderer from "./renderer/trendTextRenderer";
 
 const renderMap: { [key in InsightType]: (item: GistvisSpec) => JSX.Element } =
   {
@@ -19,7 +19,9 @@ const renderMap: { [key in InsightType]: (item: GistvisSpec) => JSX.Element } =
     proportion: (item: GistvisSpec) => (
       <ProportionTextRenderer gistvisSpec={item} />
     ),
-    comparison: (item: GistvisSpec) => <ComparisonTextRenderer gistvisSpec={item} />,
+    comparison: (item: GistvisSpec) => (
+      <ComparisonTextRenderer gistvisSpec={item} />
+    ),
     extreme: (item: GistvisSpec) => <ExtremeTextRenderer gistvisSpec={item} />,
     value: (item: GistvisSpec) => <ValueTextRenderer gistvisSpec={item} />,
   };
@@ -219,8 +221,7 @@ export const DesignSpace = () => {
           unitSegmentSpec: {
             insightType: "value",
             segmentIdx: 3,
-            context:
-              "The average price for a Toyota car is 25000 pounds.",
+            context: "The average price for a Toyota car is 25000 pounds.",
             inSituPosition: ["25000 pounds"],
           },
           dataSpec: [
@@ -229,9 +230,9 @@ export const DesignSpace = () => {
               categoryValue: "Toyota car",
               valueKey: "the average price",
               valueValue: 25000,
-            }
-          ]
-        }
+            },
+          ],
+        },
       ],
     },
   ];

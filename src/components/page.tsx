@@ -1,12 +1,11 @@
 import React from "react";
-import { Sparkline, Trend } from "./widgets/sparkline";
-import Barchart from "./widgets/barchart";
-import Piechart from "./widgets/piechart";
-import Extremechart from "./widgets/maxmin";
+// import { Sparkline, Trend } from "./widgets/sparkline";
+// import Barchart from "./widgets/barchart";
+// import Piechart from "./widgets/piechart";
+// import Extremechart from "./widgets/maxmin";
+// import { demo2_1 } from "../demo/demo2_1";
 import "./page.css";
-import { GistvisSpec, InsightType } from "../visualizer/types";
-import { demo2_1 } from "../demo/demo2_1";
-import { configConsumerProps } from "antd/es/config-provider";
+import { GistvisSpec, InsightType, paragraphSpec } from "../visualizer/types";
 import {
   ComparisonTextRenderer,
   ExtremeTextRenderer,
@@ -14,49 +13,48 @@ import {
   ProportionTextRenderer,
   RankTextRenderer,
   ValueTextRenderer,
+  TrendTextRenderer,
 } from "../visualizer/renderer/rendererList";
-import TrendTextRenderer from "../visualizer/renderer/trendTextRenderer";
 
-const ArtcleProcess = (llmarticle) => {
-  let optionsDefault = {
-    width: 75,
-    height: 30,
-    data: [20, 20, 25, 40, 45, 40, 46, 50, 60, 80, 85, 92, 99],
-  };
+const ArtcleProcess = ({llmarticle}: {llmarticle: paragraphSpec[]}) => {
   const renderMap = {
-    noType: (item) => <PlainTextRenderer gistvisSpec={item} />,
-    trend: (item) => <TrendTextRenderer gistvisSpec={item} />,
-    rank: (item) => <RankTextRenderer gistvisSpec={item} />,
-    proportion: (item) => <ProportionTextRenderer gistvisSpec={item} />,
-    comparison: (item) => <ComparisonTextRenderer gistvisSpec={item} />,
-    extreme: (item) => <ExtremeTextRenderer gistvisSpec={item} />,
-    value: (item) => <ValueTextRenderer gistvisSpec={item} />,
+    noType: (item: GistvisSpec) => <PlainTextRenderer gistvisSpec={item} />,
+    trend: (item: GistvisSpec) => <TrendTextRenderer gistvisSpec={item} />,
+    rank: (item: GistvisSpec) => <RankTextRenderer gistvisSpec={item} />,
+    proportion: (item: GistvisSpec) => (
+      <ProportionTextRenderer gistvisSpec={item} />
+    ),
+    comparison: (item: GistvisSpec) => (
+      <ComparisonTextRenderer gistvisSpec={item} />
+    ),
+    extreme: (item: GistvisSpec) => <ExtremeTextRenderer gistvisSpec={item} />,
+    value: (item: GistvisSpec) => <ValueTextRenderer gistvisSpec={item} />,
   };
-  const lllmarticle =  [ {
-    paragraphIdx: 3,
-    paragraphContent: [{
-    id: "7",
-    unitSegmentSpec: {
-      insightType: "comparison",
-      segmentIdx: 2,
-      context:
-        "The difference in sales between Toyota and VW is 5 million cars per year.",
-    },
-    dataSpec: [
-      {
-        categoryKey: "The category of car sales",
-        categoryValue: "Toyota",
-        valueKey: "The number of cars sold per year",
-        valueValue: 5000000,
-      },
-      {
-        categoryKey: "The category of car sales",
-        categoryValue: "VW",
-        valueKey: "The number of cars sold per year",
-        valueValue: 0,
-      },
-    ],
-  }]}];
+
+  return (
+    <div>
+      {llmarticle.map((para) => {
+        return (
+          <p key={para.paragraphIdx}>
+            {para.paragraphContent.map((item) => {
+              const renderFunction =
+                renderMap[item.unitSegmentSpec.insightType as InsightType];
+              return renderFunction ? renderFunction(item) : null;
+            })}
+          </p>
+        );
+      })}
+    </div>
+  );
+};
+
+export default ArtcleProcess;
+
+  // let optionsDefault = {
+  //   width: 75,
+  //   height: 30,
+  //   data: [20, 20, 25, 40, 45, 40, 46, 50, 60, 80, 85, 92, 99],
+  // };
 
   // console.log(llmarticle);
   // const llm = llmarticle.llmarticle;
@@ -75,8 +73,8 @@ const ArtcleProcess = (llmarticle) => {
   //           })}
   //         </p>
   //       );
-  //     } else { 
-  //       return null; 
+  //     } else {
+  //       return null;
   //     }
   //   })
   //   return llmarticle.llmarticle.map((part, index) => {
@@ -99,13 +97,13 @@ const ArtcleProcess = (llmarticle) => {
   //           const secondKeyValues = part.dataSpec.reduce((accumulator, item, index) => {
   //             // const keys = Object.keys(item);
   //             // if (keys.length < 2) {
-  //             //    return accumulator; 
+  //             //    return accumulator;
   //             // }
   //             // const secondKey = keys[1];
   //             const value = item.valueValue;
   //             if (value === undefined || value === "NAN" || isNaN(value)) {
   //               // console.error(`Invalid or empty value encountered for the second key "${secondKey}" at index ${index}:`, value);
-  //               return accumulator; 
+  //               return accumulator;
   //             }
   //             // console.log(value)
   //             accumulator.push(value);
@@ -138,13 +136,13 @@ const ArtcleProcess = (llmarticle) => {
   //             const keys = Object.keys(item);
   //             if (keys.length < 2) {
   //               // console.error(`Object at index ${index} does not have a second key.`);
-  //               return accumulator; 
+  //               return accumulator;
   //             }
   //             const secondKey = keys[1];
   //             const value = item[secondKey];
   //             if (value === undefined || value === "NAN" || isNaN(value)) {
   //               // console.error(`Invalid or empty value encountered for the second key "${secondKey}" at index ${index}:`, value);
-  //               return accumulator; 
+  //               return accumulator;
   //             }
   //             // console.log(value)
   //             accumulator.push(value);
@@ -218,13 +216,13 @@ const ArtcleProcess = (llmarticle) => {
   //             const keys = Object.keys(item);
   //             if (keys.length < 2) {
   //               // console.error(`Object at index ${index} does not have a second key.`);
-  //               return accumulator; 
+  //               return accumulator;
   //             }
   //             const secondKey = keys[1];
   //             const value = item[secondKey];
   //             if (value === undefined || value === "NAN" || isNaN(value)) {
   //               // console.error(`Invalid or empty value encountered for the second key "${secondKey}" at index ${index}:`, value);
-  //               return accumulator; 
+  //               return accumulator;
   //             }
   //             // console.log(value)
   //             accumulator.push(value);
@@ -280,12 +278,12 @@ const ArtcleProcess = (llmarticle) => {
   //           // const propvalues = part.dataSpec.reduce((accumulator, item, index) => {
   //           //   const keys = Object.keys(item);
   //           //   if (keys.length < 2) {
-  //           //     return accumulator; 
+  //           //     return accumulator;
   //           //   }
   //           //   const secondKey = keys[1];
   //           //   const value = item[secondKey];
   //           //   if (value === undefined || value === "NAN" || isNaN(value)) {
-  //           //     return accumulator; 
+  //           //     return accumulator;
   //           //   }
   //           //   accumulator.push(value);
   //           //   return accumulator;
@@ -314,7 +312,7 @@ const ArtcleProcess = (llmarticle) => {
   //           //     // />
   //           //     <ProportionTextRenderer gistvisSpec={part} />
   //           //   );
-  //           // };        
+  //           // };
   //           // <span key={part.id}>
   //               {/* {/s0/.test(part.id) && <br />}
   //               <span className="text">{part.context}</span> */}
@@ -327,12 +325,12 @@ const ArtcleProcess = (llmarticle) => {
   //           const extrevalues = part.dataspec.reduce((accumulator, item, index) => {
   //             const keys = Object.keys(item);
   //             if (keys.length < 2) {
-  //               return accumulator; 
+  //               return accumulator;
   //             }
   //             const secondKey = keys[1];
   //             const value = item[secondKey];
   //             if (value === undefined || value === "NAN" || isNaN(value)) {
-  //               return accumulator; 
+  //               return accumulator;
   //             }
   //             accumulator.push(value);
   //             return accumulator;
@@ -380,13 +378,13 @@ const ArtcleProcess = (llmarticle) => {
   //             const keys = Object.keys(item);
   //             if (keys.length < 2) {
   //               // console.error(`Object at index ${index} does not have a second key.`);
-  //               return accumulator; 
+  //               return accumulator;
   //             }
   //             const secondKey = keys[1];
   //             const value = item[secondKey];
   //             if (value === undefined || value === "NAN" || isNaN(value)) {
   //               // console.error(`Invalid or empty value encountered for the second key "${secondKey}" at index ${index}:`, value);
-  //               return accumulator; 
+  //               return accumulator;
   //             }
   //             accumulator.push(value);
   //             return accumulator;
@@ -420,13 +418,13 @@ const ArtcleProcess = (llmarticle) => {
   //             const keys = Object.keys(item);
   //             if (keys.length < 2) {
   //               // console.error(`Object at index ${index} does not have a second key.`);
-  //               return accumulator; 
+  //               return accumulator;
   //             }
   //             const secondKey = keys[1];
   //             const value = item[secondKey];
   //             if (value === undefined || value === "NAN" || isNaN(value)) {
   //               // console.error(`Invalid or empty value encountered for the second key "${secondKey}" at index ${index}:`, value);
-  //               return accumulator; 
+  //               return accumulator;
   //             }
   //             accumulator.push(value);
   //             return accumulator;
@@ -465,25 +463,4 @@ const ArtcleProcess = (llmarticle) => {
   //     }
   //   });
   // };
-    // {/* renderParts() */}
-
-  return <div>{
-    llmarticle.llmarticle.map((para) => {
-      if(para.paragraphIdx) {
-        return (
-          <p key={para.paragraphIdx}>
-            {para.paragraphContent.map((item) => {
-              const renderFunction =
-                renderMap[item.unitSegmentSpec.insightType.trim()];
-              return renderFunction ? renderFunction(item) : null;
-            })}
-          </p>
-        );
-      } else { 
-        return null; 
-      }
-    })
-    }</div>;
-};
-
-export { ArtcleProcess };
+  // {/* renderParts() */}

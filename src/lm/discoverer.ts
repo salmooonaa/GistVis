@@ -6,8 +6,9 @@ import {
 } from "langchain/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
+import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
 
-const rundiv = async (model, textContent) => {
+const splitInsight = async (model: ChatOpenAI<ChatOpenAICallOptions>, textContent: string) => {
   // const parser = new XMLOutputParser();
   const parser = new CustomListOutputParser({ separator: "<section>" });
   // const parser = new CommaSeparatedListOutputParser();
@@ -44,15 +45,4 @@ const rundiv = async (model, textContent) => {
   // return response
 };
 
-export default rundiv;
-
-
-// `
-//       You are a helpful assistant. You will be provided with a data-rich paragraph. Your task is to split the given paragraph into chunks, each containing a distinct data insight.
-//       \n
-//       The data insight should be one of the following types: comparison, trend, ranking, proportion, association, anomaly, extreme, and value. The user will use your split result to generate corresponding charts.
-//       \n
-//       When splitting the paragraph, preserve the original text unaltered, including all punctuations, and only split the paragraph at the end of a sentence. Your response should be a list of sections separated by "<section>."
-      
-//       Data-rich paragraph:
-//       \n{paragraph}`
+export default splitInsight;

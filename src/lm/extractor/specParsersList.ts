@@ -1,6 +1,5 @@
-export { default as specAnomoly } from "./extractAnomoly"
+// export { default as specAnomoly } from "./extractAnomoly"
 export { default as specComparison } from "./extractComparison"
-export { default as specAssociation } from "./extractAssociation"
 export { default as specExtreme } from "./extractExtreme"
 export { default as specProportion } from "./extractProportion"
 export { default as specRank } from "./extractRank"
