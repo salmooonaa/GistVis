@@ -6,7 +6,9 @@ import {
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
 import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
-import { GistFactTypeAnnotation } from "../types";
+import { GistFactTypeAnnotation } from "../../types";
+import { SystemInstruction } from "../../visKB";
+
 const runRank = async (
   model: ChatOpenAI<ChatOpenAICallOptions>,
   textContent: string,
@@ -20,7 +22,8 @@ const runRank = async (
 
   const rankchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
-      You are a professional text preprocessing assistant specializing in text visualization. Please provide a well-structured response to the user's chunk of the text strictly according to the rules,  The user's goal is to generate corresponding charts based on your response. To achieve this, please check if the text provided by the user contains rank relationships. If included, the type is rank; if not included, the type is null.\n
+      ${SystemInstruction}
+      To achieve this, please check if the text provided by the user contains rank relationships. If included, the type is rank; if not included, the type is null.\n
       Rank refers to sorting the data attributes based on their values and showing the position of selected data attributes. Rank usually includes entities and their corresponding sorting, which can be numbers such as 1 and NO.2, as well as letters and words such as "great" and "A level".
 
       User: The little boy was careful enough to come first in the exam.

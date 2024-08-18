@@ -15,6 +15,8 @@ import {
   ValueTextRenderer,
   TrendTextRenderer,
 } from "../visualizer/renderer/rendererList";
+import { recommendValidTypes } from "../visualizer/utils/utils";
+import FallBackCase from "../visualizer/widgets/fallbackVis";
 
 const ArtcleProcess = ({llmarticle}: {llmarticle: paragraphSpec[]}) => {
   const renderMap = {
@@ -29,6 +31,7 @@ const ArtcleProcess = ({llmarticle}: {llmarticle: paragraphSpec[]}) => {
     ),
     extreme: (item: GistvisSpec) => <ExtremeTextRenderer gistvisSpec={item} />,
     value: (item: GistvisSpec) => <ValueTextRenderer gistvisSpec={item} />,
+    fallback: (item: GistvisSpec) => <FallBackCase gistvisSpec={item} />,
   };
 
   return (
@@ -37,8 +40,14 @@ const ArtcleProcess = ({llmarticle}: {llmarticle: paragraphSpec[]}) => {
         return (
           <p key={para.paragraphIdx}>
             {para.paragraphContent.map((item) => {
+              const recommendedTypes = recommendValidTypes(item)
+              const renderType = recommendedTypes.includes(
+                item.unitSegmentSpec.insightType
+              )
+                ? item.unitSegmentSpec.insightType
+                : "fallback";
               const renderFunction =
-                renderMap[item.unitSegmentSpec.insightType as InsightType];
+                renderMap[renderType];
               return renderFunction ? renderFunction(item) : null;
             })}
           </p>

@@ -3,48 +3,69 @@ import { DataSpec, DisplaySpec, EntitySpec, GistvisSpec } from "../types";
 import { SVG_HEIGHT, SVG_WIDTH } from "../constants";
 import { fuzzySearch } from "../utils/fuzzySearch";
 import * as d3 from "d3";
-import _ from "lodash";
+import lodash from "lodash";
 import HoverText from "../widgets/hoverText";
-import { VerticalBarChart } from "../widgets/chartList";
+import { VerticalBarChart } from "../wordScaleVis/chartList";
 import {
-  getEntityPos,
+  getHighlightPos,
   getProductionVisSpec,
   getUniqueEntities,
 } from "../utils/postProcess";
 
-const RankTextRenderer = ({
-  gistvisSpec,
-}: {
-  gistvisSpec: GistvisSpec;
-}) => {
+const addPlaceholders = (dataSpec: DataSpec[], maxRank: number) => {
+  const existingRanks = dataSpec.map((item) => item.valueValue);
+  const placeholders = Array.from({ length: maxRank }, (_, i) => i + 1)
+    .filter((rank) => !existingRanks.includes(rank))
+    .map((rank) => ({
+      categoryKey: dataSpec[0].categoryKey,
+      categoryValue: "placeholder",
+      valueKey: dataSpec[0].valueKey,
+      valueValue: rank,
+    }));
+  return [...dataSpec, ...placeholders];
+};
+
+const ensureMinimumLength = (dataSpec: DataSpec[], minLength: number) => {
+  if (dataSpec.length < minLength) {
+    const additionalData = Array.from(
+      { length: minLength - dataSpec.length },
+      (_, i) => ({
+        categoryKey: dataSpec[0].categoryKey,
+        categoryValue: "placeholder",
+        valueKey: dataSpec[0].valueKey,
+        valueValue: dataSpec.length + i + 1,
+      })
+    );
+    return [...dataSpec, ...additionalData];
+  }
+  return dataSpec;
+};
+
+const RankTextRenderer = ({ gistvisSpec }: { gistvisSpec: GistvisSpec }) => {
   const [currentEntity, setCurrentEntity] = useState<string>("");
 
   // check entity counts in the dataSpec, if less than 3, add dummy data
   let dataSpec: DataSpec[] = gistvisSpec.dataSpec ? gistvisSpec.dataSpec : [];
-  if (dataSpec.length < 3 && dataSpec.length > 0) {
-    for (let i = dataSpec.length; i < 3; i++) {
-      dataSpec.push({
-        categoryKey: dataSpec[i - 1].categoryKey,
-        categoryValue: "placeholder",
-        valueKey: dataSpec[i - 1].valueKey,
-        valueValue: i + 1, // rank
-      })
-    }
-  }
+  // get maximum valueValue
+  const existingRanks = dataSpec.map((d) => d.valueValue);
+  const maxRank = Math.max(...existingRanks);
 
-  // check if the valueValue is NaN, if so, add dummy data
-  if (dataSpec.some((item) => isNaN(item.valueValue as number))) {
-    dataSpec = dataSpec.map((item, i) => (
-      { ...item, valueValue: i + 1 }
-    ))
+  // if the length and maxRank does not match, fill in the rest with placeholder
+  if (dataSpec.length !== maxRank && dataSpec.length > 0) {
+    dataSpec = addPlaceholders(dataSpec, maxRank);
   }
+  // sort dataSpec
+  dataSpec = lodash.orderBy(dataSpec, ["valueValue"], ["asc"]);
+  // ensure ranking vis has at least 3 items
+  dataSpec = ensureMinimumLength(dataSpec, 3);
+
 
   const gistvisSpecForVis = {
     ...gistvisSpec,
     dataSpec: dataSpec,
-  }
+  };
 
-  const entityPos: EntitySpec[] = getEntityPos(gistvisSpec);
+  const entityPos: EntitySpec[] = getHighlightPos(gistvisSpec, "entity");
   const uniqueEntities = getUniqueEntities(entityPos);
 
   const vis = getProductionVisSpec(

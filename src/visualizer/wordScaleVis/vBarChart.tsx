@@ -135,7 +135,11 @@ const VerticalBarChart = ({
   };
 
   const visElement = (
-    <Tooltip title={getToolTipContent()} placement="bottom" color="#ffffff">
+    <Tooltip
+      title={getToolTipContent()}
+      placement="bottom"
+      color="#ffffff"
+    >
       <svg height={SVG_HEIGHT} width={verticalBarChartWidth}>
         {knownCategories && [...knownCategories]}
       </svg>

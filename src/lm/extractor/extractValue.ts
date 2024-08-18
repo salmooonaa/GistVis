@@ -6,11 +6,10 @@ import {
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
 // import TransformData from "../transSpec";
-import { ExtractOutputParser } from "./constants";
 import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
 import { z } from "zod";
 import { GistFactTypeAnnotation, ExtractorType } from "../types";
-import { ExtractorSystemInstruction } from "../promptSnippets";
+import { ExtractorSystemInstruction, SystemInstruction } from "../visKB";
 import { getZodFormatting } from "./utils";
 
 const extrVal = async (
@@ -37,7 +36,7 @@ const extrVal = async (
 
   const extrvalchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
-        You are a professional text preprocessing assistant specializing in text visualization. Please provide a well-structured response to the user's chunk of the text strictly according to rules, including the complete original text of the text chunk provided by user.
+        ${SystemInstruction}
         ${ExtractorSystemInstruction}
 
         This sentence contains value. Values are usually a numerical value with special meaning that have a significant impact on entities. 

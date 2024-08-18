@@ -6,11 +6,10 @@ import {
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
 // import TransformData from "../transSpec";
-import { ExtractOutputParser } from "./constants";
 import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
 import { z } from "zod";
 import { ExtractorType, GistFactTypeAnnotation } from "../types";
-import { ExtractorSystemInstruction } from "../promptSnippets";
+import { ExtractorSystemInstruction, SystemInstruction } from "../visKB";
 import { getZodFormatting } from "./utils";
 
 const extrTrend = async (
@@ -29,7 +28,7 @@ const extrTrend = async (
 
   const extrtrendchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
-        You are a professional text preprocessing assistant specializing in text visualization. Please provide a well-structured response to the user's chunk of the text strictly according to rules, including the complete original text of the text chunk provided by user.
+        ${SystemInstruction}
         ${ExtractorSystemInstruction}
         This sentence contains trend. Trend presents a general tendency over a time segment. 
         First, you should extract the subject of trend, usually an entity. Then, you should also extract data points of this trend. If none, mark as NAN. Finally, indicate whether its attribute(sentiment polarity) is positive or negative or neutral.

@@ -7,7 +7,8 @@ import {
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
 import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
-import { GistFactTypeAnnotation } from "../types";
+import { GistFactTypeAnnotation } from "../../types";
+import { SystemInstruction } from "../../visKB";
 
 const runValue = async (
   model: ChatOpenAI<ChatOpenAICallOptions>,
@@ -22,7 +23,9 @@ const runValue = async (
 
   const valchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
-      You are a professional text preprocessing assistant specializing in text visualization. Please provide a well-structured response to the user's chunk of the text strictly according to the rules,  The user's goal is to generate corresponding charts based on your response. To achieve this, please check if the text provided by the user contains value relationships. If included, type is value; if not included, type is null.\n
+      ${SystemInstruction}
+      The user's goal is to generate corresponding charts based on your response. To achieve this, please check if the text provided by the user contains value relationships.
+      If included, type is value; if not included, type is null.\n
       Values are usually numerical values with special meanings that have a significant impact on entities. 
 
       User: 40 cities and counties also are hiking their minimum wages.

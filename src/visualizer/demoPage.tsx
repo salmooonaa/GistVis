@@ -1,32 +1,11 @@
-import { ConfigProvider, Layout, Typography, Row, Col, Divider } from "antd";
-import React, { useRef, useState } from "react";
-import { GistvisSpec, InsightType, paragraphSpec } from "./types";
-import {
-  TrendTextRenderer,
-  ComparisonTextRenderer,
-  ExtremeTextRenderer,
-  PlainTextRenderer,
-  ProportionTextRenderer,
-  RankTextRenderer,
-  ValueTextRenderer,
-} from "./renderer/rendererList";
+import React from "react";
+import { paragraphSpec } from "./types";
+import { Divider, Layout, Typography } from "antd";
+import ArtcleProcess from "../components/renderer";
 
-const renderMap: { [key in InsightType]: (item: GistvisSpec) => JSX.Element } =
-  {
-    noType: (item: GistvisSpec) => <PlainTextRenderer gistvisSpec={item} />,
-    trend: (item: GistvisSpec) => <TrendTextRenderer gistvisSpec={item} />,
-    rank: (item: GistvisSpec) => <RankTextRenderer gistvisSpec={item} />,
-    proportion: (item: GistvisSpec) => (
-      <ProportionTextRenderer gistvisSpec={item} />
-    ),
-    comparison: (item: GistvisSpec) => (
-      <ComparisonTextRenderer gistvisSpec={item} />
-    ),
-    extreme: (item: GistvisSpec) => <ExtremeTextRenderer gistvisSpec={item} />,
-    value: (item: GistvisSpec) => <ValueTextRenderer gistvisSpec={item} />,
-  };
+const { Text } = Typography;
 
-export const DesignSpace = () => {
+export const DemoPage = () => {
   const sampleArticle: paragraphSpec[] = [
     {
       paragraphIdx: 1,
@@ -239,17 +218,16 @@ export const DesignSpace = () => {
 
   return (
     <div>
-      {sampleArticle.map((para) => {
-        return (
-          <p key={para.paragraphIdx}>
-            {para.paragraphContent.map((item) => {
-              const renderFunction =
-                renderMap[item.unitSegmentSpec.insightType as InsightType];
-              return renderFunction ? renderFunction(item) : null;
-            })}
-          </p>
-        );
-      })}
+      <Layout dir="vertical">
+        <Text style={{ fontSize: "20px", fontWeight: "bold" }}>
+          Sample Paragraph
+        </Text>
+        <Text style={{ fontSize: "16px", fontStyle: "italic" }}>
+          Interactive word-scale in situ visualization
+        </Text>
+        <Divider style={{ margin: "0 0 0 0" }} />
+        <ArtcleProcess llmarticle={sampleArticle} />
+      </Layout>
     </div>
   );
 };

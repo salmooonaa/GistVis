@@ -1,23 +1,22 @@
 import {
-  StructuredOutputParser,
-  RegexParser,
-  CombiningOutputParser,
   CustomListOutputParser,
 } from "langchain/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
 import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
+import { gistKB } from "./visKB";
 
 const splitInsight = async (model: ChatOpenAI<ChatOpenAICallOptions>, textContent: string) => {
-  // const parser = new XMLOutputParser();
   const parser = new CustomListOutputParser({ separator: "<section>" });
-  // const parser = new CommaSeparatedListOutputParser();
-  // const parser = StructuredOutputParser.fromNamesAndDescriptions({
-  //     text: "sections of original text provided by the user",
-  // });
+
+  // easy support for added insight types, no prompt change required
+  const typeCandidates = Object.keys(gistKB).join(", ");
+
   const divchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
-        Please separate the user-provided paragraphs into sections that group similar data and content, aiming for the shortest feasible lengths. Each section should limit its visual elements to a single type: comparisons, trends, rankings, proportions, association, anomalies, extremes or values. The objective is for the user to generate corresponding charts based on your output.
+        Please separate the user-provided paragraphs into sections that group similar data and content (data insight), aiming for the shortest feasible lengths. 
+        Each section should limit its visual elements to a single type: ${typeCandidates}. 
+        The objective is for the user to generate corresponding charts based on your output.
 
         The sections in your response should contain complete original text provided by user without any modification. Preserve original punctuation marks and line breaks.
 

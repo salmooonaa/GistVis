@@ -6,11 +6,10 @@ import {
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
 // import TransformData from "../transSpec";
-import { ExtractOutputParser } from "./constants";
 import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
 import { z } from "zod";
 import { ExtractorType, GistFactTypeAnnotation } from "../types";
-import { ExtractorSystemInstruction } from "../promptSnippets";
+import { ExtractorSystemInstruction, SystemInstruction } from "../visKB";
 import { getZodFormatting } from "./utils";
 
 const extrRank = async (
@@ -29,7 +28,7 @@ const extrRank = async (
   // console.log(textContent);
   const extrrankchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
-        You are a professional text preprocessing assistant specializing in text visualization. Please provide a well-structured response to the user's chunk of the text strictly according to rules, including the complete original text of the text chunk provided by user.
+        ${SystemInstruction}
         ${ExtractorSystemInstruction}
         This sentence contains rank. Rank refers to sort the data attributes based on their values and show the position of selected data attributes. 
         First, you should extract the subject of rank, usually an entity. Next, extract rankings of identified entities and convert them into numbers as (value: 1). If the ranking is non-numeric, such as "great", prioritize them based on their qualitative level and convert them into numbers. 
@@ -63,32 +62,32 @@ const extrRank = async (
   // };
 
   // console.log(newResponse);
-// return newResponse;
+  // return newResponse;
 };
 
 export default extrRank;
 
-  // const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
-  //   id: "unique id of text block",
-  //   text: "original text provided by the user",
-  //   entity1: "subject of rank, usually an entity",
-  //   value1:
-  //     "the ranking of the entity(already converted into numbers). If it does not exist, return NAN",
-  //   pos: "The previous word in the recommended location",
-  // });
-  // const specParser = StructuredOutputParser.fromZodSchema(z.object({
-  //   id: z.string().describe("unique id of text block"),
-  //   context: z.string().describe("original text provided by the user"),
-  //   spec: z.object({
-  //     value1: z.string().describe("the ranking of the entity(already converted into numbers). If it does not exist, return NAN"),
-  //     pos: z.string().describe("The previous word in the recommended location"),
-  //   }),
-  // }));
-  // const specParser = StructuredOutputParser.fromZodSchema(z.object({
-  //   id: z.string().describe("unique id of text block"),
-  //   context: z.string().describe("original text provided by the user"),
-  //   spec: z.object({
-  //     value1: z.string().describe("the ranking of the entity(already converted into numbers). If it does not exist, return NAN"),
-  //     pos: z.string().describe("The previous word in the recommended location"),
-  //   }),
-  // }));
+// const answerParser = StructuredOutputParser.fromNamesAndDescriptions({
+//   id: "unique id of text block",
+//   text: "original text provided by the user",
+//   entity1: "subject of rank, usually an entity",
+//   value1:
+//     "the ranking of the entity(already converted into numbers). If it does not exist, return NAN",
+//   pos: "The previous word in the recommended location",
+// });
+// const specParser = StructuredOutputParser.fromZodSchema(z.object({
+//   id: z.string().describe("unique id of text block"),
+//   context: z.string().describe("original text provided by the user"),
+//   spec: z.object({
+//     value1: z.string().describe("the ranking of the entity(already converted into numbers). If it does not exist, return NAN"),
+//     pos: z.string().describe("The previous word in the recommended location"),
+//   }),
+// }));
+// const specParser = StructuredOutputParser.fromZodSchema(z.object({
+//   id: z.string().describe("unique id of text block"),
+//   context: z.string().describe("original text provided by the user"),
+//   spec: z.object({
+//     value1: z.string().describe("the ranking of the entity(already converted into numbers). If it does not exist, return NAN"),
+//     pos: z.string().describe("The previous word in the recommended location"),
+//   }),
+// }));

@@ -1,11 +1,13 @@
 // Intermediate representation for GistVis
-export type InsightType =
+export type VisInsightType =
   | "comparison"
   | "trend"
   | "rank"
   | "proportion"
   | "extreme"
-  | "value"
+  | "value";
+export type InsightType =
+  VisInsightType
   | "noType";
 
 export type ExtremeAttribute = "maximum" | "minimum";
@@ -50,7 +52,7 @@ export type EntitySpec = {
 }
 
 export type DisplayType = "text" | "entity" | "word-scale-vis";
-export type DisplayPosition = "above" | "overlay" | "right" | "none";
+export type DisplayPosition = "left" | "right" | "none";
 
 export type DisplaySpec = {
   displayType: DisplayType;
@@ -64,6 +66,10 @@ export interface ChartProps {
   colorScale: d3.ScaleOrdinal<string, string, never>;
   selectedEntity: string;
   setSelectedEntity: (entity: string) => void;
+}
+
+export interface LineChartProps extends ChartProps {
+  type: "actual" | "nominal";
 }
 
 export interface DataPoint {

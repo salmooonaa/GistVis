@@ -1,34 +1,20 @@
-import { ConfigProvider, Layout, Typography, Row, Col, Divider } from "antd";
+import { ConfigProvider, Layout, Typography, Row, Col, Divider, Progress, Flex } from "antd";
 import THEME from "./style/theme";
-import ArtcleProcess from "./components/page";
+import ArtcleProcess from "./components/renderer";
 import Editor from "./components/editor";
-import { DesignSpace } from "./visualizer/index"
+import { DemoPage } from "./visualizer/demoPage"
 import "./components/page.css";
 import React, { useRef, useState } from "react";
 import { paragraphSpec } from "./visualizer/types";
+import { processStageAtom } from "./globalState";
+import { useAtom } from "jotai";
 
 const { Header, Content, Footer } = Layout;
 const { Title, Text } = Typography;
 
-// const useGetLlmarticle = () => {
-//   const [llmarticle, setLlmArticle] = useState([{ text: "" }]);
-//   return {
-//     llmarticle,
-//     setLlmArticle,
-//   };
-// };
-
 const App = () => {
-  // const [userInput, setUserInput] = useState("");
-  // const { article, setArticle } = useGetarticle();
+  const [processStage, setProcessStage] = useAtom(processStageAtom);
   const [llmarticle, setLlmArticle] = useState<paragraphSpec[]>([]);
-  // const changeArticle = (inputText) => {
-  //   setArticle(inputText);
-  // };
-
-  // const changeLlmArticle = (inputText: string) => {
-  //   setLlmArticle(inputText);
-  // };
 
   return (
     <div className="App">
@@ -42,10 +28,7 @@ const App = () => {
           <Layout dir="vertical">
             <Row gutter={[16, 16]}>
               <Col span={24}>
-                <Text style={{ fontSize: "20px", fontWeight: "bold" }}>
-                  Design Space
-                </Text>
-                <DesignSpace />
+                <DemoPage />
               </Col>
             </Row>
             <Row gutter={[16, 16]}>
@@ -64,6 +47,10 @@ const App = () => {
                   Rendered Result
                 </Text>
                 <Divider style={{ margin: "0 0 2% 0" }} />
+                <Flex gap="middle" justify="space-around" wrap="nowrap">
+                  <Text style={{ whiteSpace: "nowrap" }}>Progress: </Text>
+                  <Progress percent={processStage * 25} />
+                </Flex>
                 {/* <ArticleWithImage article={article} /> */}
                 <ArtcleProcess llmarticle={llmarticle} />
               </Col>

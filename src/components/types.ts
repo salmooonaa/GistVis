@@ -1,3 +1,0 @@
-interface ParagraphInputProps {
-  text: string;
-}

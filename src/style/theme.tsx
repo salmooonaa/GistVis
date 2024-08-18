@@ -1,3 +1,5 @@
+import { Layout } from "antd";
+
 const THEME = {
   token: {
     // colorPrimary: "#B3E5FC",
@@ -13,6 +15,7 @@ const THEME = {
     Layout: {
       headerBg: "#ffffff",
       headerPadding: 0,
+      headerHeight: 60,
       footerPadding: "50px 0px 50px 0px",
     },
     Menu: {

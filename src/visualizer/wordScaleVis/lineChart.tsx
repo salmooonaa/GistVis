@@ -7,52 +7,25 @@ import {
   SCALE_CONST,
   SVG_UNIT_WIDTH,
 } from "../constants";
-import { ChartProps, DataPoint, DataSpec, GistvisSpec, TrendAttribute } from "../types";
+import { ChartProps, DataPoint, DataSpec, GistvisSpec, LineChartProps, TrendAttribute } from "../types";
 import { Tooltip } from "antd";
-import { capitalizeFirstLetter } from "../utils/helpers";
+import { capitalizeFirstLetter } from "../utils/utils";
 
 const Line = ({
   gistvisSpec,
+  type,
   colorScale,
   selectedEntity,
   setSelectedEntity,
-}: ChartProps) => {
+}: LineChartProps) => {
   const dataSpec = gistvisSpec.dataSpec ?? [];
-  const direction =
-    (gistvisSpec.unitSegmentSpec.attribute as TrendAttribute) ?? "";
-  // check is there is NaN in dataSpec valueValue
-  const hasNaN = dataSpec.some((d) => isNaN(d.valueValue));
+  const dataset = dataSpec.map((d, i) => ({ x: i, y: d.valueValue } as DataPoint));
+
   const svgRef = React.useRef<SVGSVGElement>(null);
-  const lineChartWidth = hasNaN
-    ? SVG_UNIT_WIDTH * 5
-    : SVG_UNIT_WIDTH * dataSpec.length;
+  const lineChartWidth = SVG_UNIT_WIDTH * dataSpec.length;
   const lineChartHeight = SVG_HEIGHT;
-
-  const transformData = (): DataPoint[] => {
-    if (hasNaN || dataSpec.length < 2) {
-      const dummyDataMap: { [key in TrendAttribute]: DataPoint[] } = {
-        positive: [
-          { x: 1, y: 1 },
-          { x: 2, y: 6 },
-          { x: 3, y: 20 },
-          { x: 4, y: 40 },
-          { x: 5, y: 80 },
-        ],
-        negative: [
-          { x: 1, y: 80 },
-          { x: 2, y: 40 },
-          { x: 3, y: 20 },
-          { x: 4, y: 6 },
-          { x: 5, y: 1 },
-        ],
-      };
-      return dummyDataMap[direction];
-    } else {
-      return dataSpec.map((d, i) => ({ x: i, y: d.valueValue } as DataPoint));
-    }
-  };
-
-  const dataset = transformData();
+  
+  
 
   const xScale = d3
     .scaleLinear()
@@ -75,7 +48,7 @@ const Line = ({
     .y0(yScale(0));
 
   const getTooltipContnet = (selectionVal: number | null) => {
-    if (hasNaN) {
+    if (type === "nominal") {
       return (
         <div
           style={{ lineHeight: 1.1, fontSize: "14px", color: `${lineColor}`, fontWeight: "bold" }}
@@ -146,17 +119,7 @@ const Line = ({
     },
   };
 
-  const [zoomedIn, setZoomedIn] = useState(false);
-
-  const handleZoomIn = () => {
-    setZoomedIn(true);
-  };
-
-  const handleZoomOut = () => {
-    setZoomedIn(false);
-  };
-
-  const lineColor = hasNaN
+  const lineColor = (type === "nominal")
     ? gistvisSpec.unitSegmentSpec.attribute === "positive"
       ? "green"
       : "red"

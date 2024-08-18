@@ -10,16 +10,17 @@ import {
   runTrend,
   runRank,
   runExtreme,
-} from "./typeChecker/typeCheckerList";
+} from "./annotator/deprecated/typeCheckerList";
 import splitInsight from "./discoverer";
 import {
   GistvisSpec,
   InsightType,
   paragraphSpec,
   UnitSegmentSpec,
+  VisInsightType,
 } from "../visualizer/types";
 import lodash from "lodash";
-import runMatch from "./typeModerator";
+import runMatch from "./annotator/typeModerator";
 import {
   specComparison,
   specExtreme,
@@ -28,8 +29,8 @@ import {
   specTrend,
   specValue,
 } from "./extractor/specParsersList";
-// import runMatch from "./typeModerator";
-// import { transData } from './transData.js'
+import { gistKB } from "./visKB";
+import runTypeCheck from "./annotator/runTypeCheck";
 
 const removeHTML = (input: string) => {
   const plainText = convert(input, {
@@ -48,14 +49,12 @@ const removeHTML = (input: string) => {
   return textContent;
 };
 
-const generateGistVisMarkup = async (input: string) => {
+const generateGistVisMarkup = async (input: string, setStage: any) => {
   const paragraphList = removeHTML(input);
   // check if textContent is empty, if so, return null
   if (paragraphList.length === 0) {
     return [];
   }
-
-  console.log("paragraphList", paragraphList);
 
   // Step 0: Initialize LLM (of choice)
 
@@ -65,20 +64,19 @@ const generateGistVisMarkup = async (input: string) => {
   //   zhipuAIApiKey: API_KEY, // In Node.js defaults to process.env.ZHIPUAI_API_KEY
   //   verbose: true,
   // });
+
   const model = new ChatOpenAI({
     temperature: 0.7,
     topP: 1,
-    // frequency_penalty: 0.75,
-    // presence_penalty: 0,
     n: 1,
     streaming: false,
     openAIApiKey: process.env.REACT_APP_LLM_API_KEY,
     modelName: process.env.REACT_APP_LLM_MODEL_NAME,
     configuration: {
       apiKey: process.env.REACT_APP_LLM_API_KEY,
-      // modelName: process.env.REACT_APP_LLM_MODEL_NAME,
       baseURL: process.env.REACT_APP_LLM_URL_BASE,
     },
+    verbose: false,
   });
 
   // const model_json = model.bind({
@@ -116,19 +114,28 @@ const generateGistVisMarkup = async (input: string) => {
       } as paragraphSpec;
     }
   );
+  // Stage 1 complete
+  setStage(1);
 
   async function factTypeAnnotator(model: ChatOpenAI, textContent: string) {
-    const candidateTypeProposals = await Promise.all([
-      runComparison(model, textContent),
-      runExtreme(model, textContent),
-      runProportion(model, textContent),
-      runRank(model, textContent),
-      runTrend(model, textContent),
-      runValue(model, textContent),
-    ]);
+    const gistTypes = Object.keys(gistKB)
+    // Promise loop call LLM for each gistType
+    const candidateTypeProposals = await Promise.all(
+      gistTypes.map(async (type: string) => {
+        console.log(`Running type check for ${type}`);
+        return runTypeCheck(model, textContent, type as VisInsightType);
+      })
+    )
+    // const candidateTypeProposals = await Promise.all([
+    //   runComparison(model, textContent),
+    //   runExtreme(model, textContent),
+    //   runProportion(model, textContent),
+    //   runRank(model, textContent),
+    //   runTrend(model, textContent),
+    //   runValue(model, textContent),
+    // ]);
 
-    // TODO: 1. error handling and interative request
-    // TODO: 2. now the moderator is not working as intended!
+    // TODO: error handling and interative request
     let candidateTypes = lodash.uniq(
       candidateTypeProposals.map((d: GistFactTypeAnnotation) => d.type)
     );
@@ -138,7 +145,7 @@ const generateGistVisMarkup = async (input: string) => {
       const modereatedType = await runMatch(
         model,
         textContent,
-        candidateTypes as string[]
+        candidateTypes as string[],
       );
       return modereatedType.type;
     } else if (candidateTypes.length === 1) {
@@ -175,7 +182,9 @@ const generateGistVisMarkup = async (input: string) => {
     })
   );
 
-  console.log(typedParagraphSpecList)
+  // stage 2 complete
+  setStage(2);
+  // console.log(typedParagraphSpecList)
 
   const extractorMap = {
     comparison: specComparison,
@@ -222,64 +231,11 @@ const generateGistVisMarkup = async (input: string) => {
       } as paragraphSpec;
     })
   );
-
+  // stage 3 complete
+  setStage(3)
   console.log(fullList)
 
   return fullList;
 };
 
 export default generateGistVisMarkup;
-
-
-
-  // const llmoption = [];
-  // console.log(typetextContent);
-  // for (const part of typetextContent) {
-  //   let llmoptio;
-  //   switch (part.type) {
-  //     case "comparison":
-  //       // console.log(part);
-  //       llmoptio = await specComparison(model, part);
-  //       llmoption.push(llmoptio);
-  //       break;
-  //     case "trend":
-  //       llmoptio = await specTrend(model, part);
-  //       llmoption.push(llmoptio);
-  //       break;
-  //     // case "association":
-  //     //   llmoptio = await specAssociation(model, part);
-  //     //   llmoption.push(llmoptio);
-  //     //   break;
-  //     case "rank":
-  //       llmoptio = await specRank(model, part);
-  //       llmoption.push(llmoptio);
-  //       break;
-  //     case "proportion":
-  //       llmoptio = await specProportion(model, part);
-  //       llmoption.push(llmoptio);
-  //       break;
-  //     case "extreme":
-  //       llmoptio = await specExtreme(model, part);
-  //       llmoption.push(llmoptio);
-  //       break;
-  //     case "anomaly":
-  //       llmoptio = await specAnomoly(model, part);
-  //       llmoption.push(llmoptio);
-  //       break;
-  //     case "value":
-  //       llmoptio = await specValue(model, part);
-  //       llmoption.push(llmoptio);
-  //       break;
-  //     default:
-  //       llmoptio = part;
-  //       llmoption.push(llmoptio);
-  //       break;
-  //   }
-  //   setTimeout(() => {
-  //     // console.log("Resuming loop after 5 seconds.");
-  //   }, 3000);
-  // }
-  // // console.log(llmoption);
-  // const transLlmoption = transData(llmoption);
-  // console.log(transLlmoption)
-  // return transLlmoption;

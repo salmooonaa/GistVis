@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { InsightType } from "../../visualizer/types";
+import numeral from "numeral";
 
 export const SpecDescriptions = {
   ID_DESCRIPTION: "unique id of text block",
@@ -27,6 +28,22 @@ export const SpecDescriptions = {
     "The words containing the value. Do not split the words if it only has one position.",
 };
 
+function parseValue(value: string | number) {
+  if (typeof value === "string") {
+    const parsedValue = numeral(value).value();
+    if (parsedValue === null) {
+      return NaN;
+    }
+    return parsedValue;
+  }
+  else if (typeof value === "number") {
+    return value;
+  }
+  else {
+    return NaN;
+  }
+}
+
 export const getZodFormatting = (insightType: InsightType) => {
   const valueValueBespokeDescription = SpecDescriptions.VALUE_VALUE_DESCRIPTION[insightType];
   const baseZodFormatting = z.object({
@@ -50,8 +67,9 @@ export const getZodFormatting = (insightType: InsightType) => {
           .transform((value) => {
             if (typeof value === "string" && value.toUpperCase() === "NAN") {
               return NaN;
-            } else {
-              return typeof value === "string" ? parseFloat(value) : value;
+            }
+            else {
+              return parseValue(value);
             }
           })
           .describe(

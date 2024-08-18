@@ -48,38 +48,32 @@ const HorizontalStackedBar = ({
       width={SVG_WIDTH - xScale(curSum)}
       height={SVG_HEIGHT * 0.8}
       style={{ opacity: 0.5 }}
-      fill="grey"
+      fill={colorScale("")}
       // onClick={() => setCurrentEntity("unknown")}
     />
   );
 
   const toolTipContent = (
-    <div style={{ lineHeight: 1.1, fontSize: "14px" }}>
-      <div style={{ color: "#000000", fontWeight: "bold" }}>
-        {dataSpec[0].categoryKey.charAt(0).toUpperCase() +
-          dataSpec[0].categoryKey.slice(1)}
-      </div>
-
-      {dataSpec.map((d: DataSpec) => (
-        <div
-          key={d.categoryValue}
-          style={{
-            color: colorScale(d.categoryValue),
-            fontSize: "14px",
-          }}
-        >
-          ● {d.valueValue.toFixed(2)}
-        </div>
-      ))}
-      <div
-        key={"rest"}
-        style={{
-          color: "grey",
-          fontSize: "14px",
-        }}
-      >
-        ● {(1 - curSum).toFixed(2)}
-      </div>
+    <div
+      style={{
+        lineHeight: 1.1,
+        fontSize: "14px",
+        fontWeight: "bold",
+        color: "#000000",
+      }}
+    >
+      The proportion of{" "}
+      <span style={{ color: colorScale(selectedEntity) }}>
+        {selectedEntity === "" ? "others": selectedEntity}
+      </span>{" "}
+      is{" "}
+      <span style={{ color: colorScale(selectedEntity) }}>
+        {dataSpec.find((d: DataSpec) => d.categoryValue === selectedEntity)
+          ?.valueValue !== undefined
+          ? dataSpec.find((d: DataSpec) => d.categoryValue === selectedEntity)
+              ?.valueValue
+          : curSum}
+      </span>
     </div>
   );
 

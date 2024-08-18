@@ -6,41 +6,27 @@ import {
   GistvisSpec,
 } from "../types";
 import { fuzzySearch } from "./fuzzySearch";
-import _ from "lodash";
+import lodash from "lodash";
 
-export const getInsituPos = (gistVisSpec: GistvisSpec): EntitySpec[] => {
-  let inSituPosition: string[] =
-    gistVisSpec.unitSegmentSpec.inSituPosition ?? [];
-  return inSituPosition
-    .map((str: string) => {
+export const getHighlightPos = (
+  gistVisSpec: GistvisSpec,
+  type: "phrase" | "entity"
+): EntitySpec[] => {
+  let items: string[] | DataSpec[] = [];
+
+  if (type === "phrase") {
+    items = gistVisSpec.unitSegmentSpec.inSituPosition ?? [];
+  } else if (type === "entity") {
+    items = gistVisSpec.dataSpec ?? [];
+  }
+
+  return items
+    .map((item: string | DataSpec) => {
+      const str = typeof item === "string" ? item : item.categoryValue;
       const pos = fuzzySearch(str, gistVisSpec.unitSegmentSpec.context, false);
       const posArray = pos.map((p) => {
         return {
           entity: str,
-          postion: {
-            start: p[0],
-            end: p[1],
-          },
-        };
-      });
-      return posArray;
-    })
-    .flat();
-};
-
-export const getEntityPos = (gistvisSpec: GistvisSpec): EntitySpec[] => {
-  let dataSpec: DataSpec[] = gistvisSpec.dataSpec ?? [];
-  return dataSpec
-    .map((d: DataSpec) => {
-      const pos = fuzzySearch(
-        d.categoryValue,
-        gistvisSpec.unitSegmentSpec.context,
-        false
-      );
-      // if position is multiple, then map
-      const posArray = pos.map((p) => {
-        return {
-          entity: d.categoryValue,
           postion: {
             start: p[0],
             end: p[1],
@@ -53,7 +39,7 @@ export const getEntityPos = (gistvisSpec: GistvisSpec): EntitySpec[] => {
 };
 
 export const getUniqueEntities = (entityPos: EntitySpec[]) => {
-  return _.uniqBy(
+  return lodash.uniqBy(
     entityPos.map((d) => d.entity),
     "entity"
   );
@@ -61,7 +47,7 @@ export const getUniqueEntities = (entityPos: EntitySpec[]) => {
 
 export const getNonOverlappingEntities = (entityPos: EntitySpec[]) => {
   // Sort entityPos by start position using lodash
-  const sortedEntityPos = _.sortBy(entityPos, ["postion.start"]);
+  const sortedEntityPos = lodash.sortBy(entityPos, ["postion.start"]);
   // Filter out overlapping entities using reduce
   const nonOverlappingEntities = sortedEntityPos.reduce(
     (acc: EntitySpec[], entity: EntitySpec) => {
@@ -92,6 +78,12 @@ export const getProductionVisSpec = (
       contentArray.push({
         displayType: "text",
         content: text.slice(lastEnd, entity.postion.start),
+      });
+    }
+    if (displayPos === "left") {
+      contentArray.push({
+        displayType: "word-scale-vis",
+        content: " ",
       });
     }
     contentArray.push({

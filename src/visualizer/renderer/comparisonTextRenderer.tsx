@@ -5,9 +5,11 @@ import { fuzzySearch } from "../utils/fuzzySearch";
 import * as d3 from "d3";
 import _ from "lodash";
 import HoverText from "../widgets/hoverText";
-import { HorizontalStackedBarChart, VerticalBarChart } from "../widgets/chartList";
 import {
-  getEntityPos,
+  VerticalBarChart,
+} from "../wordScaleVis/chartList";
+import {
+  getHighlightPos,
   getProductionVisSpec,
   getUniqueEntities,
 } from "../utils/postProcess";
@@ -39,7 +41,7 @@ const ComparisonTextRenderer = ({
     dataSpec: dataSpec,
   }
 
-  const entityPos: EntitySpec[] = getEntityPos(gistvisSpec);
+  const entityPos: EntitySpec[] = getHighlightPos(gistvisSpec, 'entity');
   const uniqueEntities = getUniqueEntities(entityPos);
 
   const vis = getProductionVisSpec(

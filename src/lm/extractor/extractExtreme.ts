@@ -7,10 +7,9 @@ import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
 // import TransformData from "../transSpec";
 import { z } from "zod";
-import { ExtractOutputParser } from "./constants";
 import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
 import { ExtractorType, GistFactTypeAnnotation } from "../types";
-import { ExtractorSystemInstruction } from "../promptSnippets";
+import { ExtractorSystemInstruction, SystemInstruction } from "../visKB";
 import { getZodFormatting } from "./utils";
 
 const extrExtreme = async (
@@ -30,7 +29,7 @@ const extrExtreme = async (
 
   const extrextrechain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
-        You are a professional text preprocessing assistant specializing in text visualization. Please provide a well-structured response to the user's chunk of the text strictly according to rules, including the complete original text of the text chunk provided by user.
+        ${SystemInstruction}
         You have to extract entities, numerical values, and other content from text blocks as required. 
         This sentence contains extreme. Extreme refers to the extreme data cases along with the data attributes or within a certain range, such as maximum and minimum. 
         First, you should extract the value of extreme. Then you should convert it into numbers. Finally, you need to indicate whether this extreme is the maximum or minimum value.

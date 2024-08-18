@@ -5,10 +5,11 @@ import { fuzzySearch } from "../utils/fuzzySearch";
 import * as d3 from "d3";
 import _ from "lodash";
 import HoverText from "../widgets/hoverText";
-import { GlyphMaxMin, HorizontalStackedBarChart } from "../widgets/chartList";
 import {
-  getEntityPos,
-  getInsituPos,
+  GlyphMaxMin,
+} from "../wordScaleVis/chartList";
+import {
+  getHighlightPos,
   getProductionVisSpec,
   getUniqueEntities,
 } from "../utils/postProcess";
@@ -21,16 +22,14 @@ const ExtremeTextRenderer = ({
   const [currentEntity, setCurrentEntity] = useState<string>("");
   const dataSpec = gistvisSpec.dataSpec ?? [];
 
-  console.log(gistvisSpec);
-
-  const inSituPos: EntitySpec[] = getInsituPos(gistvisSpec);
-  const entityPos: EntitySpec[] = getEntityPos(gistvisSpec);
+  const inSituPos: EntitySpec[] = getHighlightPos(gistvisSpec, "phrase");
+  const entityPos: EntitySpec[] = getHighlightPos(gistvisSpec, "entity");
   const uniqueEntities = getUniqueEntities(entityPos);
 
   const vis = getProductionVisSpec(
     gistvisSpec.unitSegmentSpec.context,
     inSituPos,
-    "right"
+    "left"
   );
 
   const colorScale = d3

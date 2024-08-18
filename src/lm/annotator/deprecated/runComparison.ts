@@ -6,7 +6,8 @@ import {
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
 import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
-import { GistFactTypeAnnotation } from "../types";
+import { GistFactTypeAnnotation } from "../../types";
+import { SystemInstruction } from "../../visKB";
 const runComparison = async (
   model: ChatOpenAI<ChatOpenAICallOptions>,
   textContent: string,
@@ -20,7 +21,8 @@ const runComparison = async (
 
   const compchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
-        As a professional text preprocessing assistant specializing in text visualization, your task is to provide a well-structured response to the user's text chunk, strictly adhering to certain rules. The user aims to generate corresponding charts based on your response. To accomplish this, you need to check if the user's text contains any comparative relationships. If included, the type is a comparison; if not included, the type is null.
+        ${SystemInstruction}
+        To accomplish this, you need to check if the user's text contains any comparative relationships. If included, the type is a comparison; if not included, the type is null.
         Comparison refers to the act of comparing two data attributes or comparing the target object with previous values, especially along a time series. Typically, comparisons involve two or more entities or values that exhibit significant differences. Comparative relationships are often expressed in phrases containing multiple entities or values that highlight notable disparities. 
 
         User: China on Wednesday posted a robust GDP growth of 5.2 percent for 2023, successfully beating the government's pre-set yearly target of around 5 percent.

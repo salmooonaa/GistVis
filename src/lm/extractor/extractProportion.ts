@@ -6,11 +6,10 @@ import {
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
 import { z } from "zod";
-import { ExtractOutputParser } from "./constants";
 import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
 // import TransformData from "../transSpec";
 import { ExtractorType, GistFactTypeAnnotation } from "../types";
-import { ExtractorSystemInstruction } from "../promptSnippets";
+import { ExtractorSystemInstruction, SystemInstruction } from "../visKB";
 import { getZodFormatting } from "./utils";
 
 const extrProp = async (
@@ -29,7 +28,7 @@ const extrProp = async (
 
   const extrpropchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
-        You are a professional text preprocessing assistant specializing in text visualization. Please provide a well-structured response to the user's chunk of the text strictly according to rules, including the complete original text of the text chunk provided by user.
+        ${SystemInstruction}
         ${ExtractorSystemInstruction}
         This sentence contains proportion. First, you should extract the proportion. Then you should extract the value of proportion and convert percentages and other forms into decimals.
         Specifically, for 'category_key', identify the subject of comparison with its context, e.g., "the category of GDP growth" instead of just "entity". But the 'value_key' of all data items should keep the same.

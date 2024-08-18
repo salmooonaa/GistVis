@@ -43,7 +43,7 @@ export const fuzzySearch = (queryString: string, context: string, isFuzzy: boole
     const proposedMatchDiff = proposedMatchLength.map((item) =>
       Math.abs(item - queryStringLength)
     );
-    console.log(proposedMatchDiff);
+    // console.log(proposedMatchDiff);
     // find a diff that is the closest to 0, if equal, return both, get the indices
     const minDiff = Math.min(...proposedMatchDiff);
     const bestMatchIndices = proposedMatchDiff.reduce((acc, curr, index) => {
