@@ -34,7 +34,7 @@ const extrTrend = async (model, textContent) => {
           categoryValue: z
             .string()
             .describe(
-              "The entity of the data item. If it does not exist, return an empty string"
+              "The entity of the data item. Try to use phrases from the original text. If it does not exist, return an empty string"
             ),
           valueKey: z
             .string()

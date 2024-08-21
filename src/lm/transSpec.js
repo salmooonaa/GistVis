@@ -22,7 +22,8 @@ export default function TransformData(inputData) {
         },
         dataSpec: inputData.dataSpec
       };
-    } else {    
+    } else {
+      inputData.dataSpec.valueValue = inputData.dataSpec.valueValue===null?NaN:inputData.dataSpec.valueValue;
       transformedData = {
         paragraphIdx: paragraphIdx,
         id:inputData.id,

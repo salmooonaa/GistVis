@@ -98,7 +98,7 @@ const generateGistVisMarkup = async (input) => {
         runRank,
         runProportion,
         runExtreme,
-        runAnomaly,
+        // runAnomaly,
         runValue,
       ];
       // for (const runModel of models) {
@@ -184,10 +184,10 @@ const generateGistVisMarkup = async (input) => {
         llmoptio = await specExtreme(model, part);
         llmoption.push(llmoptio);
         break;
-      case "anomaly":
-        llmoptio = await specAnomoly(model, part);
-        llmoption.push(llmoptio);
-        break;
+      // case "anomaly":
+      //   llmoptio = await specAnomoly(model, part);
+      //   llmoption.push(llmoptio);
+      //   break;
       case "value":
         llmoptio = await specValue(model, part);
         llmoption.push(llmoptio);
@@ -202,8 +202,10 @@ const generateGistVisMarkup = async (input) => {
     }, 3000);
   }
   // console.log(llmoption);
+  console.log(llmoption);
   const transLlmoption = transData(llmoption);
-  console.log(transLlmoption)
+  // console.log(transLlmoption)
+  console.log(JSON.stringify(transLlmoption, null, 2));
   return transLlmoption;
 };
 

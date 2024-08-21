@@ -4,6 +4,9 @@ import { ArtcleProcess } from "./components/page.jsx";
 import { Editor } from "./components/index.jsx";
 import { DesignSpace } from "./visualizer/index.tsx"
 import "./components/page.css";
+import HomePage from "./userstudy/page1.js";
+import InteractivePage from "./userstudy/page2.js";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import React, { useRef, useState } from "react";
 
 const { Header, Content, Footer } = Layout;
@@ -81,6 +84,12 @@ const App = () => {
         </Content>
       </ConfigProvider>
     </div>
+    // <Router>
+    //   <Routes>
+    //     <Route exact path="/" element={<HomePage />} />
+    //     <Route path="/interactive/:pageId" element={<InteractivePage />} />
+    //   </Routes>
+    // </Router>
   );
 };
 
