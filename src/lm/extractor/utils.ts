@@ -89,7 +89,7 @@ export const getZodFormatting = (insightType: InsightType) => {
     ),
   });
 
-  console.log(specWithPos)
+  // console.log(specWithPos)
 
   if (insightType === "extreme" || insightType === "value") {
     return specWithPos;

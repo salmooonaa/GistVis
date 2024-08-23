@@ -7,8 +7,8 @@ const width = window.innerHeight
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', padding: '50px', height:width }}>
         <div style={{ display: 'flex', justifyContent: 'space-evenly', width: '100%' }}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                {['Unprocessed article 1', 'Unprocessed article 2', 'Unprocessed article 3'].map((article, index) => (
-                <Link key={index} to={`/interactive/${index + 1}`} style={{ textDecoration: 'none', color: 'black' }}>
+                {['Unprocessed article 1', 'Unprocessed article 2', 'Unprocessed article 3', 'Unprocessed article 4', 'Unprocessed article 5', 'Unprocessed article 6'].map((article, index) => (
+                <Link key={index} to={`/interactive/unprocessed/${index + 1}`} style={{ textDecoration: 'none', color: 'black' }}>
                     <button style={{ padding: '10px 20px', fontSize: '16px', margin: '5px', width: '100%' }}>
                     {article}
                     </button>
@@ -16,8 +16,8 @@ const width = window.innerHeight
                 ))}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: '20px' }}>
-                {['Processed article 1', 'Processed article 2', 'Processed article 3'].map((article, index) => (
-                <Link key={index + 3} to={`/interactive/${index + 4}`} style={{ textDecoration: 'none', color: 'black' }}>
+                {['Processed article 1', 'Processed article 2', 'Processed article 3', 'Processed article 4', 'Processed article 5', 'Processed article 6'].map((article, index) => (
+                <Link key={index + 3} to={`/interactive/processed/${index + 7}`} style={{ textDecoration: 'none', color: 'black' }}>
                     <button style={{ padding: '10px 20px', fontSize: '16px', margin: '5px', width: '100%' }}>
                     {article}
                     </button>

@@ -18,12 +18,10 @@ const ProportionTextRenderer = ({
 
   const entityPos: EntitySpec[] = getHighlightPos(gistvisSpec, "entity");
   const uniqueEntities = getUniqueEntities(entityPos);
-
   const vis = getProductionVisSpec(
     gistvisSpec.unitSegmentSpec.context,
     entityPos
   );
-
   const colorScale = d3
     .scaleOrdinal(d3.schemeCategory10)
     .domain(uniqueEntities);

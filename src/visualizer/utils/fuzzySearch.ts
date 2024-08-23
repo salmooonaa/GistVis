@@ -6,20 +6,24 @@ export const fuzzySearch = (queryString: string, context: string, isFuzzy: boole
   // const queryString = "the rest of the top 5 companies";
   if (!isFuzzy) {
     // use direct match to find all matches, case insensitive
-    const regex = new RegExp(queryString, "i");
+    const regex = new RegExp(`\\b${queryString}\\b`, "i");
     const matches = context.match(regex);
     if (matches) {
-      return matches.map((match) => [context.indexOf(match), context.indexOf(match) + match.length]);
+      return matches.map((match) => [matches.index, matches.index? matches.index + match.length:0]);
+    
     }
     return [];
   }
   const options = {
+    shouldSort: true,
     includeMatches: true,
     includeScore: true,
     threshold: 0.6,
     findAllMatches: true,
     ignoreLocation: true,
     keys: ["text"],
+    // tokenize: true,
+    // tokenSeparator: /[\s.,;:!?]+/
   };
 
   const fuse = new Fuse([{ text: context }], options);

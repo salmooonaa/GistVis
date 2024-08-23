@@ -1,0 +1,23 @@
+.pre-wrap {
+    white-space: pre-wrap;
+  }/* CSS样式 */
+.content-wrapper {
+    width: 100%; 
+    max-width: 100%; 
+    overflow: auto; 
+    max-height: 700px; 
+    word-wrap: break-word; 
+  }
+  
+  .content-wrapper::-webkit-scrollbar {
+    width: 12px;
+  }
+  
+  .content-wrapper::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    border-radius: 10px;
+  }
+  
+  .content-wrapper::-webkit-scrollbar-track {
+    background-color: lightgrey;
+  }

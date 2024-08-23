@@ -31,7 +31,7 @@ const extrRank = async (
         ${SystemInstruction}
         ${ExtractorSystemInstruction}
         This sentence contains rank. Rank refers to sort the data attributes based on their values and show the position of selected data attributes. 
-        First, you should extract the subject of rank, usually an entity. Next, extract rankings of identified entities and convert them into numbers as (value: 1). If the ranking is non-numeric, such as "great", prioritize them based on their qualitative level and convert them into numbers. 
+        First, you should extract the subject of rank, usually an entity. Next, extract rankings of identified entities and convert them into numbers as (value: 1). If the ranking is non-numeric, such as "great", prioritize them based on their qualitative level and convert them into numbers. If the context only contains information about the rank, e.g. A ranks below average, then please fit the base entity A with a value 2 and the other entity average with a value 1 based on the information.
         For 'value_key', specify the exact context of the value being compared, e.g., "the GDP growth rate" instead of just "value". But the 'category_key' of all data items should keep the same.
         The user intends to use a bar chart to represent the rank. Please find the most suitable location for placing the bar chart and output the previous word in the recommended location.
         \n{format_instructions}\n{insightType}\n{paragraph}

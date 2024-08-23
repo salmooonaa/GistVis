@@ -33,6 +33,7 @@ const ArtcleProcess = ({llmarticle}: {llmarticle: paragraphSpec[]}) => {
     value: (item: GistvisSpec) => <ValueTextRenderer gistvisSpec={item} />,
     fallback: (item: GistvisSpec) => <FallBackCase gistvisSpec={item} />,
   };
+  console.log(JSON.stringify(llmarticle, null, 2))
 
   return (
     <div>

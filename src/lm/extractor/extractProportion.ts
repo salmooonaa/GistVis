@@ -30,7 +30,7 @@ const extrProp = async (
     PromptTemplate.fromTemplate(`
         ${SystemInstruction}
         ${ExtractorSystemInstruction}
-        This sentence contains proportion. First, you should extract the proportion. Then you should extract the value of proportion and convert percentages and other forms into decimals.
+        This sentence contains proportion. First, you should extract the proportion. Then you should extract the value of proportion and convert percentages and other forms into decimals. If the context only contains information about the proportion, e.g. Products account for large shares, then please fit the base entity with a value 0.75 and the other entity with a value 0.25 based on the information.
         Specifically, for 'category_key', identify the subject of comparison with its context, e.g., "the category of GDP growth" instead of just "entity". But the 'value_key' of all data items should keep the same.
         For 'value_key', specify the exact context of the value being compared, e.g., "the GDP growth rate" instead of just "value". But the 'category_key' of all data items should keep the same.
         Specifically, for 'category_key', identify the subject of comparison with its context, e.g., "the category of GDP growth" instead of just "entity". But the 'value_key' of all data items should keep the same.
