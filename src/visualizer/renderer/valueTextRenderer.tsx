@@ -1,14 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
-import { DataSpec, DisplaySpec, EntitySpec, GistvisSpec } from "../types";
-import { SVG_HEIGHT, SVG_WIDTH } from "../constants";
-import { fuzzySearch } from "../utils/fuzzySearch";
+import { EntitySpec, GistvisSpec } from "../types";
 import * as d3 from "d3";
 import _ from "lodash";
 import HoverText from "../widgets/hoverText";
-import { GlyphMaxMin, GlyphText, HorizontalStackedBarChart } from "../widgets/chartList";
+import GlyphText from "../wordScaleVis/glyphText";
 import {
-  getEntityPos,
-  getInsituPos,
+  getHighlightPos,
   getProductionVisSpec,
   getUniqueEntities,
 } from "../utils/postProcess";
@@ -21,13 +18,13 @@ const ValueTextRenderer = ({
   const [currentEntity, setCurrentEntity] = useState<string>("");
   const dataSpec = gistvisSpec.dataSpec ?? [];
 
-  const inSituPos: EntitySpec[] = getInsituPos(gistvisSpec);
-  const entityPos: EntitySpec[] = getEntityPos(gistvisSpec);
+  // const inSituPos: EntitySpec[] = getHighlightPos(gistvisSpec, "phrase");
+  const entityPos: EntitySpec[] = getHighlightPos(gistvisSpec, "entity");
   const uniqueEntities = getUniqueEntities(entityPos);
 
   const vis = getProductionVisSpec(
     gistvisSpec.unitSegmentSpec.context,
-    inSituPos,
+    entityPos,
     "right"
   );
 

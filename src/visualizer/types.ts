@@ -1,11 +1,13 @@
 // Intermediate representation for GistVis
-export type InsightType =
+export type VisInsightType =
   | "comparison"
   | "trend"
   | "rank"
   | "proportion"
   | "extreme"
-  | "value"
+  | "value";
+export type InsightType =
+  VisInsightType
   | "noType";
 
 export type ExtremeAttribute = "maximum" | "minimum";
@@ -19,16 +21,6 @@ export type DataSpec = {
   valueValue: number,
 }
 
-export type SourceData = "extracted" | "artificial" 
-
-export type ExtendedDataSpec = {
-  categoryKey: string,
-  categoryValue: string,
-  valueKey: string,
-  valueValue: number,
-  entrySource: SourceData
-}
-
 export type UnitSegmentSpec = {
   insightType: InsightType,
   segmentIdx: number,
@@ -40,7 +32,7 @@ export type UnitSegmentSpec = {
 export interface GistvisSpec {
   id: string,
   unitSegmentSpec: UnitSegmentSpec,
-  dataSpec?: DataSpec[] | ExtendedDataSpec[],
+  dataSpec?: DataSpec[],
 }
 
 export type paragraphSpec = {
@@ -60,7 +52,7 @@ export type EntitySpec = {
 }
 
 export type DisplayType = "text" | "entity" | "word-scale-vis";
-export type DisplayPosition = "above" | "overlay" | "right" | "none";
+export type DisplayPosition = "left" | "right" | "none";
 
 export type DisplaySpec = {
   displayType: DisplayType;
@@ -74,6 +66,10 @@ export interface ChartProps {
   colorScale: d3.ScaleOrdinal<string, string, never>;
   selectedEntity: string;
   setSelectedEntity: (entity: string) => void;
+}
+
+export interface LineChartProps extends ChartProps {
+  type: "actual" | "nominal";
 }
 
 export interface DataPoint {
