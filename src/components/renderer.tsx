@@ -17,6 +17,7 @@ import {
 } from "../visualizer/renderer/rendererList";
 import { recommendValidTypes } from "../visualizer/utils/utils";
 import FallBackCase from "../visualizer/widgets/fallbackVis";
+import lodash from "lodash"
 
 const ArtcleProcess = ({llmarticle}: {llmarticle: paragraphSpec[]}) => {
   const renderMap = {
@@ -35,8 +36,26 @@ const ArtcleProcess = ({llmarticle}: {llmarticle: paragraphSpec[]}) => {
   };
   console.log(JSON.stringify(llmarticle, null, 2))
 
+  const checkDataspecValidity = (item: GistvisSpec) => {
+    let dataSpec = item.dataSpec ?? [];
+    if (dataSpec.length === 0) {
+      return false;
+    }
+    else {
+      let categoryKeyList = lodash.uniq(dataSpec.map((data) => data.categoryKey));
+      let valueKeyList = lodash.uniq(dataSpec.map((data) => data.valueKey));
+      if (categoryKeyList.length > 1 || valueKeyList.length > 1) {
+        return false;
+      }
+      else {
+        return true;
+      }
+    }
+    
+  }
+
   return (
-    <div>
+    <div style={{ textAlign: "justify"}}>
       {llmarticle.map((para) => {
         return (
           <p key={para.paragraphIdx}>
@@ -47,8 +66,13 @@ const ArtcleProcess = ({llmarticle}: {llmarticle: paragraphSpec[]}) => {
               )
                 ? item.unitSegmentSpec.insightType
                 : "fallback";
+
+              let finalRenderType: InsightType | "fallback" = renderType;
+              if (renderType !== "noType" && renderType !== "fallback" && !checkDataspecValidity(item)) {
+                finalRenderType = "fallback";
+              }
               const renderFunction =
-                renderMap[renderType];
+                renderMap[finalRenderType];
               return renderFunction ? renderFunction(item) : null;
             })}
           </p>

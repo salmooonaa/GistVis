@@ -70,9 +70,9 @@ const HorizontalStackedBar = ({
       <span style={{ color: colorScale(selectedEntity) }}>
         {dataSpec.find((d: DataSpec) => d.categoryValue === selectedEntity)
           ?.valueValue !== undefined
-          ? dataSpec.find((d: DataSpec) => d.categoryValue === selectedEntity)
-              ?.valueValue
-          : curSum}
+          ? (dataSpec.find((d: DataSpec) => d.categoryValue === selectedEntity)
+              ?.valueValue)?.toFixed(2)
+          : (1 - curSum).toFixed(2)}
       </span>
     </div>
   );

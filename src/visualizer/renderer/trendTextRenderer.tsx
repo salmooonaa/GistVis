@@ -6,6 +6,7 @@ import {
   EntitySpec,
   GistvisSpec,
   TrendAttribute,
+  TrendOptions,
 } from "../types";
 import * as d3 from "d3";
 import _ from "lodash";
@@ -17,77 +18,28 @@ import {
   getUniqueEntities,
 } from "../utils/postProcess";
 
-const dummyDataMap: { [key in TrendAttribute]: DataSpec[] } = {
+const dummyDataMap: { [key in TrendAttribute]: DataPoint[] } = {
   positive: [
-    {
-      categoryKey: "positive values",
-      categoryValue: "1",
-      valueKey: "entry",
-      valueValue: 1,
-    },
-    {
-      categoryKey: "positive values",
-      categoryValue: "1",
-      valueKey: "entry",
-      valueValue: 6,
-    },
-    {
-      categoryKey: "positive values",
-      categoryValue: "1",
-      valueKey: "entry",
-      valueValue: 20,
-    },
-    {
-      categoryKey: "positive values",
-      categoryValue: "1",
-      valueKey: "entry",
-      valueValue: 40,
-    },
-    {
-      categoryKey: "positive values",
-      categoryValue: "1",
-      valueKey: "entry",
-      valueValue: 80,
-    },
+    { x: 1, y: 1 },
+    { x: 2, y: 6 },
+    { x: 3, y: 20 },
+    { x: 4, y: 40 },
+    { x: 5, y: 80 },
   ],
   negative: [
-    {
-      categoryKey: "positive values",
-      categoryValue: "1",
-      valueKey: "entry",
-      valueValue: 80,
-    },
-    {
-      categoryKey: "positive values",
-      categoryValue: "1",
-      valueKey: "entry",
-      valueValue: 40,
-    },
-    {
-      categoryKey: "positive values",
-      categoryValue: "1",
-      valueKey: "entry",
-      valueValue: 20,
-    },
-    {
-      categoryKey: "positive values",
-      categoryValue: "1",
-      valueKey: "entry",
-      valueValue: 6,
-    },
-    {
-      categoryKey: "positive values",
-      categoryValue: "1",
-      valueKey: "entry",
-      valueValue: 1,
-    },
+    { x: 1, y: 80 },
+    { x: 2, y: 40 },
+    { x: 3, y: 20 },
+    { x: 4, y: 6 },
+    { x: 5, y: 1 },
   ],
 };
 
 const TrendTextRenderer = ({ gistvisSpec }: { gistvisSpec: GistvisSpec }) => {
   const [currentEntity, setCurrentEntity] = useState<string>("");
   const dataSpec = gistvisSpec.dataSpec ?? [];
-  const attribute = gistvisSpec.unitSegmentSpec.attribute as TrendAttribute ?? "";
+  const attribute =
+    (gistvisSpec.unitSegmentSpec.attribute as TrendAttribute) ?? "";
 
   const entityPos: EntitySpec[] = getHighlightPos(gistvisSpec, "entity");
   const uniqueEntities = getUniqueEntities(entityPos);
@@ -105,22 +57,60 @@ const TrendTextRenderer = ({ gistvisSpec }: { gistvisSpec: GistvisSpec }) => {
   const numEntries = dataSpec.length;
   const validForNominalTrend =
     attribute === "negative" || attribute === "positive";
-  const lineChartType = (validForNominalTrend && (hasNaN || numEntries < 2)) ? "nominal" : "actual";
+  const lineChartType: TrendOptions =
+    validForNominalTrend && (hasNaN || numEntries === 0) ? "nominal" :
+      (validForNominalTrend && !hasNaN && numEntries === 1) ? "trending" :
+      (validForNominalTrend && !hasNaN && numEntries === 2) ? "start-end" :
+      "actual";
 
-  const transformData = (): DataSpec[] => {
-    if (lineChartType === "nominal") {
+  const transformData = (): DataPoint[] => {
+    if (lineChartType === "nominal" || lineChartType === "trending") {
       return dummyDataMap[attribute];
-    } else {
-      return dataSpec;
+    }
+    else if (lineChartType === "start-end") {
+      let low = d3.min(dataSpec, (d) => d.valueValue) as number;
+      let high = d3.max(dataSpec, (d) => d.valueValue) as number;
+      if (attribute === "negative") {
+        return [
+          { x: 0, y: high },
+          { x: 1, y: low },
+        ]
+      }
+      else if (attribute === "positive") {
+        return [
+          { x: 0, y: low },
+          { x: 1, y: high },
+        ]
+      }
+      else {
+        // actual
+        return dataSpec.map((d, i) => {
+          return {
+            x: i,
+            y: d.valueValue,
+            xLegend: d.categoryValue,
+          }
+        })
+      }
+    }
+    else {
+      return dataSpec.map((d, i) => {
+        return {
+          x: i,
+          y: d.valueValue,
+          xLegend: d.categoryValue,
+        };
+      })
+      ;
     }
   };
 
   const dataset = transformData();
-  gistvisSpec.dataSpec = dataset;
 
   const lineVis = (
     <LineChart
       gistvisSpec={gistvisSpec}
+      visualizeData={dataset}
       type={lineChartType}
       colorScale={colorScale}
       selectedEntity={currentEntity}

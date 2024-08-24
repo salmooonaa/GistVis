@@ -42,6 +42,9 @@ export const recommendValidTypes = (gistVisSpec: GistvisSpec) => {
     notValidTypes.push("value")
     notValidTypes.push("extreme")
   }
+  if (valueValueHasNaN || categoryValueHasEmpty) {
+    notValidTypes.push("value")
+  }
   // extreme must have attribute
   if (!validForExtreme || inSituPositionList.length > 1) {
     notValidTypes.push("extreme")
@@ -63,8 +66,6 @@ export const recommendValidTypes = (gistVisSpec: GistvisSpec) => {
     .filter((type) => !notValidTypes.includes(type as InsightType))
   // noType is always welcome
   validTypes.push("noType")
-
-  console.log(validTypes)
 
   return validTypes as InsightType[];
 }

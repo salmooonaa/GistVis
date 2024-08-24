@@ -68,11 +68,15 @@ export interface ChartProps {
   setSelectedEntity: (entity: string) => void;
 }
 
+export type TrendOptions = "actual" | "nominal" | "trending" | "start-end"
+
 export interface LineChartProps extends ChartProps {
-  type: "actual" | "nominal";
+  visualizeData: DataPoint[];
+  type: TrendOptions;
 }
 
 export interface DataPoint {
   x: number;
+  xLegend?: string;
   y: number;
 }
