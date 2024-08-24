@@ -6,31 +6,48 @@ import {
   SVG_PADDING,
   SCALE_CONST,
   SVG_UNIT_WIDTH,
+  SVG_INTERVAL,
 } from "../constants";
-import { ChartProps, DataPoint, DataSpec, GistvisSpec, LineChartProps, TrendAttribute } from "../types";
+import {
+  ChartProps,
+  DataPoint,
+  DataSpec,
+  GistvisSpec,
+  LineChartProps,
+  TrendAttribute,
+} from "../types";
 import { Tooltip } from "antd";
 import { capitalizeFirstLetter } from "../utils/utils";
 
 const Line = ({
   gistvisSpec,
+  visualizeData,
   type,
   colorScale,
   selectedEntity,
   setSelectedEntity,
 }: LineChartProps) => {
   const dataSpec = gistvisSpec.dataSpec ?? [];
-  const dataset = dataSpec.map((d, i) => ({ x: i, y: d.valueValue } as DataPoint));
+  const dataset = visualizeData;
 
   const svgRef = React.useRef<SVGSVGElement>(null);
-  const lineChartWidth = SVG_UNIT_WIDTH * dataSpec.length;
+  const lineChartWidth =
+    type === "start-end"
+      ? SVG_UNIT_WIDTH * dataset.length * 2
+      : SVG_UNIT_WIDTH * dataset.length;
   const lineChartHeight = SVG_HEIGHT;
-  
-  
+
+  const dataPosX = dataset[dataset.length - 1].x;
+  const differenceLineDataset: DataPoint[] = [
+    { x: dataPosX, y: dataset[0].y },
+    { x: dataPosX, y: dataset[dataset.length - 1].y },
+  ];
 
   const xScale = d3
     .scaleLinear()
     .domain(d3.extent(dataset, (d) => d.x) as [number, number])
     .range([SVG_PADDING, lineChartWidth - SVG_PADDING]);
+
   const yScale = d3
     .scaleLinear()
     .domain(d3.extent(dataset, (d) => d.y) as [number, number])
@@ -39,6 +56,11 @@ const Line = ({
   const lineGenerator = d3
     .line<{ x: number; y: number }>()
     .x((d) => xScale(d.x))
+    .y((d) => yScale(d.y));
+
+  const lineGeneratorDifference = d3
+    .line<{ x: number; y: number }>()
+    .x((d) => xScale(d.x) + SVG_INTERVAL)
     .y((d) => yScale(d.y));
 
   const areaGenerator = d3
@@ -51,11 +73,54 @@ const Line = ({
     if (type === "nominal") {
       return (
         <div
-          style={{ lineHeight: 1.1, fontSize: "14px", color: `${lineColor}`, fontWeight: "bold" }}
+          style={{
+            lineHeight: 1.1,
+            fontSize: "14px",
+            color: `${lineColor}`,
+            fontWeight: "bold",
+          }}
         >
           {gistvisSpec.unitSegmentSpec.attribute === "positive"
             ? "↗ increasing"
             : "↘ decreasing"}
+        </div>
+      );
+    } else if (type === "trending") {
+      return (
+        <div
+          style={{
+            lineHeight: 1.1,
+            fontSize: "14px",
+            color: `${lineColor}`,
+            fontWeight: "bold",
+          }}
+        >
+          {gistvisSpec.unitSegmentSpec.attribute === "positive"
+            ? "↗ increased"
+            : "↘ decreased"}{" "}
+          {dataSpec[0].valueValue}
+        </div>
+      );
+    } else if (type === "start-end") {
+      return (
+        <div
+          style={{
+            lineHeight: 1.1,
+            fontSize: "14px",
+            color: `${lineColor}`,
+            fontWeight: "bold",
+          }}
+        >
+          {capitalizeFirstLetter(dataSpec[0].valueKey) +
+            " of " +
+            dataSpec.find((d) => d.valueValue === selectionVal)?.categoryValue +
+            ": " +
+            selectionVal}
+          . The{" "}
+          {gistvisSpec.unitSegmentSpec.attribute === "positive"
+            ? "↗ increase"
+            : "↘ decrease"}{" "}
+          is {Math.abs(dataSpec[1].valueValue - dataSpec[0].valueValue)}.
         </div>
       );
     } else {
@@ -70,9 +135,9 @@ const Line = ({
         >
           {capitalizeFirstLetter(dataSpec[0].valueKey) +
             " of " +
-            dataSpec[0].categoryValue +
+            dataSpec.find((d) => d.valueValue === selectionVal)?.categoryValue +
             ": " +
-            selectionVal}
+            selectionVal}.
         </div>
       );
     }
@@ -105,35 +170,22 @@ const Line = ({
     setTooltip(null);
   };
 
-  const zoomedStyle = {
-    zoomedIn: {
-      transform: `scale(${SCALE_CONST})`,
-      transition: "transform 0.5s ease-in-out",
-      transformOrigin: "top left",
-      backgroundColor: "white",
-    },
-    normal: {
-      transform: "scale(1)",
-      transition: "transform 0.5s ease-in-out",
-      transformOrigin: "top left",
-    },
-  };
-
-  const lineColor = (type === "nominal")
-    ? gistvisSpec.unitSegmentSpec.attribute === "positive"
-      ? "green"
-      : "red"
-    : colorScale(dataSpec[0].categoryValue);
+  const lineColor =
+    type === "nominal" || type === "trending" || type === "start-end"
+      ? gistvisSpec.unitSegmentSpec.attribute === "positive"
+        ? "green"
+        : "red"
+      : colorScale(dataSpec[0].categoryValue);
 
   return (
     <Tooltip
-      title={tooltip != null ? getTooltipContnet(tooltip.value): ""}
+      title={tooltip != null ? getTooltipContnet(tooltip.value) : ""}
       placement="bottom"
       color="#ffffff"
     >
       <svg
         ref={svgRef}
-        width={lineChartWidth}
+        width={lineChartWidth + SVG_INTERVAL}
         height={SVG_HEIGHT}
         // style={zoomedIn ? zoomedStyle.zoomedIn : zoomedStyle.normal}
         // onMouseEnter={handleZoomIn}
@@ -161,6 +213,45 @@ const Line = ({
             <stop offset="0%" stopColor={lineColor} stopOpacity="1" />
             <stop offset="100%" stopColor={lineColor} stopOpacity="0.2" />
           </linearGradient>
+        </defs>
+
+        {type === "trending" && (
+          <path
+            d={lineGeneratorDifference(differenceLineDataset) || undefined}
+            fill="none"
+            stroke={lineColor}
+            strokeWidth={1}
+            markerStart="url(#arrow-start)"
+            markerEnd="url(#arrow-end)"
+          />
+        )}
+
+        <defs>
+          <marker
+            id="arrow-end"
+            markerWidth="4"
+            markerHeight="4"
+            refX="3"
+            refY="2"
+            orient="auto"
+            markerUnits="strokeWidth"
+          >
+            <path d="M0,0 L0,4 L4,2 z" fill={lineColor} />
+          </marker>
+        </defs>
+
+        <defs>
+          <marker
+            id="arrow-start"
+            markerWidth="4"
+            markerHeight="4"
+            refX="1"
+            refY="2"
+            orient="auto"
+            markerUnits="strokeWidth"
+          >
+            <path d="M4,0 L4,4 L0,2 z" fill={lineColor} />
+          </marker>
         </defs>
 
         <path

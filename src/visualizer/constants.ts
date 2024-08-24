@@ -4,3 +4,4 @@ export const SVG_HEIGHT = 20;
 export const SVG_PADDING = 2;
 
 export const SCALE_CONST = 2
+export const SVG_INTERVAL = 5;
