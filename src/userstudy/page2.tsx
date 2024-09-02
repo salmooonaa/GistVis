@@ -1,6 +1,6 @@
 // src/InteractivePage.js
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
     ComparisonTextRenderer,
     ExtremeTextRenderer,
@@ -17,6 +17,7 @@ import ArtcleProcess from '../components/renderer';
 import { ArticleData, IQuestion } from './articleTypes';
 import { articles } from './articledata';
 import "./us.css"
+import { Space } from 'antd';
 
 const InteractivePage: React.FC = () => {
   const { pageType, pageId } = useParams<{ pageType: string, pageId: string }>();
@@ -35,6 +36,7 @@ const InteractivePage: React.FC = () => {
   const [timeUp, setTimeUp] = useState<boolean>(false);
   const timerInterval = useRef<NodeJS.Timeout | null>(null);
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadArticle = () => {
@@ -90,6 +92,30 @@ const InteractivePage: React.FC = () => {
     }
   };
 
+  const submitAnswers = () => {
+    const data = {
+      timer,
+      selectedAnswers,
+      pageId
+    };
+  
+    fetch('http://localhost:5000/api/submitAnswers', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Success:', data);
+      navigate('/');
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  };
+
   const renderArticleContent = () => {
     if (!article) return null;
   
@@ -97,7 +123,7 @@ const InteractivePage: React.FC = () => {
       return (
         <div>
           <h2>Processed Article {pageId}: </h2>
-          <h2>{article.title}</h2>
+          <h2 style={{ height: '20px'}}></h2>
           <div className="content-wrapper">
           <p className="pre-wrap"><ArtcleProcess llmarticle={article.content}/></p>
           </div>
@@ -194,6 +220,8 @@ const InteractivePage: React.FC = () => {
             <button onClick={() => setIsTimerRunning(!isTimerRunning)}>
               {isTimerRunning ? 'Pause' : 'Start'}
             </button>
+            <Space/>
+            <button onClick={submitAnswers}>Submit</button>
           </div>
         </div>
   );

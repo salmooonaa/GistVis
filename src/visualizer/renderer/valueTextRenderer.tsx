@@ -9,12 +9,15 @@ import {
   getProductionVisSpec,
   getUniqueEntities,
 } from "../utils/postProcess";
+import useTrackVisit from "../utils/useTrack";
 
 const ValueTextRenderer = ({
   gistvisSpec,
 }: {
   gistvisSpec: GistvisSpec;
-}) => {
+}) => {  
+  const id = gistvisSpec.id;
+  const { visitCount, handleMouseEnter, handleMouseLeave, identifier } = useTrackVisit('value-' + id);
   const [currentEntity, setCurrentEntity] = useState<string>("");
   const dataSpec = gistvisSpec.dataSpec ?? [];
 
@@ -42,7 +45,7 @@ const ValueTextRenderer = ({
   );
 
   return (
-    <span>
+    <span data-component-id={identifier}>
       {vis.map((content, index) => {
         if (content.displayType === "text") {
           return <span key={index}>{content.content}</span>;
@@ -54,18 +57,25 @@ const ValueTextRenderer = ({
               isHovered={content.entity === currentEntity}
               color={colorScale(content.entity ?? "grey")}
               onMouseOver={() => {
+                handleMouseEnter();
                 setCurrentEntity(content.entity ?? "");
               }}
               onMouseOut={() => {
+                handleMouseLeave();
                 setCurrentEntity("");
               }}
             />
           );
         } else if (content.displayType === "word-scale-vis") {
           return (
+            <span
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            >
             <span key={index}>
               {content.content}
               {valueVis}
+            </span>
             </span>
           );
         }

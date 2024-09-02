@@ -7,12 +7,15 @@ import _ from "lodash";
 import HoverText from "../widgets/hoverText";
 import { HorizontalStackedBarChart } from "../wordScaleVis/chartList";
 import { getHighlightPos, getProductionVisSpec, getUniqueEntities } from "../utils/postProcess";
+import useTrackVisit from "../utils/useTrack";
 
 const ProportionTextRenderer = ({
   gistvisSpec,
 }: {
   gistvisSpec: GistvisSpec;
 }) => {
+  const id = gistvisSpec.id;
+  const { visitCount, handleMouseEnter, handleMouseLeave, identifier } = useTrackVisit('prop-' + id);
   const [currentEntity, setCurrentEntity] = useState<string>("");
   const dataSpec = gistvisSpec.dataSpec ?? [];
 
@@ -36,7 +39,7 @@ const ProportionTextRenderer = ({
   );
 
   return (
-    <span>
+    <span data-component-id={identifier}>
       {vis.map((content, index) => {
         if (content.displayType === "text") {
           return <span key={index}>{content.content}</span>;
@@ -48,18 +51,25 @@ const ProportionTextRenderer = ({
               isHovered={content.entity === currentEntity}
               color={colorScale(content.entity ?? "grey")}
               onMouseOver={() => {
+                handleMouseEnter();
                 setCurrentEntity(content.entity ?? "");
               }}
               onMouseOut={() => {
+                handleMouseLeave();
                 setCurrentEntity("");
               }}
             />
           );
         } else if (content.displayType === "word-scale-vis") {
           return (
-            <span key={index}>
-              {content.content}
-              {proportionVis}
+            <span
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            >
+              <span key={index}>
+                {content.content}
+                {proportionVis}
+              </span>            
             </span>
           );
         }

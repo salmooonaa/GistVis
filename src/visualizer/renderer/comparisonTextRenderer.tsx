@@ -13,12 +13,15 @@ import {
   getProductionVisSpec,
   getUniqueEntities,
 } from "../utils/postProcess";
+import useTrackVisit from "../utils/useTrack";
 
 const ComparisonTextRenderer = ({
   gistvisSpec,
 }: {
   gistvisSpec: GistvisSpec;
 }) => {
+  const id = gistvisSpec.id;
+  const { visitCount, handleMouseEnter, handleMouseLeave, identifier } = useTrackVisit('comp-' + id);
   const [currentEntity, setCurrentEntity] = useState<string>("");
 
   // check entity counts in the dataSpec, if 2 and one valueValue is 0, transform data for better visualization
@@ -63,7 +66,7 @@ const ComparisonTextRenderer = ({
   );
 
   return (
-    <span>
+    <span data-component-id={identifier}>
       {vis.map((content, index) => {
         if (content.displayType === "text") {
           return <span key={index}>{content.content}</span>;
@@ -75,18 +78,25 @@ const ComparisonTextRenderer = ({
               isHovered={content.entity === currentEntity}
               color={colorScale(content.entity ?? "grey")}
               onMouseOver={() => {
+                handleMouseEnter();
                 setCurrentEntity(content.entity ?? "");
               }}
               onMouseOut={() => {
+                handleMouseLeave();
                 setCurrentEntity("");
               }}
             />
           );
         } else if (content.displayType === "word-scale-vis") {
           return (
+            <span
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            >
             <span key={index}>
               {content.content}
               {rankVis}
+            </span>
             </span>
           );
         }

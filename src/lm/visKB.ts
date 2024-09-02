@@ -62,7 +62,7 @@ export const gistKB: { [key in VisInsightType]: GistFactKnowledgeBase } = {
       Comparisons is deﬁned on a 4-tuple (Xi, Dj, f , ∂ ).∀ xm, xn ∈ Xi, fD j(xm,xn) ≥ ∂ where f calculates the distance between xm and xn on Dj.
       Typically, comparisons involve two or more entities or values that exhibit significant differences. 
       Comparative relationships are often expressed in phrases containing multiple entities or values that highlight notable disparities.
-      Generally, sentences containing multiple sets of data are more suitable for this type.`,
+      Generally, sentences containing multiple sets of data are more suitable for this type and focus on difference.`,
     examples: [
       `China on Wednesday posted a robust GDP growth of 5.2 percent for 2023, successfully beating the government's pre-set yearly target of around 5 percent.`,
       `There are more blocked beds in the Royal London Hospital compared with the UK average.`,
@@ -115,7 +115,7 @@ export const gistKB: { [key in VisInsightType]: GistFactKnowledgeBase } = {
   extreme: {
     definition: `
     Extreme is deﬁned on a 3-tuple (xm, Xi, dn).  ∀ xl ∈ Xi and xl = xm, V dn(xm) ≥ Vdn(xl) or ∀ xl ∈ Xi and xl = xm, V dn(xm) ≤ Vdn(xl).
-    Extreme refers to the extreme data cases along with the data attributes or within a certain range, usually maximum and minimum. Notice that anomalies are individual data points and do not include trends such as "increase".`,
+    Extreme refers to the extreme data cases along with the data attributes or within a certain range, can only be maximum and minimum. Notice that anomalies are individual data points and do not include trends such as "increase".`,
     examples: [
       `The character with the most epigrams in the collected dataset is Oscar Wilde himself, who has 12.`,
       `The minimum wage is just $7.25.`,
@@ -129,7 +129,8 @@ export const gistKB: { [key in VisInsightType]: GistFactKnowledgeBase } = {
   value: {
     definition: `
     Derived value is deﬁned on a 3-tuple (Xi, dn, R) where R is a derived value of Xi on dn. When Xi contains only 1 element, R is the value of the element on dn.
-    Values are usually numerical values with special meanings that have a significant impact on entities.`,
+    Values are usually numerical valuesthat have a significant impact on entities.`, 
+    // with special meanings 
     examples: [
       `46 horses have won two out of three Triple Crown Races.`,
       `40 cities and counties also are hiking their minimum wages.`,

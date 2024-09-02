@@ -11,6 +11,7 @@ import {
   getProductionVisSpec,
   getUniqueEntities,
 } from "../utils/postProcess";
+import useTrackVisit from "../utils/useTrack";
 
 const addPlaceholders = (dataSpec: DataSpec[], maxRank: number) => {
   const existingRanks = dataSpec.map((item) => item.valueValue);
@@ -42,6 +43,8 @@ const ensureMinimumLength = (dataSpec: DataSpec[], minLength: number) => {
 };
 
 const RankTextRenderer = ({ gistvisSpec }: { gistvisSpec: GistvisSpec }) => {
+  const id = gistvisSpec.id;
+  const { visitCount, handleMouseEnter, handleMouseLeave, identifier } = useTrackVisit('rank-' + id);
   const [currentEntity, setCurrentEntity] = useState<string>("");
 
   // check entity counts in the dataSpec, if less than 3, add dummy data
@@ -87,7 +90,7 @@ const RankTextRenderer = ({ gistvisSpec }: { gistvisSpec: GistvisSpec }) => {
   );
 
   return (
-    <span>
+    <span data-component-id={identifier}>
       {vis.map((content, index) => {
         if (content.displayType === "text") {
           return <span key={index}>{content.content}</span>;
@@ -99,19 +102,27 @@ const RankTextRenderer = ({ gistvisSpec }: { gistvisSpec: GistvisSpec }) => {
               isHovered={content.entity === currentEntity}
               color={colorScale(content.entity ?? "grey")}
               onMouseOver={() => {
+                handleMouseEnter();
                 setCurrentEntity(content.entity ?? "");
               }}
               onMouseOut={() => {
+                handleMouseLeave();
                 setCurrentEntity("");
               }}
             />
           );
         } else if (content.displayType === "word-scale-vis") {
           return (
+            <span
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            >
             <span key={index}>
               {content.content}
               {rankVis}
+            </span>            
             </span>
+
           );
         }
       })}

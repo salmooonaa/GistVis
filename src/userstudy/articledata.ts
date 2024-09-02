@@ -1,25 +1,9 @@
 import { ArticleData } from './articleTypes';
-
+import { article1, article2, article3, article4, article5, article6} from './data/articleList'
 export const articles: ArticleData[] = [
   {
     id:'1',title:'U.S. centenarian population is projected to quadruple over the next 30 years',
-    content:`
-    The number of Americans ages 100 and older is projected to more than quadruple over the next three decades, from an estimated 101,000 in 2024 to about 422,000 in 2054, according to projections from the U.S. Census Bureau. Centenarians currently make up just 0.03% of the overall U.S. population, and they are expected to reach 0.1% in 2054.
-    The number of centenarians in the United States has steadily ticked up since 1950, when the Census Bureau estimates there were just 2,300 Americans ages 100 and older. (The Census Bureau uses calculated estimates for years prior to the 1990 census because it has identified large errors in the census counts of centenarians for those years.)
-    In the last three decades alone, the U.S. centenarian population has nearly tripled. The 1990 census counted around 37,000 centenarians in the country.
-
-    Today, women and White adults make up the vast majority of Americans in their 100s. This trend is largely projected to continue, though their shares will decrease:
-    In 2024, 78% of centenarians are women, and 22% are men. In 30 years, women are expected to make up 68% of those ages 100 and older, while 32% will be men.
-    77% of today’s centenarians are White. Far fewer are Black (8%), Asian (7%) or Hispanic (6%). And 1% or fewer are multiracial; American Indian or Alaska Native; or Native Hawaiian or other Pacific Islander. By 2054, White and Asian adults are projected to make up smaller shares of centenarians (72% and 5%, respectively), while the shares who are Hispanic (11%) or Black (10%) will be larger. (All racial categories here are single-race and non-Hispanic. Hispanics are of any race.)
-    The U.S. population overall is expected to trend older in the coming decades as life expectancies increase and the birth rate declines. There are currently roughly 62 million adults ages 65 and older living in the U.S., accounting for 18% of the population. By 2054, 84 million adults ages 65 and older will make up an estimated 23% of the population.
-    Even as the 65-and-older population continues to grow over the next 30 years, those in their 100s are projected to roughly double as a percentage of that age group, increasing from 0.2% of all older Americans in 2024 to 0.5% in 2054.
-
-    Centenarians around the world
-    The world is home to an estimated 722,000 centenarians, according to the United Nations’ population projections for 2024. The U.S. centenarian population is the world’s second largest – the UN estimates it at 108,000, slightly larger than the Census Bureau’s estimate.
-    Japan is the country with the greatest number of people in their 100s, at 146,000. China (60,000), India (48,000) and Thailand (38,000) round out the top five.
-    In each of these countries, centenarians make up less than 1% of the overall population, but combined, they account for more than half (55%) of the world’s population ages 100 and older.
-    Looked at another way, centenarians make up a bigger proportion of the total population in Japan, Thailand and the U.S., and smaller shares in China and India, which have large but relatively young populations. There are about 12 centenarians for every 10,000 people in Japan, five for every 10,000 in Thailand and three for every 10,000 in the U.S. That compares with fewer than one centenarian for every 10,000 people in China and India.
-    By 2054, the global centenarian population is projected to grow to nearly 4 million. China is expected to have the largest number of centenarians, with 767,000, followed by the U.S., India, Japan and Thailand. As a proportion, centenarians are projected to account for about 49 out of every 10,000 people in Thailand, 40 of every 10,000 in Japan and 14 of every 10,000 in the U.S. Six out of every 10,000 people in China will be centenarians, as will about two of every 10,000 in India.`,
+    content: article1,
     questions: [
       {
         id:'1',
@@ -74,29 +58,11 @@ export const articles: ArticleData[] = [
         questionType: 'open'
       }
     ],
-    processed:false
+    processed:true
   },
   {
     id:'2',title:'Most Americans think U.S. K-12 STEM education isn’t above average, but test results paint a mixed picture',
-    content:`
-    Most Americans believe K-12 STEM education in the United States is either average or below average compared with other wealthy nations, according to a new Pew Research Center survey.
-    Recent global standardized test scores show that students in the U.S. are, in fact, lagging behind their peers in other wealthy nations when it comes to math. But America’s students are doing better than average in science compared with pupils in these other countries.
-    
-    How do Americans think U.S. STEM education compares with other wealthy countries?
-    A horizontal stacked bar chart showing that about two-thirds of Americans see K-12 STEM education in the U.S. as average or below average.
-    Just 28% of U.S. adults say America is the best in the world or above average in K-12 science, technology, engineering and math education compared with other wealthy nations. A third say the U.S. is average, while another 32% think the U.S. is below average or the worst in K-12 STEM education.
-    Some demographic groups are more pessimistic than others about the state of U.S. STEM education. White Americans (24%) are less likely than Black (31%), Hispanic (37%) or English-speaking Asian (43%) Americans to say U.S. K-12 STEM education is the best in the world or above average. And fewer women (25%) than men (32%) say K-12 STEM education is at least above average.
-    Republicans and Democrats give similar ratings to K-12 STEM education: 31% of Democrats and Democratic-leaning independents say it is at least above average, as do 27% of Republicans and GOP leaners.
-    Americans’ views today are similar to those in a 2019 telephone survey by the Center, which was conducted before the coronavirus pandemic caused major disruptions in the country’s schools. In that survey, 31% of Americans said U.S. K-12 STEM education is the best in the world or above average compared with other nations.
-    
-    How does the U.S. compare with other countries in STEM test scores?
-    A dot plot showing that U.S. ranks below average in math, above average in science compared with other OECD countries.
-    The latest figures from the Program for International Student Assessment (PISA) show a mixed picture in U.S. math and science scores.
-    As of 2022, the U.S. was below average in math but above average in science compared with other member countries in the Organization for Economic Cooperation and Development (OECD), a group of mostly highly developed, democratic nations:
-    U.S. students ranked 28th out of 37 OECD member countries in math. Among OECD countries, Japanese students had the highest math scores and Colombian students scored lowest. The U.S. ranking was similar in 2018, the last time the test was administered. The U.S. average score for math fell by 13 percentage points between 2018 and 2022, but the U.S. was far from alone in experiencing a decline in scores. In fact, 25 of the 37 OECD countries saw at least a 10-point drop in average math scores from 2018 to 2022.
-    In science, the U.S. ranked 12th out of 37 OECD countries. Japanese students ranked highest and Mexican students ranked lowest. The U.S average science score was virtually unchanged since 2018. Across OECD countries, far fewer countries experienced a large decline in science scores than in math scores. Seven OECD countries saw their mean science scores decline by 10 points or more.
-    PISA is taken by 15-year-old students about every three years. Students in 37 OECD countries took the 2022 PISA.
-    `,
+    content:article2,
     questions: [
       {
         id:'1',
@@ -150,33 +116,11 @@ export const articles: ArticleData[] = [
         questionType: 'open'
       }
     ],
-    processed:false
+    processed:true
   },
   {
     id:'3', title:'A growing share of U.S. husbands and wives are roughly the same age',
-    content:`
-    The typical age gap between husbands and wives in the United States has narrowed over the past 20 years, continuing a 20th-century trend. On average, husbands and wives were 2.2 years apart in age in 2022, according to a new Pew Research Center analysis of U.S. Census Bureau data. This is down from 2.4 years in 2000 and 4.9 years in 1880.
-    A line chart showing that the age gap between U.S. husbands and wives has kept dropping in 21st century.
-
-    Since 1880, the share of marriages in which the husband is several years older than the wife has fallen significantly. And since 2000, marriages where the wife is significantly older than the husband have also become more rare. (This analysis is limited to opposite-sex marriages in which the spouses live together.)
-    A stacked bar chart showing that about half of opposite-sex marriages in 2022 were between spouses who were roughly the same age.
-    Overall, in 2022:
-    51% of opposite-sex marriages had spouses who were two years apart in age or less. This is up from 46% in 2000.
-    40% of marriages had a husband who was three or more years older than his wife. This is down from 43% in 2000.
-    10% of marriages had a wife who was three or more years older than her husband. This share had been on the rise during the 20th century but is now down marginally from a peak of 11% in 2000.
-    Not all family historians agree on how to define a “same-age” marriage. But whether we consider spouses of the same age to be those within two years of each other or four years, the historical trend is similar.
-    
-    Who is most likely to be in a same-age marriage?
-    Some people are more likely than others to be in a same-age marriage:
-    More than half of husbands who have at least a bachelor’s degree (55%) are in a same-age marriage, compared with 48% of husbands with some college education or less.
-    Husbands in their first marriage are much more likely than husbands who have been married more than once to be roughly the same age as their wife (56% vs. 32%). And only 35% of husbands in their first marriage have a wife three or more years younger than them, compared with 56% of remarried husbands.
-    White husbands (53%) are more likely than Hispanic (46%), Black (45%) and Asian husbands (45%) to be in a same-age marriage. And about half of Asian husbands (49%) have a wife who is three or more years younger. The shares are lower among Hispanic (42%), Black (43%) and White husbands (38%).
-    The marriage patterns are similar when looking at the wife’s characteristics rather than the husband’s.
-    Why do age gaps in marriage matter?
-    A bar chart showing that husbands in first marriages are more likely than those who’ve been married more than once to be of similar age to their wife.
-    Large age differences between husbands and wives can have important consequences for the well-being of one of the spouses. For example, someone is more likely to end up widowed if their spouse is significantly older than them.
-    As the share of marriages where the husband is older than his wife has fallen, there’s also been a decline in widowhood among older women. Today, 30% of women ages 65 and older are widows, down from 45% in 2000
-    `,
+    content: article3,
     questions: [
       {
         id:'1',
@@ -230,29 +174,11 @@ export const articles: ArticleData[] = [
         questionType: 'open'
       }
     ],
-    processed:false
+    processed:true
   },
   { id:'4',
     title:'Online shopping has grown rapidly in U.S., but most sales are still in stores',
-    content:`
-    Thanksgiving – and, more specifically, Black Friday – is the semiofficial start of the holiday shopping season in the United States. And if history is any guide, a lot of this year’s holiday shopping will be done online, and not just on Cyber Monday.
-    Like retail sales generally, online shopping reliably surges in the fourth quarter of every year. In 2022, for example, online sales – or, as the U.S. Census Bureau calls them, “retail e-commerce sales” – totaled $303.1 billion in the October-December period. That was 23.4% higher than the quarterly average for the first nine months of the year, which was $245.6 billion. (Figures in this analysis are not adjusted to account for seasonal variations.)
-    But it’s not just the dollar volume of sales that peaks in the fourth quarter – the online share of all retail sales ticks higher at year’s end, too. In the fourth quarter of 2022, for instance, online sales accounted for 16.3% of all retail sales, compared with an average of 14.1% in the first three quarters.
-    The fourth quarter of 2023 could be another big one for online shopping. Through the first three quarters of the year, retail e-commerce totaled $793.7 billion, or 14.9% of all retail sales.
-    
-    Online sales have grown over time
-    Between 2000 and 2020, growth in online sales followed a predictable pattern. The online share of retail sales jumped in the fourth quarter and then fell back, but not all the way to where it had been. Then it jumped again, to an even higher level, in the fourth quarter of the following year.
-    Two line charts showing that overall online sales leaped during the pandemic and so did the online share of total sales.
-    By such stepwise moves, the online share of total retail sales grew from 0.7% in the fourth quarter of 1999, when the U.S. Census Bureau began tracking online sales, to 12.4% in the fourth quarter of 2019.
-    The COVID-19 pandemic that swept the globe disrupted that pattern, at least temporarily, beginning in early 2020. With many physical stores shuttered and millions of Americans sheltering in their homes, online sales soared. In the second quarter of 2020, for instance, e-commerce sales totaled $205.3 billion, up 55% from the $132.3 billion recorded a year earlier. In the fourth quarter of 2020, e-commerce accounted for 16.7% of all retail sales, still the record-high share.
-    That share fell back as stores reopened and consumers gradually resumed their old shopping habits. But the e-commerce share of all retail sales has remained well above pre-pandemic levels, suggesting that the COVID-19 outbreak gave online shopping a lasting boost. In the fourth quarter of 2022, 16.3% of retail sales were online, compared with 16.1% in 2021.
-    
-    Which retailers benefit most from online sales?
-    The retailers that are getting the highest share of online sales tend to be those without physical stores.
-    Nonstore retailers, as the Census Bureau calls them, took nearly 62% of all retail e-commerce sales in the third quarter of 2023, versus just over 59% a year earlier. E-commerce sales at nonstore retailers rose 12.4% year over year, faster than the online sales sector as a whole.
-    Among retailers that do have physical stores, online sales rose 8.7% at general merchandise stores, 5.1% at food and beverage stores, and 4.7% at health and personal care stores. But online sales fell 1.6% at electronics and appliance stores, 3.2% at motor vehicle and parts dealers, and 16.2% at furniture and home furnishings stores.
-    
-    `,
+    content:article4,
     questions: [
       {
         id:'1',
@@ -306,112 +232,125 @@ export const articles: ArticleData[] = [
         questionType: 'open'
       }
     ],
-    processed:false
+    processed:true
   },
   {
     id: '5',
     title: '71% of Asian restaurants in the U.S. serve Chinese, Japanese or Thai food',
-    content: `
-      Some 12% of all restaurants in the United States serve Asian food, according to a new Pew Research Center analysis. That share is slightly higher than the 7% of the U.S. population that is Asian American.
-      A bar chart showing that 71% of Asian restaurants in the U.S. serve Chinese, Japanese or Thai food.
-
-      Around seven-in-ten of all Asian restaurants in the U.S. serve the food of just three Asian origin groups: Chinese, Japanese and Thai. These groups together comprise 33% of the U.S. Asian population.
-      Here are some other key takeaways from the analysis, which is based on data from SafeGraph, a data company that curates high-precision data on millions of places around the globe.
-      
-      Chinese establishments are by far the most common type of Asian restaurant in the U.S. Nearly four-in-ten Asian restaurants (39%) serve Chinese food, which has a long history in the U.S. By comparison, Chinese Americans account for about a quarter of Asians living in the U.S. (24%).
-      Japanese and Thai food has spread widely, despite these groups’ relatively small shares of the U.S. population. The first sushi restaurant in the U.S. opened just over 50 years ago, but today sushi is widely available from coast to coast. Restaurants that serve Japanese food account for 28% of Asian restaurants in the U.S., making it the second-most common Asian cuisine. Japanese Americans, by comparison, are the sixth-largest Asian origin group in the country, comprising 7% of the U.S. Asian population.
-      Similarly, Thai establishments make up 11% of all Asian restaurants – the third-most common cuisine behind Chinese and Japanese food – while just 2% of Asian Americans are Thai. The Thai government has historically supported efforts to increase the number of Thai restaurants around the world as a form of diplomacy.
-      Indian and Filipino establishments account for a relatively small share of Asian restaurants. Indian and Filipino restaurants account for 7% and 1% of all Asian restaurants in the U.S., respectively – even though Indian and Filipino Americans account for nearly 40% of Asians in the U.S. combined.
-      Like the Asian American population, Asian restaurants in the U.S. are heavily concentrated in a few states. More than half of U.S. Asians (55%) live in five states: California, New York, Texas, New Jersey and Washington. And just under half of all Asian restaurants – 45% – are located in those five states.
-      More than 15% of all restaurants in Hawaii, California, Washington, Nevada and New York serve Asian food, and each state has a significant Asian American population. Meanwhile, Asian restaurants account for 6% of all restaurants in Montana, North Dakota, South Dakota and West Virginia.
-      Around three-quarters of all counties in the U.S. (73%) have at least one Asian restaurant of any kind. And in eight counties with at least 15 restaurants of any type, Asian restaurants make up at least a quarter of all food establishments. Half of those counties are in California.
-      A map of the U.S. that shows in eight counties, at least one-in-four restaurants serve Asian food.
-      Chinese restaurants are found in every state and in 70% of all U.S. counties. Every state and a third or more of all counties also have at least one Japanese (45%) or Thai (33%) restaurant.
-      However, restaurants serving other types of Asian food are less widely distributed. Around one-in-five U.S. counties have Vietnamese and Indian restaurants, and fewer than 10% of counties have Filipino, Pakistani, Mongolian or Burmese restaurants.
-      Multiple maps of the U.S. that show restaurants serving Asian cuisines are found across the United States.
-      
-      Some 9% of Asian restaurants in the U.S. offer cuisines from multiple Asian origin groups. Nearly seven in every 10 of these establishments are combinations of Chinese or Japanese food, either with each other (36%) or with some other cuisine: 18% serve Chinese and Thai food, 15% serve Japanese and Thai food and 10% serve Japanese and Korean food.
-      However, these relationships are not always symmetrical. For instance, 78% of Pakistani restaurants in the U.S. also serve Indian food, but just 10% of Indian restaurants serve Pakistani food.
-  `,
+    content: article5,
   questions: [
     {
       id:'1',
-      text: 'Question 1: According to paragraph 4, what led to the cod wars of the 1970s??',
+      text: 'Question 1: What is the approximate percentage of Chinese Americans among Asians living in the United States?',
       options: [
-        {id:'Option A',text:"A. A sharp decline in cod populations" },
-        {id:'Option B',text:"B. Fishing fleets that did not want to recognize any territorial limit on fishing near coastlines"},
-        {id:'Option C',text:'C. The adoption of 12-mile limits by many countries'},
-        {id:'Option D',text:"D. Efforts by lce land to extend its jurisdiction beyond 12 miles"}],
-      selected: null
+        {id:'Option A',text:"A. 33%" },
+        {id:'Option B',text:"B. 39%"},
+        {id:'Option C',text:'C. 24%'},
+        {id:'Option D',text:"D. 12%"}],
+      selected: null,
+      questionType: 'choice'
     },
     {
       id:'2',
-      text: 'Question 2: The author mentions the model developed bv Keeling primarily in order to?',
+      text: 'Question 2: Which of the following states has a high concentration of Asian restaurants in the United States?',
       options: [
-        {id:'Option A',text:"A. During the El Nino year, they added considerably lesswood than they did in coolet vears during the periodof 1984-2000" },
-        {id:'Option B',text:"B. During the El Nino year they typically had higher ratesof photosynthesis than they did in other years duringthe period of1984 2000"},
-        {id:'Option C',text:'C. During the El Nino year, they released considerablymore oxygen than they did in cooler years during theperiod of 1984 2000'},
-        {id:'Option D',text:"D. During the El Nino year they took up considerablymore CO, than they did in cooler years during theperiod of 1984-2000."}],
-      selected: null
+        {id:'Option A',text:"A. Texas" },
+        {id:'Option B',text:"B. Hawaii"},
+        {id:'Option C',text:'C. Nevada'},
+        {id:'Option D',text:"D. Dakota"}],
+      selected: null,
+      questionType: 'choice'
     },
+    {
+      id:'3',
+      text: 'Question 3: What is the percentage of Chinese restaurants that are located in each county in the United States of America?',
+      options: [
+        {id:'Option A',text:"A. 73%" },
+        {id:'Option B',text:"B. 70%"},
+        {id:'Option C',text:'C. 45%'},
+        {id:'Option D',text:"D. 33%"}],
+      selected: null,
+      questionType: 'choice'
+    },
+    {
+      id:'4',
+      text: 'Question 4: Which of the following combinations is the second most common cuisine in Asian restaurants in the United States?',
+      options: [
+        {id:'Option A',text:"A. Chinese and Japanese food" },
+        {id:'Option B',text:"B. Chinese and Thai food"},
+        {id:'Option C',text:'C. Japanese and Thai food'},
+        {id:'Option D',text:"D. Japanese and Korean food"}],
+      selected: null,
+      questionType: 'choice'
+    },
+    {
+      id:'5',
+      text: 'Question 5: Summarize the general idea of this article',
+      options:[],
+      selected: null,
+      questionType: 'open'
+    }
   ],
-  processed:false
+  processed:true
   },
   {
     id:'6',
     title:"Black voters support Harris over Trump and Kennedy by a wide margin",
-    content: `
-    Black registered voters overwhelmingly support Vice President Kamala Harris over former President Donald Trump and Robert F. Kennedy Jr. in the presidential race.
-    A diverging bar chart showing that most Black voters favor Kamala Harris over Donald Trump and Robert F. Kennedy Jr.
-    About three-quarters of Black voters (77%) say they would vote for or lean toward Harris if the 2024 presidential election were held today. Another 13% say they would back or lean toward Trump. Just 7% would support or lean toward Kennedy, according to a Pew Research Center survey of U.S. adults conducted Aug. 5-11 (before the start of the Democratic National Convention).
-    Black voters’ support for the top of the Democratic ticket has increased over the past month. In July, before President Joe Biden withdrew from the race and endorsed Harris, 64% of Black voters supported Biden.
-    Meanwhile, the share of Black voters who say they support Trump has not changed, and the share who prefer Kennedy has fallen from 21% to 7%.
-    
-    Demographic differences in Black voters’ support for Harris 
-    Black voters differ by age in their support for Harris. While 86% of Black voters 50 and older back her, a smaller share of Black voters 18 to 49 (68%) say the same.
-    These age differences are consistent with those for Biden in an April 2024 survey. However, this is different from the pattern among registered voters of all races and ethnicities, where support for Harris is slightly higher among those 18 to 49 (49%) than those 50 and older (44%).
-    Black voters with college degrees are also more likely than those without degrees to support Harris (84% vs. 74%). This is similar to the pattern for voters overall, where Harris gets more support from college graduates (56%) than she does from those without bachelor’s degrees (41%).
-    In contrast, there are no significant differences by gender in Black voters’ support for Harris.
-    
-    More Black voters view Harris favorably now than in the spring 
-    A line chart showing that Harris’ favorability among Black voters has improved.
-    About eight-in-ten Black voters (79%) have a favorable opinion of Harris, and a similar share (80%) are happy that she is now the Democratic nominee for president.
-    While the shares of Black voters who have a favorable view of Biden (68%) and Trump (14%) have held relatively steady since July 2023, the share who have a positive view of Harris has increased.
-    Roughly two-thirds of Black voters had a favorable view of Harris in July 2023 (65%) and May 2024 (67%). This share increased to 79% in August 2024, after Harris rose to the top of the Democratic ticket.
-    Some groups of Black voters have had particularly large shifts in opinion over the past few months:
-    Women: 67% of Black women had a favorable opinion of Harris in May, compared with 82% in August.
-    Younger adults: 52% of Black voters ages 18 to 49 viewed Harris favorably in May. By August, 70% did.
-    Those with college degrees: Harris’ favorability ratings among Black voters with college degrees rose by 20 points from May to August (62% vs. 82%).
-    However, the increase in positive views of Harris is not limited to Black voters. Her favorability ratings have also increased since May among Democrats and Democratic leaners overall.
-    
-    More Black voters are motivated to vote now than last month 
-    Many voters across demographic and political groups have become more motivated to cast a ballot since July. Among Black voters specifically, the share who were extremely or very motivated to vote rose from 56% in July to 67% in August. Once again, women and those with college degrees had particularly large increases:
-    51% of Black women said they were extremely or very motivated to vote in July, compared with 67% in August.
-    Motivation to vote rose by almost 20 points from July to August among Black voters with college degrees (63% vs. 81%).
-    `,
+    content: article6,
     questions: [
       {
         id:'1',
-        text: 'Question 1: According to paragraph 4, what led to the cod wars of the 1970s??',
+        text: 'Question 1: How has black support for the Democratic frontrunners changed over the past month?',
         options: [
-          {id:'Option A',text:"A. A sharp decline in cod populations" },
-          {id:'Option B',text:"B. Fishing fleets that did not want to recognize any territorial limit on fishing near coastlines"},
-          {id:'Option C',text:'C. The adoption of 12-mile limits by many countries'},
-          {id:'Option D',text:"D. Efforts by lce land to extend its jurisdiction beyond 12 miles"}],
-        selected: null
+          {id:'Option A',text:"A. increase" },
+          {id:'Option B',text:"B. remain the same"},
+          {id:'Option C',text:'C. decrease'},
+          {id:'Option D',text:"D. not sure"}],
+        selected: null,
+        questionType: 'choice'
       },
       {
         id:'2',
-        text: 'Question 2: The author mentions the model developed bv Keeling primarily in order to?',
+        text: 'Question 2: Which of the following information about black voter support for Harris is true?',
         options: [
-          {id:'Option A',text:"A. During the El Nino year, they added considerably lesswood than they did in coolet vears during the periodof 1984-2000" },
-          {id:'Option B',text:"B. During the El Nino year they typically had higher ratesof photosynthesis than they did in other years duringthe period of1984 2000"},
-          {id:'Option C',text:'C. During the El Nino year, they released considerablymore oxygen than they did in cooler years during theperiod of 1984 2000'},
-          {id:'Option D',text:"D. During the El Nino year they took up considerablymore CO, than they did in cooler years during theperiod of 1984-2000."}],
-        selected: null
+          {id:'Option A',text:"A. Black voters aged 50 and over support her more than black voters aged 18-49." },
+          {id:'Option B',text:"B. Black voters without a degree support her more than black voters with a college degree."},
+          {id:'Option C',text:'C. Female black voters support her more than male black voters.'},
+          {id:'Option D',text:"D. Black voters with regular jobs support her more than black voters with freelance jobs."}],
+        selected: null,
+        questionType: 'choice'
       },
+      {
+        id:'3',
+        text: 'Question 3: What percentage of black voters have a favourable opinion of Harris?',
+        options: [
+          {id:'Option A',text:"A. 56%" },
+          {id:'Option B',text:"B. 41%"},
+          {id:'Option C',text:'C. 79%'},
+          {id:'Option D',text:"D. 80%"}],
+        selected: null,
+        questionType: 'choice'
+      },
+      {
+        id:'4',
+        text: 'Question 4: How has Harris\'support among Democrats and Democratic leaners changed since May?',
+        options: [
+          {id:'Option A',text:"A. increase" },
+          {id:'Option B',text:"B. remain the same"},
+          {id:'Option C',text:'C. decrease'},
+          {id:'Option D',text:"D. not sure"}],
+        selected: null,
+        questionType: 'choice'
+      },
+      {
+        id:'5',
+        text: 'Question 5: Summarize the general idea of this article',
+        options:[],
+        selected: null,
+        questionType: 'open'
+      }
     ],
-    processed:false
+    processed:true
   },    
   {
     id:'7',title:'U.S. centenarian population is projected to quadruple over the next 30 years',
@@ -3150,25 +3089,55 @@ export const articles: ArticleData[] = [
   questions: [
     {
       id:'1',
-      text: 'Question 1: According to paragraph 4, what led to the cod wars of the 1970s??',
+      text: 'Question 1: How do online shopping sales change in the fourth quarter of each year?',
       options: [
-        {id:'Option A',text:"A. A sharp decline in cod populations" },
-        {id:'Option B',text:"B. Fishing fleets that did not want to recognize any territorial limit on fishing near coastlines"},
-        {id:'Option C',text:'C. The adoption of 12-mile limits by many countries'},
-        {id:'Option D',text:"D. Efforts by lce land to extend its jurisdiction beyond 12 miles"}],
-      selected: null
+        {id:'Option A',text:"A. increase" },
+        {id:'Option B',text:"B. remain the same"},
+        {id:'Option C',text:'C. decrease'},
+        {id:'Option D',text:"D. not sure"}],
+      selected: null,
+      questionType: 'choice'
     },
     {
       id:'2',
-      text: 'Question 2: The author mentions the model developed bv Keeling primarily in order to?',
+      text: 'Question 2: What percentage of all retail sales will e-commerce account for in the fourth quarter of 2020?',
       options: [
-        {id:'Option A',text:"A. During the El Nino year, they added considerably lesswood than they did in coolet vears during the periodof 1984-2000" },
-        {id:'Option B',text:"B. During the El Nino year they typically had higher ratesof photosynthesis than they did in other years duringthe period of1984 2000"},
-        {id:'Option C',text:'C. During the El Nino year, they released considerablymore oxygen than they did in cooler years during theperiod of 1984 2000'},
-        {id:'Option D',text:"D. During the El Nino year they took up considerablymore CO, than they did in cooler years during theperiod of 1984-2000."}],
-      selected: null
+        {id:'Option A',text:"A. 14.1%" },
+        {id:'Option B',text:"B. 16.3%"},
+        {id:'Option C',text:'C. 14.7%'},
+        {id:'Option D',text:"D. 16.7%"}],
+      selected: null,
+      questionType: 'choice'
     },
-    
+    {
+      id:'3',
+      text: 'Question 3: What percentage of all retail e-commerce sales did non-store retailers account for in Q3 2023?',
+      options: [
+        {id:'Option A',text:"A. 62%" },
+        {id:'Option B',text:"B. 59%"},
+        {id:'Option C',text:'C. 49%'},
+        {id:'Option D',text:"D. 32%"}],
+      selected: null,
+      questionType: 'choice'
+    },
+    {
+      id:'4',
+      text: 'Question 4: Among retailers with brick-and-mortar shops, what is the difference between the growth rates of online sales in general merchandise stores and food and beverage shops?',
+      options: [
+        {id:'Option A',text:"A. 4.2%" },
+        {id:'Option B',text:"B. 2.7%"},
+        {id:'Option C',text:'C. 3.6%'},
+        {id:'Option D',text:"D. 4.0%"}],
+      selected: null,
+      questionType: 'choice'
+    },
+    {
+      id:'5',
+      text: 'Question 5： Summarize the general idea of this article',
+      options:[],
+      selected: null,
+      questionType: 'open'
+    }
   ],
   processed:true
 },
@@ -3909,28 +3878,58 @@ export const articles: ArticleData[] = [
       }
     ],
     questions: [
-        {
-          id:'1',
-          text: 'Question 1: The passage supports which of the following statementsabout the trees in the La Selva study?',
-          options: [
-            {id:'Option A',text:"A. During the El Nino year, they added considerably lesswood than they did in coolet vears during the periodof 1984-2000" },
-            {id:'Option B',text:"B. During the El Nino year they typically had higher ratesof photosynthesis than they did in other years duringthe period of1984 2000"},
-            {id:'Option C',text:'C. During the El Nino year, they released considerablymore oxygen than they did in cooler years during theperiod of 1984 2000'},
-            {id:'Option D',text:"D. During the El Nino year they took up considerablymore CO, than they did in cooler years during theperiod of 1984-2000."}],
-          selected: null
-        },
-        {
-          id:'2',
-          text: 'Question 2: The author mentions the model developed bv Keeling primarily in order to?',
-          options: [
-            {id:'Option A',text:"A. During the El Nino year, they added considerably lesswood than they did in coolet vears during the periodof 1984-2000" },
-            {id:'Option B',text:"B. During the El Nino year they typically had higher ratesof photosynthesis than they did in other years duringthe period of1984 2000"},
-            {id:'Option C',text:'C. During the El Nino year, they released considerablymore oxygen than they did in cooler years during theperiod of 1984 2000'},
-            {id:'Option D',text:"D. During the El Nino year they took up considerablymore CO, than they did in cooler years during theperiod of 1984-2000."}],
-          selected: null
-        },
-        
-      ],
+      {
+        id:'1',
+        text: 'Question 1: What is the approximate percentage of Chinese Americans among Asians living in the United States?',
+        options: [
+          {id:'Option A',text:"A. 33%" },
+          {id:'Option B',text:"B. 39%"},
+          {id:'Option C',text:'C. 24%'},
+          {id:'Option D',text:"D. 12%"}],
+        selected: null,
+        questionType: 'choice'
+      },
+      {
+        id:'2',
+        text: 'Question 2: Which of the following states has a high concentration of Asian restaurants in the United States?',
+        options: [
+          {id:'Option A',text:"A. Texas" },
+          {id:'Option B',text:"B. Hawaii"},
+          {id:'Option C',text:'C. Nevada'},
+          {id:'Option D',text:"D. Dakota"}],
+        selected: null,
+        questionType: 'choice'
+      },
+      {
+        id:'3',
+        text: 'Question 3: What is the percentage of Chinese restaurants that are located in each county in the United States of America?',
+        options: [
+          {id:'Option A',text:"A. 73%" },
+          {id:'Option B',text:"B. 70%"},
+          {id:'Option C',text:'C. 45%'},
+          {id:'Option D',text:"D. 33%"}],
+        selected: null,
+        questionType: 'choice'
+      },
+      {
+        id:'4',
+        text: 'Question 4: Which of the following combinations is the second most common cuisine in Asian restaurants in the United States?',
+        options: [
+          {id:'Option A',text:"A. Chinese and Japanese food" },
+          {id:'Option B',text:"B. Chinese and Thai food"},
+          {id:'Option C',text:'C. Japanese and Thai food'},
+          {id:'Option D',text:"D. Japanese and Korean food"}],
+        selected: null,
+        questionType: 'choice'
+      },
+      {
+        id:'5',
+        text: 'Question 5: Summarize the general idea of this article',
+        options:[],
+        selected: null,
+        questionType: 'open'
+      }
+    ],
     processed:true
   },
   {
@@ -4771,25 +4770,55 @@ export const articles: ArticleData[] = [
     questions: [
       {
         id:'1',
-        text: 'Question 1: The passage supports which of the following statementsabout the trees in the La Selva study?',
+        text: 'Question 1: How has black support for the Democratic frontrunners changed over the past month?',
         options: [
-          {id:'Option A',text:"A. During the El Nino year, they added considerably lesswood than they did in coolet vears during the periodof 1984-2000" },
-          {id:'Option B',text:"B. During the El Nino year they typically had higher ratesof photosynthesis than they did in other years duringthe period of1984 2000"},
-          {id:'Option C',text:'C. During the El Nino year, they released considerablymore oxygen than they did in cooler years during theperiod of 1984 2000'},
-          {id:'Option D',text:"D. During the El Nino year they took up considerablymore CO, than they did in cooler years during theperiod of 1984-2000."}],
-        selected: null
+          {id:'Option A',text:"A. increase" },
+          {id:'Option B',text:"B. remain the same"},
+          {id:'Option C',text:'C. decrease'},
+          {id:'Option D',text:"D. not sure"}],
+        selected: null,
+        questionType: 'choice'
       },
       {
         id:'2',
-        text: 'Question 2: The author mentions the model developed bv Keeling primarily in order to?',
+        text: 'Question 2: Which of the following information about black voter support for Harris is true?',
         options: [
-          {id:'Option A',text:"A. During the El Nino year, they added considerably lesswood than they did in coolet vears during the periodof 1984-2000" },
-          {id:'Option B',text:"B. During the El Nino year they typically had higher ratesof photosynthesis than they did in other years duringthe period of1984 2000"},
-          {id:'Option C',text:'C. During the El Nino year, they released considerablymore oxygen than they did in cooler years during theperiod of 1984 2000'},
-          {id:'Option D',text:"D. During the El Nino year they took up considerablymore CO, than they did in cooler years during theperiod of 1984-2000."}],
-        selected: null
+          {id:'Option A',text:"A. Black voters aged 50 and over support her more than black voters aged 18-49." },
+          {id:'Option B',text:"B. Black voters without a degree support her more than black voters with a college degree."},
+          {id:'Option C',text:'C. Female black voters support her more than male black voters do.'},
+          {id:'Option D',text:"D. Black voters with regular jobs support her more than black voters with freelance jobs."}],
+        selected: null,
+        questionType: 'choice'
       },
-      
+      {
+        id:'3',
+        text: 'Question 3: What percentage of black voters have a favourable opinion of Harris?',
+        options: [
+          {id:'Option A',text:"A. 56%" },
+          {id:'Option B',text:"B. 41%"},
+          {id:'Option C',text:'C. 79%'},
+          {id:'Option D',text:"D. 80%"}],
+        selected: null,
+        questionType: 'choice'
+      },
+      {
+        id:'4',
+        text: 'Question 4: How has Harris\'support among Democrats and Democratic leaners changed since May?',
+        options: [
+          {id:'Option A',text:"A. increase" },
+          {id:'Option B',text:"B. remain the same"},
+          {id:'Option C',text:'C. decrease'},
+          {id:'Option D',text:"D. not sure"}],
+        selected: null,
+        questionType: 'choice'
+      },
+      {
+        id:'5',
+        text: 'Question 5: Summarize the general idea of this article',
+        options:[],
+        selected: null,
+        questionType: 'open'
+      }
     ],
   processed:true
   }

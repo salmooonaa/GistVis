@@ -42,7 +42,7 @@ const runTypeCheck = async (
     format_instructions: parser.getFormatInstructions(),
     paragraph: "User:" + textContent,
   });
-
+  console.log(response)
   return response as GistFactTypeAnnotation;
 };
 

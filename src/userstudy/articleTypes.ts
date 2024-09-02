@@ -14,7 +14,7 @@ export interface IQuestion {
 export type UnprocessedArticle = {
   id: string;
   title: string;
-  content: string; 
+  content: string ; 
   questions: IQuestion[];
   processed: false;
 };

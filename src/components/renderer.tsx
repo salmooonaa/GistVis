@@ -34,23 +34,23 @@ const ArtcleProcess = ({llmarticle}: {llmarticle: paragraphSpec[]}) => {
     value: (item: GistvisSpec) => <ValueTextRenderer gistvisSpec={item} />,
     fallback: (item: GistvisSpec) => <FallBackCase gistvisSpec={item} />,
   };
-  console.log(JSON.stringify(llmarticle, null, 2))
+  // console.log(JSON.stringify(llmarticle, null, 2))
 
   const checkDataspecValidity = (item: GistvisSpec) => {
     let dataSpec = item.dataSpec ?? [];
-    if (dataSpec.length === 0) {
-      return false;
-    }
-    else {
-      let categoryKeyList = lodash.uniq(dataSpec.map((data) => data.categoryKey));
-      let valueKeyList = lodash.uniq(dataSpec.map((data) => data.valueKey));
-      if (categoryKeyList.length > 1 || valueKeyList.length > 1) {
-        return false;
-      }
-      else {
+    // if (dataSpec.length === 0) {
+    //   return false;
+    // }
+    // else {
+    //   let categoryKeyList = lodash.uniq(dataSpec.map((data) => data.categoryKey));
+    //   let valueKeyList = lodash.uniq(dataSpec.map((data) => data.valueKey));
+    //   if (categoryKeyList.length > 1 || valueKeyList.length > 1) {
+    //     return false;
+    //   }
+    //   else {
         return true;
-      }
-    }
+    //   }
+    // }
     
   }
 
