@@ -34,7 +34,9 @@ export const articles: ArticleData[] = [
           {id:'Option A',text:"A. White" },
           {id:'Option B',text:"B. Black"},
           {id:'Option C',text:'C. Asian'},
-          {id:'Option D',text:"D. Hispanic"}],
+          {id:'Option D',text:"D. Hispanic"},
+          {id:'Option E',text:"E. multiracial; American Indian or Alaska Native; or Native Hawaiian or other Pacific Islander"}
+        ],
         selected: null,
         questionType: 'choice'
       },
@@ -77,12 +79,13 @@ export const articles: ArticleData[] = [
       },
       {
         id:'2',
-        text: 'Question 2: Which demographic group is most pessimistic about the state of STEM education in the United States?',
+        text: 'Question 2: Which demographic group is most optimistic about the state of STEM education in the United States?',
         options: [
           {id:'Option A',text:"A. White" },
           {id:'Option B',text:"B. Black"},
           {id:'Option C',text:'C. Asian'},
-          {id:'Option D',text:"D. Hispanic"}],
+          {id:'Option D',text:"D. Hispanic"}
+        ],
         selected: null,
         questionType: 'choice'
       },
@@ -1130,7 +1133,8 @@ export const articles: ArticleData[] = [
           {id:'Option A',text:"A. White" },
           {id:'Option B',text:"B. Black"},
           {id:'Option C',text:'C. Asian'},
-          {id:'Option D',text:"D. Hispanic"}],
+          {id:'Option D',text:"D. Hispanic"},
+          {id:'Option E',text:"E. multiracial; American Indian or Alaska Native; or Native Hawaiian or other Pacific Islander"}],
         selected: null,
         questionType: 'choice'
       },
@@ -1833,7 +1837,7 @@ export const articles: ArticleData[] = [
       },
       {
         id:'2',
-        text: 'Question 2: Which demographic group is most pessimistic about the state of STEM education in the United States?',
+        text: 'Question 2: Which demographic group is most optimistic about the state of STEM education in the United States?',
         options: [
           {id:'Option A',text:"A. White" },
           {id:'Option B',text:"B. Black"},
