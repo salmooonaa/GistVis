@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useAtom } from 'jotai';
+import { articleIdAtom } from '../../globalState';
 const generateUniqueIdentifier = () => Math.random().toString(36).substr(2, 9);
 const useTrackVisit = (id:string) => {
+    const [articleId, ] = useAtom(articleIdAtom);
     const [visitCount, setVisitCount] = useState(0);
     const stayStartTimeRef = useRef<number | null>(null); 
     const [identifier, setID] = useState(id);
@@ -17,7 +20,8 @@ const useTrackVisit = (id:string) => {
         const data = {
           identifier: identifier,
           visitCount: visitCount,
-          stayTime: stayTime
+          stayTime: stayTime,
+          articleId: articleId
         };
     
         fetch('http://localhost:5000/api/trackVisit', {
