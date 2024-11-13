@@ -26,8 +26,7 @@ src/
 │       └── components/ # Visualization-related components
 │           ├── ChartComponent.tsx
 │           └── GraphComponent.tsx
-
-
+```
 
 ## Purpose of Each Folder
 
