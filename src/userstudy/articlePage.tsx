@@ -8,14 +8,14 @@ import {
     ProportionTextRenderer,
     RankTextRenderer,
     ValueTextRenderer,
-  } from "../visualizer/renderer/rendererList";
-import TrendTextRenderer from "../visualizer/renderer/trendTextRenderer";
-import { GistvisSpec, InsightType, paragraphSpec } from "../visualizer/types";
-import { recommendValidTypes } from "../visualizer/utils/utils";
-import FallBackCase from "../visualizer/widgets/fallbackVis";
-import ArtcleProcess from '../components/renderer';
-import { ArticleData, IQuestion } from './articleTypes';
-import { articles } from './articledata';
+  } from "../modules/visualizer/renderer/rendererList";
+import TrendTextRenderer from "../modules/visualizer/renderer/trendTextRenderer";
+import { GistvisSpec, InsightType, paragraphSpec } from "../modules/visualizer/types";
+import { recommendValidTypes } from "../modules/visualizer/utils/utils";
+import FallBackCase from "../modules/visualizer/widgets/fallbackVis";
+import ArtcleProcess from '../demo/renderer';
+import { ArticleData, IQuestion } from './articles/articleTypes';
+import { articles } from './articles/articledata';
 import "./us.css"
 import { Space } from 'antd';
 

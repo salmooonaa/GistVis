@@ -1,4 +1,4 @@
-import { paragraphSpec } from "../visualizer/types";
+import { paragraphSpec } from "../../modules/visualizer/types";
 
 export interface IQuestion {
   id: string;           

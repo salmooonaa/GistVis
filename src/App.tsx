@@ -1,8 +1,8 @@
-import "./components/page.css";
+import "./style/page.css";
 import React, { useRef, useState } from "react";
-import HomePage from "./userstudy/page1";
-import InteractivePage from "./userstudy/page2";
-import PublicityPage from "./Demo"; 
+import HomePage from "./userstudy/homePage";
+import InteractivePage from "./userstudy/articlePage";
+import PublicityPage from "./demo/Demo"; 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Button, Flex } from "antd";
 

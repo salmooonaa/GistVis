@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useAtom } from 'jotai';
-import { articleIdAtom } from '../../globalState';
+import { articleIdAtom } from '../../../globalState';
 const generateUniqueIdentifier = () => Math.random().toString(36).substr(2, 9);
 const useTrackVisit = (id:string) => {
     const [articleId, ] = useAtom(articleIdAtom);

@@ -4,8 +4,8 @@ import React from "react";
 // import Piechart from "./widgets/piechart";
 // import Extremechart from "./widgets/maxmin";
 // import { demo2_1 } from "../demo/demo2_1";
-import "./page.css";
-import { GistvisSpec, InsightType, paragraphSpec } from "../visualizer/types";
+import "../style/page.css";
+import { GistvisSpec, InsightType, paragraphSpec } from "../modules/visualizer/types";
 import {
   ComparisonTextRenderer,
   ExtremeTextRenderer,
@@ -14,9 +14,9 @@ import {
   RankTextRenderer,
   ValueTextRenderer,
   TrendTextRenderer,
-} from "../visualizer/renderer/rendererList";
-import { recommendValidTypes } from "../visualizer/utils/utils";
-import FallBackCase from "../visualizer/widgets/fallbackVis";
+} from "../modules/visualizer/renderer/rendererList";
+import { recommendValidTypes } from "../modules/visualizer/utils/utils";
+import FallBackCase from "../modules/visualizer/widgets/fallbackVis";
 import lodash from "lodash"
 
 const ArtcleProcess = ({llmarticle}: {llmarticle: paragraphSpec[]}) => {

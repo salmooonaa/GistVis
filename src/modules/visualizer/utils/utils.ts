@@ -1,4 +1,4 @@
-import { gistKB } from "../../lm/visKB";
+import { gistKB } from "../../llm/visKB";
 import { GistvisSpec, InsightType } from "../types";
 
 export const capitalizeFirstLetter = (str: string) => {

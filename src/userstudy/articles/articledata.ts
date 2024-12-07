@@ -1,5 +1,5 @@
 import { ArticleData } from './articleTypes';
-import { article1, article2, article3, article4, article5, article6} from './data/articleList'
+import { article1, article2, article3, article4, article5, article6} from './unprocessed articles/articleList'
 export const articles: ArticleData[] = [
   {
     id:'1',title:'U.S. centenarian population is projected to quadruple over the next 30 years',

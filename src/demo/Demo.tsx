@@ -8,13 +8,13 @@ import {
   Progress,
   Flex,
 } from "antd";
-import THEME from "./style/theme";
-import ArtcleProcess from "./components/renderer";
-import Editor from "./components/editor";
-import { DemoPage } from "./visualizer/demoPage";
+import THEME from "../style/theme";
+import ArtcleProcess from "./renderer";
+import Editor from "./editor";
+import { DemoPage } from "./demoPage";
 import React, { useRef, useState } from "react";
-import { paragraphSpec } from "./visualizer/types";
-import { processStageAtom } from "./globalState";
+import { paragraphSpec } from "../modules/visualizer/types";
+import { processStageAtom } from "../globalState";
 import { useAtom } from "jotai";
 
 const { Header, Content, Footer } = Layout;
@@ -45,7 +45,6 @@ const PublicityPage = () => {
                 </Text>
                 <Divider style={{ margin: "0 0 2% 0" }} />
                 <Editor
-                  // changeArticle={changeArticle}
                   changeLlmArticle={setLlmArticle}
                 />
               </Col>
@@ -58,7 +57,6 @@ const PublicityPage = () => {
                   <Text style={{ whiteSpace: "nowrap" }}>Progress: </Text>
                   <Progress percent={processStage * 25} />
                 </Flex>
-                {/* <ArticleWithImage article={article} /> */}
                 <ArtcleProcess llmarticle={llmarticle} />
               </Col>
             </Row>

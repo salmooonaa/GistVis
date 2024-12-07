@@ -4,9 +4,10 @@ import {
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
 import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
-import { gistKB } from "./visKB";
+import { gistKB } from "../visKB";
+import { paragraphSpec, UnitSegmentSpec, GistvisSpec } from "../../visualizer/types";
 
-const splitInsight = async (model: ChatOpenAI<ChatOpenAICallOptions>, textContent: string) => {
+const splitInsight = async (model: ChatOpenAI<ChatOpenAICallOptions>, paragraphList: string[]) => {
   const parser = new CustomListOutputParser({ separator: "<section>" });
 
   // easy support for added insight types, no prompt change required
@@ -27,21 +28,30 @@ const splitInsight = async (model: ChatOpenAI<ChatOpenAICallOptions>, textConten
     parser,
   ]);
 
-  // console.log(parser.getFormatInstructions());
+  const segmentationResult = await Promise.all(
+    paragraphList.map(async (textContent) => {
+      const response = await divchain.invoke({ paragraph: "User:" + textContent });
+      return response
+        .filter((paragraph) => paragraph.trim() !== "")
+        .map((paragraph) => paragraph.replace("</section>", ""));
+    })
+  );
 
-  const response = await divchain.invoke({
-    paragraph: "User:" + textContent,
-  });
-  // console.dir(response);
-  const updatedResponse1 = response.filter(
-    (paragraph) => paragraph.trim() !== ""
+  const gistParagraphSpecList: paragraphSpec[] = segmentationResult.map(
+    (item: string[], paragraphIdx: number) => ({
+      paragraphIdx,
+      paragraphContent: item.map((sentence: string, segmentIdx: number) => ({
+        id: `p${paragraphIdx}s${segmentIdx}`,
+        unitSegmentSpec: {
+          insightType: "noType",
+          segmentIdx,
+          context: sentence.trim(),
+        } as UnitSegmentSpec,
+      } as GistvisSpec)),
+    })
   );
-  const updatedResponse = updatedResponse1.map((paragraph) =>
-    paragraph.replace("</section>", "")
-  );
-  // const updatedResponse = response.map(paragraph => paragraph.replace("original_text:", ""));
-  return updatedResponse;
-  // return response
+
+  return gistParagraphSpecList;
 };
 
 export default splitInsight;
