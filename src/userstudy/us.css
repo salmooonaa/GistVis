@@ -13,11 +13,42 @@
     width: 12px;
   }
   
+  .content-wrapper::-webkit-scrollbar {
+    width: 10px; /* 设置滚动条宽度 */
+  }
+  
   .content-wrapper::-webkit-scrollbar-thumb {
-    background-color: darkgrey;
-    border-radius: 10px;
+    background-color: rgba(76, 144, 226, 0.3); /* 蓝色，透明度为 0.7 */
+    border-radius: 10px; /* 圆角 */
   }
   
   .content-wrapper::-webkit-scrollbar-track {
-    background-color: lightgrey;
+    background-color: rgba(240, 240, 240, 0.3); /* 浅灰色，透明度为 0.5 */
   }
+
+  .content-wrapper1 {
+    width: 100%; 
+    max-width: 100%; 
+    overflow: auto; 
+    max-height: 400px; 
+    word-wrap: break-word; 
+  }
+  
+  .content-wrapper1::-webkit-scrollbar {
+    width: 12px;
+  }
+  
+  .content-wrapper1::-webkit-scrollbar {
+    width: 10px; /* 设置滚动条宽度 */
+  }
+  
+  .content-wrapper1::-webkit-scrollbar-thumb {
+    background-color: rgba(76, 144, 226, 0.3); /* 蓝色，透明度为 0.7 */
+    border-radius: 10px; /* 圆角 */
+  }
+  
+  .content-wrapper1::-webkit-scrollbar-track {
+    background-color: rgba(240, 240, 240, 0.3); /* 浅灰色，透明度为 0.5 */
+  }
+  
+  
