@@ -37,7 +37,10 @@ export const extractDataForParagraphs = async (
             const result = await extractor(model, input);
             return {
               ...gistvisSpec,
-              dataSpec: result.dataSpec || [],
+              dataSpec: result.dataSpec ? result.dataSpec.map(item => ({
+                ...item,
+                valueValue: item.valueValue !== undefined ? parseFloat(item.valueValue.toFixed(2)) : item.valueValue,
+              })) : [],
               unitSegmentSpec: {
                 ...gistvisSpec.unitSegmentSpec,
                 inSituPosition: result.pos ?? [],

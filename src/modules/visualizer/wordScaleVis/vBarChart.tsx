@@ -110,7 +110,7 @@ const VerticalBarChart = ({
       const refCase = dataSpec[0];
       const currentCase =
         dataSpec.find((d) => d.categoryValue === selectedEntity) ?? refCase;
-      const diff = Math.abs(refCase.valueValue - currentCase.valueValue);
+      const diff = parseFloat(Math.abs(refCase.valueValue - currentCase.valueValue).toFixed(2));
       return (
         <div
           style={{
