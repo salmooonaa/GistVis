@@ -1,5 +1,3 @@
-import { Layout } from "antd";
-
 const THEME = {
   token: {
     // colorPrimary: "#B3E5FC",
@@ -32,7 +30,7 @@ const THEME = {
       handleActiveColor: "#000000",
       dotBorderColor: "#000000",
       dotActiveBorderColor: "#000000",
-    },
+    }
   },
 };
 
