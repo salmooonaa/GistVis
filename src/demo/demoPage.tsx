@@ -223,10 +223,12 @@ export const DemoPage = () => {
           Sample Paragraph
         </Text>
         <Text style={{ fontSize: "16px", fontStyle: "italic" }}>
-          Interactive word-scale in situ visualization
+          Word-scale in situ visualization
         </Text>
         <Divider style={{ margin: "0 0 0 0" }} />
-        <ArtcleProcess llmarticle={sampleArticle} />
+        <div style={{ width: "50%", margin: "0 auto" }}>
+          <ArtcleProcess llmarticle={sampleArticle} />
+        </div>
       </Layout>
     </div>
   );

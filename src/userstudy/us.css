@@ -1,23 +1,53 @@
 .pre-wrap {
-    white-space: pre-wrap;
-  }/* CSS样式 */
+  white-space: pre-wrap;
+}
+
 .content-wrapper {
-    width: 100%; 
-    max-width: 100%; 
-    overflow: auto; 
-    max-height: 700px; 
-    word-wrap: break-word; 
-  }
-  
-  .content-wrapper::-webkit-scrollbar {
-    width: 12px;
-  }
-  
-  .content-wrapper::-webkit-scrollbar-thumb {
-    background-color: darkgrey;
-    border-radius: 10px;
-  }
-  
-  .content-wrapper::-webkit-scrollbar-track {
-    background-color: lightgrey;
-  }
+  width: 100%;
+  max-width: 100%;
+  overflow: auto;
+  max-height: 700px;
+  word-wrap: break-word;
+}
+
+.content-wrapper::-webkit-scrollbar {
+  width: 12px;
+}
+
+.content-wrapper::-webkit-scrollbar {
+  width: 10px;
+}
+
+.content-wrapper::-webkit-scrollbar-thumb {
+  background-color: rgba(76, 144, 226, 0.3);
+  border-radius: 10px;
+}
+
+.content-wrapper::-webkit-scrollbar-track {
+  background-color: rgba(240, 240, 240, 0.3);
+}
+
+.content-wrapper1 {
+  width: 100%;
+  max-width: 100%;
+  overflow: auto;
+  max-height: 400px;
+  word-wrap: break-word;
+}
+
+.content-wrapper1::-webkit-scrollbar {
+  width: 12px;
+}
+
+.content-wrapper1::-webkit-scrollbar {
+  width: 10px;
+}
+
+.content-wrapper1::-webkit-scrollbar-thumb {
+  background-color: rgba(76, 144, 226, 0.3);
+  border-radius: 10px;
+}
+
+.content-wrapper1::-webkit-scrollbar-track {
+  background-color: rgba(240, 240, 240, 0.3);
+}

@@ -101,9 +101,13 @@ export const getProductionVisSpec = (
   });
 
   if (lastEnd < text.length) {
+    // check if the trimmed last character is a punctuaation
+    const lastChar = text.slice(text.length - 1);
+    const isPunctuation = /[.,;!?]/.test(lastChar);
+    const endPos = isPunctuation ? text.length - 1 : text.length;
     contentArray.push({
       displayType: "text",
-      content: text.slice(lastEnd, text.length - 1),
+      content: text.slice(lastEnd, endPos),
     });
     if (displayPos === "none") {
       contentArray.push({
@@ -113,7 +117,7 @@ export const getProductionVisSpec = (
     }
     contentArray.push({
       displayType: "text",
-      content: text.slice(text.length - 1) + " ",
+      content: text.slice(endPos) + " ",
     });
   }
   return contentArray;

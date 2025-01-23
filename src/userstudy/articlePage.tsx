@@ -1,18 +1,6 @@
 // src/InteractivePage.js
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-    ComparisonTextRenderer,
-    ExtremeTextRenderer,
-    PlainTextRenderer,
-    ProportionTextRenderer,
-    RankTextRenderer,
-    ValueTextRenderer,
-  } from "../modules/visualizer/renderer/rendererList";
-import TrendTextRenderer from "../modules/visualizer/renderer/trendTextRenderer";
-import { GistvisSpec, InsightType, paragraphSpec } from "../modules/visualizer/types";
-import { recommendValidTypes } from "../modules/visualizer/utils/utils";
-import FallBackCase from "../modules/visualizer/widgets/fallbackVis";
 import ArtcleProcess from '../demo/renderer';
 import { ArticleData, IQuestion } from './articles/articleTypes';
 import { articles } from './articles/articledata';

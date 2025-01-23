@@ -1,22 +1,6 @@
 import { convert } from "html-to-text";
-import { ChatZhipuAI } from "@langchain/community/chat_models/zhipuai";
 import { ChatOpenAI } from "@langchain/openai";
-import { OpenAI } from "@langchain/openai";
-import { GistFactTypeAnnotation } from "./types";
 import splitInsight from "./discoverer/discoverer";
-import {
-  GistvisSpec,
-  paragraphSpec,
-} from "../visualizer/types";
-import lodash from "lodash";
-import {
-  specComparison,
-  specExtreme,
-  specProportion,
-  specRank,
-  specTrend,
-  specValue,
-} from "./extractor/specParsersList";
 import { processParagraphs } from "./annotator/annotator";
 import { extractDataForParagraphs } from "./extractor/extractor";
 
