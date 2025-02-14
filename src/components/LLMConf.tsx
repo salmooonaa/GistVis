@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
-import ArtcleProcess from "../demo/renderer";
-import { paragraphSpec } from "../modules/visualizer/types";
-import generateGistVisMarkup from "../modules/llm/llm";
-import { ChatOpenAI } from "@langchain/openai"; // 引入 ChatOpenAI 模块
-import "./LLMConf.css"; // 引入 CSS 文件
+import { ChatOpenAI } from "@langchain/openai";
+import "./LLMConf.css";
 import { ConfigProvider, Layout, Typography, Button, Flex, Divider,Row,Tooltip } from "antd";
 import THEME from "../style/theme";
 
@@ -68,7 +65,7 @@ const LLMConfigurationPage = () => {
     if (!useFetch){return 0}
     const newMessages = [...messages, inp];
     setMessages(newMessages);
-    // 调用 LLM API 获取 AI 回复
+    // call LLM API to get AI reply
     if (!envVariables.REACT_APP_LLM_URL_BASE) {
       console.error("REACT_APP_LLM_URL_BASE is not defined");
       return -flag;
@@ -107,7 +104,7 @@ const LLMConfigurationPage = () => {
       setMessages([...newMessages, aiReply]);
       return flag;
     } catch (error) {
-      console.error("调用失败:", error);
+      console.error("Failed:", error);
       setMessages([...newMessages, "[ERROR] FAILED TO FETCH"]);
       return -flag;
     }
@@ -119,8 +116,7 @@ const LLMConfigurationPage = () => {
     const newMessages = [...langchainMessages, inp];
     setLangchainMessages(newMessages);
 
-    // 调用 langchain API 获取 AI 回复
-    // console.log(inp)
+    // call langchain API to get AI reply
     try {
       const response = await chat()?.invoke(inp);
       console.log("response gotten");
@@ -131,7 +127,7 @@ const LLMConfigurationPage = () => {
       setLangchainMessages([...newMessages, aiReply]);
       return flag;
     } catch (error) {
-      console.error("调用失败:", error);
+      console.error("Failed:", error);
       setLangchainMessages([...newMessages, "[ERROR] FAILED TO FETCH"]);
       return -flag;
     }
