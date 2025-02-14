@@ -1,0 +1,261 @@
+/* body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+} */
+
+.llm-config-page-content * {
+  font-size: 22px;
+}
+
+input {
+  background-color: transparent;
+}
+
+.llm-config-page {
+  font-family: Arial, sans-serif;
+  position: relative;
+  max-height: 100vh;
+  height: 100vh;
+  overflow: scroll;
+}
+.llm-config-page::-webkit-scrollbar {
+  display: none;
+}
+.llm-config-page-content {
+  padding: 2%;
+}
+.page-title {
+  font-size: 20px;
+  font-weight: bold;
+  background-color: #fff;
+}
+.page-subtitle {
+  font-size: 16px;
+  font-style: italic;
+  background-color: #fff;
+}
+
+.chat-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+.chat-messages {
+  border: 1px solid #ccc;
+  padding: 2%;
+  height: 200px;
+  overflow-y: scroll;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  width: 85%;
+  align-self: center;
+  height: 25vh;
+}
+
+.chat-messages::-webkit-scrollbar {
+  display: none;
+}
+
+.chat-message {
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: #e1f5fe;
+}
+
+.input-container {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid #333;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.chat-input {
+  flex-grow: 1;
+  padding: 20px;
+  border-radius: 5px;
+  height: 60px;
+  width: 95%;
+  font-size: 16px;
+  border: none;
+  outline: none;
+  user-select: text;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: fit-content;
+  min-height: inherit;
+  overflow: hidden;
+}
+
+.input-bottom-area {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-self:end;
+}
+
+.button-container {
+  display: flex;
+  margin-right: 10px;
+  margin-bottom: 4px;
+  position: relative;
+}
+
+.button-container * {
+    background-color: transparent;
+    color: #666;
+    text-align: center;
+}
+
+.send-button, .clear-button, .edit-button {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+  padding: 10px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  position: relative;
+}
+
+.send-button:hover::after, .clear-button:hover::after, .edit-button:hover::after {
+  content: attr(data-hover-text);
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #666;
+  box-shadow: #666 0 0 10px;
+  color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+.send-button:hover, .clear-button:hover, .edit-button:hover {
+  /* border: 1px solid #333; */
+  box-shadow: #333 0 0 10px;
+}
+
+.send-button {
+  /* background-color: #4caf50; */
+}
+
+.clear-button {
+  /* background-color: #f44336; */
+}
+
+.edit-button {
+  /* background-color: #2196f3; */
+}
+
+.toggle-button {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 10px 0;
+  margin: 0 0;
+  background-color: #4caf50;
+  color: white;
+  width: 90%;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.chat-box-label {
+  text-align:center;
+}
+
+.toggle-button.off {
+  background-color: #aaa;
+  text-decoration: line-through;
+}
+
+.hover-buttons {
+  position: absolute;
+  top: -60px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.hover-button {
+  background-color: #bbb;
+  color: #fff;
+  margin-left: 10px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 5px;
+  transform: translateY(-20px)
+}
+
+.env-variables {
+  margin-top: 20px;
+}
+
+.env-variable {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  width: 95%;
+}
+
+.env-input {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 50%;
+}
+
+.env-dialog {
+  /* position: fixed; */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* background-color: rgba(0, 0, 0, 0.5); */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.env-dialog * {
+  font-size: 22px;
+}
+.env-input {
+  font-size: 20px;
+}
+
+.close-button {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
