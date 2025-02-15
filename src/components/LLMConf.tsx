@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { ChatOpenAI } from "@langchain/openai";
-import "./LLMConf.css";
-import { ConfigProvider, Layout, Typography, Button, Flex, Divider,Row,Tooltip } from "antd";
+// import "./LLMConf.css";
+import { ConfigProvider, Layout, Typography, Button, Flex, Divider,Row,Tooltip, Input } from "antd";
 import THEME from "../style/theme";
+import TextArea from "antd/es/input/TextArea";
+import { noConflict, set } from "lodash";
 
 const { Header, Content } = Layout;
 const { Text } = Typography;
@@ -16,8 +18,19 @@ const LLMConfigurationPage = () => {
   const [useFetch, setUseFetch] = useState(true);
   const [useLangchain, setUseLangchain] = useState(true);
   const [chatState, setChatState] = useState(0);
+  const [modifyingConfig, setModifyingConfig] = useState(false);
+
+  const [waiting, setWaiting] = useState(false);
   const FETCH_FLAG = 1;
   const LANGCHIAN_FLAG = 10;
+
+  const [hoveringConfigLoadButton, setHoveringConfigLoadButton] = useState(false);
+  const [hoveringConfigUrlInput,setHoveringConfigUrlInput] = useState(false);
+  const [hoveringConfigKeyInput,setHoveringConfigKeyInput] = useState(false);
+  const [hoveringConfigModelInput,setHoveringConfigModelInput] = useState(false);
+
+  const hoveringBgColor = "rgba(131, 131, 131, 0.8)";
+  const hoveringShadow = "0 0 15px rgba(60,60,60,1)";
 
   useEffect(() => {
     const storedEnvVariables = localStorage.getItem("envVariables");
@@ -48,12 +61,14 @@ const LLMConfigurationPage = () => {
     if(chatInput.trim() == ""){
       return;
     }
+    setWaiting(true);
     const inp = chatInput.trim();
     setChatInput("");
     const res = sendMessageToBoth(inp);
     const fetchRes = await res[0];
     const langchainRes = await res[1];
     setChatState(fetchRes + langchainRes);
+    setWaiting(false);
   }
   const sendMessageToBoth = (inp:string) => {
     // same time
@@ -134,8 +149,7 @@ const LLMConfigurationPage = () => {
   };
 
   const handleEnvChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
-    console.log(1);
-    
+    console.log(key);
     setEnvVariables({
       ...envVariables,
       [key]: e.target.value
@@ -163,8 +177,10 @@ const LLMConfigurationPage = () => {
     setLangchainMessages([]);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
+      if (e.shiftKey) return;
+      e.preventDefault();
       handleSendMessage();
     }
   };
@@ -185,179 +201,447 @@ const LLMConfigurationPage = () => {
     setUseLangchain(!useLangchain);
   };
 
+  const getConfigUrlInputBgColor = (key:string) => {
+    if(key === "REACT_APP_LLM_URL_BASE"){
+      return hoveringConfigUrlInput?hoveringBgColor:"rgba(0, 0, 0, 0)";
+    }
+    if(key === "REACT_APP_LLM_API_KEY"){
+      return hoveringConfigKeyInput?hoveringBgColor:"rgba(0, 0, 0, 0)";
+    }
+    if(key === "REACT_APP_LLM_MODEL_NAME"){
+      return hoveringConfigModelInput?hoveringBgColor:"rgba(0, 0, 0, 0)";
+    }
+    return "rgba(0, 0, 0, 0)";
+  }
+
+  const getConfigUrlInputShadow = (key:string) => {
+    if(key === "REACT_APP_LLM_URL_BASE"){
+      return hoveringConfigUrlInput?hoveringShadow:"none";
+    }
+    if(key === "REACT_APP_LLM_API_KEY"){
+      return hoveringConfigKeyInput?hoveringShadow:"none";
+    }
+    if(key === "REACT_APP_LLM_MODEL_NAME"){
+      return hoveringConfigModelInput?hoveringShadow:"none";
+    }
+    return "none";
+  }
+
+  const handleMouseEnterConfigUrlInput = (key:string) => {
+    if(key === "REACT_APP_LLM_URL_BASE"){
+      setHoveringConfigUrlInput(true);
+    }
+    if(key === "REACT_APP_LLM_API_KEY"){
+      setHoveringConfigKeyInput(true);
+    }
+    if(key === "REACT_APP_LLM_MODEL_NAME"){
+      setHoveringConfigModelInput(true);
+    }
+  }
+
+  const handleMouseLeaveConfigUrlInput = (key:string) => {
+    if(key === "REACT_APP_LLM_URL_BASE"){
+      setHoveringConfigUrlInput(false);
+    }
+    if(key === "REACT_APP_LLM_API_KEY"){
+      setHoveringConfigKeyInput(false);
+    }
+    if(key === "REACT_APP_LLM_MODEL_NAME"){
+      setHoveringConfigModelInput(false);
+    }
+  }
+  
+  // html
   return (
-      <ConfigProvider theme={THEME}>
-    <div className="llm-config-page">
-        <Header>
-          <Flex align="center" justify="space-between">
-            <Text
-              style={{ fontSize: "24px", padding: "2%", fontWeight: "bold" }}
-            >
-              GistVis
-            </Text>
-            <div>
-              <Button href="/" type="link">Home</Button>
-              <Button href="/interactive" type="link">User study interface</Button>
-              <Button href="/llm_setting" type="link">Setting</Button>
-            </div>
-          </Flex>
-        </Header>
-      <div className="llm-config-page-content">
-        <Layout dir="verticle">
-          <Text style={{ fontSize: "20px", fontWeight: "bold" }}>
-            Sample Paragraph
-            </Text>
-            <Text style={{ fontSize: "16px", fontStyle: "italic" }}>
-            {
-              useFetch?
-                (useLangchain?
-                  // 1,1
-                  (
-                    chatState === + FETCH_FLAG + LANGCHIAN_FLAG ? "(Both Suceess)":
-                    chatState === - FETCH_FLAG - LANGCHIAN_FLAG ? "(Both Failed)":
-                    chatState === + FETCH_FLAG - LANGCHIAN_FLAG ? "(Fetch ✔, Langchain ✘)":
-                    chatState === + FETCH_FLAG - LANGCHIAN_FLAG ? "(Fetch ✘, Langchain ✔)":
-                    "ready"//first time
+    <ConfigProvider theme={THEME}>
+          <Header>
+            <Flex align="center" justify="space-between">
+              <Text
+                style={{ fontSize: "24px", padding: "2%", fontWeight: "bold" }}
+              >
+                GistVis
+              </Text>
+              <div>
+                <Button href="/" type="link">Home</Button>
+                <Button href="/interactive" type="link">User study interface</Button>
+                <Button href="/llm_setting" type="link">Setting</Button>
+              </div>
+            </Flex>
+          </Header>
+        <Content style={{ padding: "2%", margin: "0 auto" }}>
+          {/* start-subtitle */}
+          <Layout dir="verticle">
+            <Text style={{ fontSize: "20px", fontWeight: "bold" }}>
+              Test and Configuration for LLM
+              </Text>
+              <Text style={{ fontSize: "16px", fontStyle: "italic" }}>
+              {
+                waiting?
+                ("(Wait for the result...)"):
+                (useFetch?
+                  (useLangchain?
+                    // 1,1
+                    (
+                      chatState === + FETCH_FLAG + LANGCHIAN_FLAG ? "(Both Suceess)":
+                      chatState === - FETCH_FLAG - LANGCHIAN_FLAG ? "(Both Failed)":
+                      chatState === + FETCH_FLAG - LANGCHIAN_FLAG ? "(Fetch ✔, Langchain ✘)":
+                      chatState === + FETCH_FLAG - LANGCHIAN_FLAG ? "(Fetch ✘, Langchain ✔)":
+                      "ready"//first time
+                    ):
+                    // 1,0
+                    (
+                      chatState === + FETCH_FLAG ? "(Fetch Suceess)":
+                      chatState === - FETCH_FLAG ? "(Fetch Failed)":
+                      "ready"//first time
+                    )
                   ):
-                  // 1,0
-                  (
-                    chatState === + FETCH_FLAG ? "(Fetch Suceess)":
-                    chatState === - FETCH_FLAG ? "(Fetch Failed)":
-                    ""//first time
-                  )
-                ):
-                (useLangchain?
-                  // 0,1
-                  (
-                    chatState === + LANGCHIAN_FLAG ? "(Langchain Suceess)":
-                    chatState === - LANGCHIAN_FLAG ? "(Langchain Failed)":
-                    ""//first time
-                  ):
-                  // 0,0
-                  (
-                    ""
+                  (useLangchain?
+                    // 0,1
+                    (
+                      chatState === + LANGCHIAN_FLAG ? "(Langchain Suceess)":
+                      chatState === - LANGCHIAN_FLAG ? "(Langchain Failed)":
+                      "ready"//first time
+                    ):
+                    // 0,0
+                    (
+                      "both closed"
+                    )
                   )
                 )
-            }
-          </Text>
-          <Divider style={{ margin: "0 0 0 0" }} />
-        </Layout>
-        <Content style={{ padding: "2%", margin: "0 auto" }}>
-        <div className="chat-container">
-          <div className="chat-box">
-            <button
-              className={`toggle-button ${useFetch ? "" : "off"}`}
-              onClick={handleToggleFetch}
-            >
-              Chat using Fetch
-            </button>
-            <Text className="chat-box-label">Check API Available</Text>
-            <div className="chat-messages">
-              {messages.map((msg, index) => (
-                <div key={index} className="chat-message">{msg}</div>
-              ))}
-            </div>
-          </div>
-          <div className="chat-box">
-            <button
-              className={`toggle-button ${useLangchain ? "" : "off"}`}
-              onClick={handleToggleLangchain}
-            >
-              Chat using Langchain
-            </button>
-            <Text className="chat-box-label">Check Langchain Supportable</Text>
-            <div className="chat-messages">
-              {langchainMessages.map((msg, index) => (
-                <div key={index} className="chat-message">{msg}</div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="env-dialog">
-          <Row>
-          <Tooltip 
-            title={
-              <div style={{ lineHeight: 1.5 }}>
-                Load from .env if you are first time to use this page.
-                <br />
-                Your modifications will be saved in local storage and load automatically next time.
-                <br />
-                Any changes will be applied immediately.
-              </div>
-            }
-            overlayStyle={{ fontSize: "14px", color: "blue" }}
-          >
-            <Text 
-              style={{ fontSize: "22px", fontWeight: "bold", margin: "10px", cursor: "pointer", alignContent: "center" }}
-            >
-              ENV CONFIGURATION
+              }
             </Text>
-          </Tooltip>
-          <Tooltip 
-            title={
-              <div style={{ lineHeight: 1.5 }}>
-                Reset the configuration to the default values from .env.
-              </div>
-            }
-            overlayStyle={{ fontSize: "14px", color: "blue" }}
-          >
-            <Button 
-              onClick={handleLoadEnvVariables}
-              title="Load from .env"
-              style={{ margin: "10px", alignContent: "center" }}
+            <Divider style={{ margin: "0 0 0 0" }} />
+          </Layout>
+          {/* end-subtitle */}
+          {/* start-chat-box */}
+          <Flex style={{ justifyContent: "space-between",gap: "20px", paddingTop: "25px" }}>
+            <Layout style={{ width: "45%", gap: "10px" }}>
+              <Button
+                style={{backgroundColor: `${useFetch?"#4caf50":"#aaa"}`}}
+                onClick={handleToggleFetch}
+              >
+                {useFetch?"Chat using Fetch":"Chat using Fetch (Closed)"}
+              </Button>
+              <Text style={{textAlign:"center"}}>
+                Check API Available
+              </Text>
+              <Content
+                style={{
+                  padding: "12px 12px 20px",
+                  border: "1px solid #ccc",
+                  backgroundColor: "#f9f9f9",
+                  borderRadius: "10px",
+                  height: "300px",
+                  maxHeight:"300px",
+                  overflowY: "scroll",
+                }}
+                className="hide-scrollbar"
+              >
+                {messages.map((msg, index) => (
+                  <Content
+                    key={index}
+                    style={{backgroundColor: `${msg.includes("[ERROR]")?"#fbb":"#e1f5fe"}`, borderRadius: "5px", margin: "10px", padding: "5px"}}
+                  >
+                    {msg}
+                  </Content>
+                ))}
+              </Content>
+            </Layout>
+            <Layout style={{ width: "45%", gap: "10px"}}>
+              <Button
+                style={{backgroundColor: `${useLangchain?"#4caf50":"#aaa"}`}}
+                onClick={handleToggleLangchain}
+              >
+                {useLangchain?"Chat using Langchain":"Chat using Langchain (Closed)"}
+              </Button>
+              <Text style={{textAlign:"center"}}>
+              Check Langchain Supportable
+              </Text>
+              <Content
+                style={{
+                  padding: "12px 12px 20px",
+                  border: "1px solid #ccc",
+                  backgroundColor: "#f9f9f9",
+                  borderRadius: "10px",
+                  height: "300px",
+                  maxHeight:"300px",
+                  overflowY: "scroll",
+                }}
+                className="hide-scrollbar"
+              >
+                {langchainMessages.map((msg, index) => (
+                  <Content
+                    key={index}
+                    style={{backgroundColor: `${msg.includes("[ERROR]")?"#fbb":"#e1f5fe"}`, borderRadius: "5px", margin: "10px", padding: "5px"}}
+                  >
+                    {msg}
+                  </Content>
+                ))}
+              </Content>
+            </Layout>
+          </Flex>
+          <Layout style={{
+            width: "100%",
+            gap: "10px",
+            paddingTop: "25px",
+            textAlign: "center",
+            alignItems: "center"
+          }}>
+            <Button
+              style={{
+                marginTop: "20px",
+                width: "200px",
+                display: "inline-block"
+              }}
+              onClick={() => { setModifyingConfig(true) }}
             >
-              Load .env
+              Config Setting
             </Button>
-          </Tooltip>
-          </Row>
-          {Object.keys(envVariables).map((key) => (
-            <div key={key} className="env-variable">
-              <Text>{key === 'REACT_APP_LLM_URL_BASE' ? 'Base Url (with the suffix /v1)' : key === 'REACT_APP_LLM_MODEL_NAME' ? 'Model Name' : key === 'REACT_APP_LLM_API_KEY' ? 'Api Key (without the prefix Bearer)' : key}</Text>
-              <input
-                type="text"
-                value={envVariables[key as keyof typeof envVariables] ?? ""}
-                onChange={(e) => handleEnvChange(e, key)}
-                className="env-input"
-              />
-            </div>
-          ))}
-        </div>
-        {Array.from({ length: 10 }).map((_, index) => (
-          <br key={index} />
-        ))}
-        </Content>
-        <div className="input-container">
-          <input
-            type="text"
-            value={chatInput}
-            onChange={(e) => setChatInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Enter your word..."
-            className="chat-input"
-          />
-          <div className="input-bottom-area">
-            <div></div>
-            <div className="button-container" onMouseLeave={handleMouseLeave}>
-              <button
-                onClick={handleSendMessage}
-                className="send-button"
-                onMouseEnter={handleMouseEnter}
-                data-hover-text="Send"
+            <Text
+              style={{
+                fontSize: "17px",
+                fontStyle: "italic",
+                marginTop: "10px",
+                display: "inline-block",
+                color: "#555"
+              }}
+            >
+              You can change the configuration of the LLM model here.
+              <br />
+              Default values are loaded from .env file.
+              <br />
+              The configuration will be saved in local storage.
+              <br />
+              Any changes will be applied immediately.
+              <br />
+              You can also load the configuration from .env file manually.
+            </Text>
+          </Layout>
+          {/* end-chat-box */}
+          {/* start-ENVCONF */}
+            <Content
+              style={{
+                position: "fixed",
+                left: "0",
+                top: "0",
+                width: "100vw",
+                height: "100vh",
+                backgroundColor: "rgba(0, 0, 0, 0.6)",
+                display: modifyingConfig ? "block" : "none",
+                backdropFilter: "blur(5px)",
+                WebkitBackdropFilter: "blur(5px)",
+                zIndex: 1,
+              }}
+              onClick={()=>{setModifyingConfig(false)}}
+            >
+              <Layout
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  position: "fixed",
+                  left: "50%",
+                  top: "5%",
+                  transform: "translate(-50%, 0)",
+                  backgroundColor: "rgba(0, 0, 0, 0)",
+                }}
               >
-                ▷
-              </button>
-              <button
-                onClick={handleClearMessages}
-                className="clear-button"
-                data-hover-text="Clear"
+                <Text 
+                  style={{ fontSize: "22px", fontWeight: "bold", margin: "10px", cursor: "pointer", alignContent: "center",color: "#fff" }}
+                >
+                  ENV CONFIGURATION
+                </Text>
+                <Text 
+                  style={{
+                    textAlign: "center",
+                    fontSize: "17px",
+                    fontStyle: "italic",
+                    marginTop: "10px",
+                    display: "inline-block",
+                    color: "#ddd"
+                  }}
+                >
+                    Press <span style={{fontWeight:"bold"}}>anywhere</span> to close the configuration setting.
+                    <br /><br />
+                    Load from .env if you are first time to use this page.
+                    <br />
+                    Your modifications will be saved in local storage and load automatically next time.
+                    <br />
+                    Any changes will be applied immediately.
+                    <br /><br /><br />
+                </Text>
+                <Tooltip 
+                  title={
+                    <div style={{ lineHeight: 1.5 }}>
+                      Reset the configuration to the default values from .env.
+                    </div>
+                  }
+                  overlayStyle={{ fontSize: "14px", color: "blue" }}
+                >
+                  <Button 
+                    onMouseEnter={()=>{setHoveringConfigLoadButton(true)}}
+                    onMouseLeave={()=>{setHoveringConfigLoadButton(false)}}
+                    onClick={(e) => {
+                      handleLoadEnvVariables();
+                      e.stopPropagation();
+                    }}
+                    style={{
+                      margin: "10px",
+                      alignContent: "center",
+                      border: "none",
+                      cursor: "pointer",
+                      color: "#ddd",
+                      backgroundColor: `${hoveringConfigLoadButton?hoveringBgColor:"rgba(0, 0, 0, 0)"}`,
+                      boxShadow: `${hoveringConfigLoadButton?hoveringShadow:"none"}`,
+                    }}
+                  >
+                    <span style={{textDecoration:"underline"}}>Click me to load configuration parameters from .env manually</span>
+                  </Button>
+                </Tooltip>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontSize: "17px",
+                    fontWeight: "bold",
+                    color: "#ddd",
+                    display: "inline-block",
+                    margin: "10px",
+                  }}
+                >
+                  <br />
+                  Customize the configuration of the LLM model here.
+                </Text>
+                
+                {Object.keys(envVariables).map((key) => (
+                  <div key={key} className="env-variable">
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontSize: "17px",
+                        fontWeight: "bold",
+                        color: "#ddd",
+                        display: "inline-block",
+                        margin: "10px",
+                        left: "50%",
+                        transform: "translate(-50%, 0)",
+                        position: "relative",
+                      }}
+                    >
+                      <br />
+                      Enter Your {key === 'REACT_APP_LLM_URL_BASE' ? 'Base Url (without the suffix /chat/completions)' : key === 'REACT_APP_LLM_MODEL_NAME' ? 'Model Name' : key === 'REACT_APP_LLM_API_KEY' ? 'Api Key (without the prefix Bearer)' : key} here
+                    </Text>
+                    <Input
+                      onMouseEnter={()=>{handleMouseEnterConfigUrlInput(key)}}
+                      onMouseLeave={()=>{handleMouseLeaveConfigUrlInput(key)}}
+                      type="text"
+                      value={envVariables[key as keyof typeof envVariables] ?? ""}
+                      onChange={(e) => handleEnvChange(e, key)}
+                      style={{
+                        width: "80vw",
+                        textAlign: "center",
+                        border: "none",
+                        color: "#ddd",
+                        left: "50%",
+                        transform: "translate(-50%, 0)",
+                        position: "relative",
+                        backgroundColor: getConfigUrlInputBgColor(key),
+                        boxShadow: getConfigUrlInputShadow(key),
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                ))}
+              </Layout>
+          </Content>
+          {/* end-ENVCONF */}
+          {/* {Array.from({ length: 10 }).map((_, index) => (
+            <br key={index} />
+          ))} */}
+          {/* fixed-input-container */}
+          <Content style={{
+            position: "fixed",
+            bottom: "20px",
+            left: "20px",
+            right: "20px",
+            border: "1px solid #ccc",
+            width: "calc(100% - 40px)",
+            minHeight: "80px",
+            borderRadius: "10px",
+          }}>
+            <TextArea
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Enter your word..."
+              style={{
+                width: "100%",
+                padding: "5px 10px",
+                border: "none",
+                backgroundColor:"transparent",
+                resize: "none",
+              }}
+              className="hide-scrollbar"
+            />
+            <Flex
+              justify="space-between"
+              style={{
+                position: "absolute",
+                right: "10px",
+                bottom: "10px",
+                width: "80px",
+              }}
+            >
+              <div></div>
+              <Flex
+                className="button-container"
+                style={{
+                  gap: "10px",
+                  position: "absolute",
+                  right: "0",
+                  bottom: "0",
+                }}
               >
-                X
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+                <Tooltip
+                  title={
+                    <div style={{ lineHeight: 1.5 }}>
+                      Send the message to the AI model.
+                      <br />
+                      You can also press Enter to send the message.
+                    </div>
+                  }
+                  overlayStyle={{ fontSize: "14px", color: "blue" }}
+                >
+                  <Button
+                    onClick={handleSendMessage}
+                    style={{
+                      fontSize: "15px",
+                      border: "none",
+                    }}
+                  >
+                    ▷
+                  </Button>
+                </Tooltip>
+                <Tooltip
+                  title={
+                    <div style={{ lineHeight: 1.5 }}>
+                      Clear Messages
+                    </div>
+                  }
+                  overlayStyle={{ fontSize: "14px", color: "blue" }}
+                >
+                  <Button
+                    onClick={handleClearMessages}
+                    style={{
+                      fontSize: "15px",
+                      border: "none",
+                    }}
+                  >
+                    X
+                  </Button>
+                </Tooltip>
+              </Flex>
+            </Flex>
+          </Content>
+          </Content>
     </ConfigProvider>
   );
 };

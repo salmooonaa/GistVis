@@ -143,3 +143,7 @@
 .slick-arrow.slick-next {
   font-size: 20px !important;
 }
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
