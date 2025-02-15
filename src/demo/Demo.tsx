@@ -90,6 +90,7 @@ const PublicityPage = () => {
             <div>
               <Button href="/" type="link">Home</Button>
               <Button href="/interactive" type="link">User study interface</Button>
+              <Button href="/llm_setting" type="link">Setting</Button>
             </div>
           </Flex>
         </Header>
