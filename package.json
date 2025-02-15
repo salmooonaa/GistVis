@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/d3": "^7.4.3",
     "@types/html-to-text": "^9.0.4",
+    "@types/jest": "^29.5.14",
     "@types/lodash": "^4.17.7",
     "@types/numeral": "^2.0.5",
     "@types/quill": "^2.0.14",
@@ -37,6 +38,7 @@
     "react-router-dom": "^6.26.1",
     "react-scripts": "5.0.1",
     "stream-browserify": "^3.0.0",
+    "ts-jest": "^29.2.5",
     "typescript": "^5.5.4",
     "util": "^0.12.5",
     "web-vitals": "^2.1.4"
