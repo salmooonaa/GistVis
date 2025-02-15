@@ -7,6 +7,7 @@
 .prettierrc
 .env
 
+
 # testing
 /coverage
 
@@ -27,3 +28,5 @@ yarn-error.log*
 /src/api_key.js
 
 .env
+
+package-lock.json
