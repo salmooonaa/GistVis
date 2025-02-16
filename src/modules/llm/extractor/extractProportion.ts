@@ -25,7 +25,7 @@ const extrProp = async (
     "noType"
   );
   const parser = new CombiningOutputParser(specParser, typeParser);
-
+  
   const extrpropchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
         ${SystemInstruction}
@@ -41,12 +41,13 @@ const extrProp = async (
     model as any,
     parser,
   ]);
-
+  
   const response = await extrpropchain.invoke({
     format_instructions: parser.getFormatInstructions(),
     insightType: "insightType:" + textContent.type,
     paragraph: "User:" + textContent.text,
   });
+  
   // console.dir(response);
   return response as ExtractorType;
   // const newResponse = TransformData(response);
