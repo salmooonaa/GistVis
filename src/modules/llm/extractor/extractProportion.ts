@@ -38,7 +38,7 @@ const extrProp = async (
         The user intends to use a pie chart to represent the proportion. Please find the most suitable location for placing the pie chart and output it.
         \n{format_instructions}\n{insightType}\n{paragraph}
         `),
-    model,
+    model as any,
     parser,
   ]);
 
