@@ -12,6 +12,7 @@ yarn.lock*
 
 # testing
 /coverage
+/clipboard
 
 # production
 /build

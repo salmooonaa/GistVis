@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ReactNode } from "react";
 import { ChatOpenAI } from "@langchain/openai";
 import { ConfigProvider, Layout, Typography, Button, Flex, Divider,Tooltip, Input } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import THEME from "@src/style/theme";
 
 import PipelineBlock from "@src/components/playground/pipelineBlock";
+import {paragraphSpec} from "@src/modules/visualizer/types";
 
 import splitInsight from "@src/modules/llm/discoverer/discoverer";
 import { processParagraphs } from "@src/modules/llm/annotator/annotator";
 import {extractDataForParagraphs} from "@src/modules/llm/extractor/extractor";
+import ArtcleProcess from "@src/demo/renderer";
 import { set } from "lodash";
 
 const { Header, Content } = Layout;
@@ -27,6 +29,11 @@ const PlaygroundPage = () => {
   // extractor
   const [extractorInputText, setExtractorInputText] = useState("");
   const [extractorOutputText, setExtractorOutputText] = useState("");
+
+  // visualizer
+  const [visualizerInputText, setVisualizerInputText] = useState("");
+  const [visualizerOutputText, setVisualizerOutputText] = useState("");
+  const [visualizerOutput, setVisualizerOutput] = useState<ReactNode>();
 
   const envVariables = JSON.parse(localStorage.getItem("envVariables") as any);
   
@@ -127,6 +134,22 @@ const PlaygroundPage = () => {
           setInputText: setExtractorInputText,
           setOutputText: setExtractorOutputText,
           envInputText: process.env.REACT_APP_DINP_EXTRACTOR||undefined,
+        })}
+
+        {/* visualizer */}
+        {PipelineBlock({
+          blockTitle: "Visualizer",
+          run: () => {
+            setVisualizerOutput(ArtcleProcess({llmarticle: JSON.parse(visualizerInputText)}));
+          },
+          inputPlaceholder: "Type extracted paragraphSpec[] JSON string here",
+          inputText: visualizerInputText,
+          lastStageOutput: extractorOutputText,
+          setInputText: setVisualizerInputText,
+          envInputText: process.env.REACT_APP_DINP_VISUALIZER||undefined,
+          resultRenderer: () => {
+            return visualizerOutput
+          }
         })}
 
         {/* end-pipelineBlock */}
