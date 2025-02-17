@@ -1,7 +1,7 @@
 import { ConfigProvider, Layout, Typography, Row, Col, Divider, Flex, Button, Carousel } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import THEME from '../style/theme';
-import ArtcleProcess from './renderer';
+import ArtcleProcess from '../modules/visualizer/renderer/renderer';
 // import Editor from "./editor";
 import { DemoPage } from './demoPage';
 import React, { useState } from 'react';
