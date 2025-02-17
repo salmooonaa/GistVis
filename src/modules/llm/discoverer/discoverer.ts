@@ -24,7 +24,7 @@ const splitInsight = async (model: ChatOpenAI<ChatOpenAICallOptions>, paragraphL
         Please enclose the sections in <seciton></section> tags.
 
         \n{paragraph}`),
-    model as any,
+    model as ChatOpenAI<ChatOpenAICallOptions>,
     parser,
   ]);
 

@@ -34,7 +34,7 @@ const runTypeCheck = async (
 
       \n{format_instructions}\n{paragraph}
       `),
-    model as any,
+    model as ChatOpenAI<ChatOpenAICallOptions>,
     parser,
   ]);
 
