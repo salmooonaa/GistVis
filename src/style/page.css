@@ -16,7 +16,7 @@
 .pos_text {
   font-size: medium;
   font-style: normal;
-  color:crimson;
+  color: crimson;
   font-weight: bold;
   font-size: 2ch;
   margin-right: 5px;
@@ -25,7 +25,7 @@
 .neg_text {
   font-size: medium;
   font-style: normal;
-  color:limegreen;
+  color: limegreen;
   font-weight: bold;
   font-size: 2ch;
   margin-right: 5px;
@@ -58,7 +58,6 @@
   font-style: normal;
   color: red;
   font-weight: bold;
-
 }
 
 .min_value {
@@ -69,8 +68,7 @@
   font-weight: bold;
 }
 
-
-.title{
+.title {
   font-size: 80px;
   font: bolder;
   position: absolute;
@@ -86,16 +84,16 @@
   transform: translate(-50%, -50%);
 }
 
-.input{
-  width: 500px; 
+.input {
+  width: 500px;
   height: 30px;
 }
 
-.input_button{
-  width: 100px; 
+.input_button {
+  width: 100px;
   height: 35px;
   position: relative;
-  left:2px;
+  left: 2px;
   display: inline-block;
   font-size: 16px;
   color: #fff;
@@ -125,11 +123,11 @@
 .ant-carousel .slick-prev:focus,
 .ant-carousel .slick-next:focus {
   font-size: inherit;
-  color:  rgba(76, 144, 226, 0.3) !important;
+  color: rgba(76, 144, 226, 0.3) !important;
 }
 
 .ant-carousel .slick-prev::before {
-  color:  rgba(76, 144, 226, 0.3) !important;
+  color: rgba(76, 144, 226, 0.3) !important;
 }
 
 .slick-arrow.slick-prev {
@@ -137,7 +135,7 @@
 }
 
 .ant-carousel .slick-next::before {
-  color:  rgba(76, 144, 226, 0.3) !important;
+  color: rgba(76, 144, 226, 0.3) !important;
 }
 
 .slick-arrow.slick-next {

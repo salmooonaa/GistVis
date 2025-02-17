@@ -1,34 +1,21 @@
-import {
-  StructuredOutputParser,
-  RegexParser,
-  CombiningOutputParser,
-  CustomListOutputParser,
-} from "langchain/output_parsers";
-import { PromptTemplate } from "@langchain/core/prompts";
-import { RunnableSequence } from "@langchain/core/runnables";
-import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
-import { GistFactTypeAnnotation } from "../types";
-import { SystemInstruction, gistKB } from "../visKB";
-import { InsightType, VisInsightType } from "../../visualizer/types";
+import { RegexParser, CombiningOutputParser } from 'langchain/output_parsers';
+import { PromptTemplate } from '@langchain/core/prompts';
+import { RunnableSequence } from '@langchain/core/runnables';
+import { ChatOpenAI, ChatOpenAICallOptions } from '@langchain/openai';
+import { GistFactTypeAnnotation } from '../types';
+import { SystemInstruction, gistKB } from '../visKB';
+import { VisInsightType } from '../../visualizer/types';
 
-const runMatch = async (
-  model: ChatOpenAI<ChatOpenAICallOptions>,
-  textContent: string,
-  candidateTypes: string[]
-) => {
-  const candidateTypesRegex = candidateTypes.join("|");
+const runMatch = async (model: ChatOpenAI<ChatOpenAICallOptions>, textContent: string, candidateTypes: string[]) => {
+  const candidateTypesRegex = candidateTypes.join('|');
   const optionNums = candidateTypes.length;
   const candidateTypesDefinition = candidateTypes
     .map((type) => {
       return gistKB[type as VisInsightType].definition;
     })
-    .join("\n");
+    .join('\n');
 
-  const typeParser = new RegexParser(
-    `/Type: (${candidateTypesRegex})/`,
-    ["type"],
-    "noType"
-  );
+  const typeParser = new RegexParser(`/Type: (${candidateTypesRegex})/`, ['type'], 'noType');
   const parser = new CombiningOutputParser(typeParser);
 
   const matchain = RunnableSequence.from([
@@ -39,15 +26,15 @@ const runMatch = async (
 
         ${candidateTypesDefinition}
 
-        \n{format_instructions}\n{paragraph}
+        \n{formatInstructions}\n{paragraph}
         `),
     model as ChatOpenAI<ChatOpenAICallOptions>,
     parser,
   ]);
 
   const response = await matchain.invoke({
-    format_instructions: parser.getFormatInstructions(),
-    paragraph: "User:" + textContent,
+    formatInstructions: parser.getFormatInstructions(),
+    paragraph: 'User:' + textContent,
   });
 
   return response as GistFactTypeAnnotation;

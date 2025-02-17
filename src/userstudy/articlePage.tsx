@@ -4,21 +4,23 @@ import { useParams, useNavigate } from 'react-router-dom';
 import ArtcleProcess from '../demo/renderer';
 import { ArticleData, IQuestion } from './articles/articleTypes';
 import { articles } from './articles/articledata';
-import "./us.css"
+import './us.css';
 import { Space } from 'antd';
 
 const InteractivePage: React.FC = () => {
-  const { pageType, pageId } = useParams<{ pageType: string, pageId: string }>();
+  const { pageType, pageId } = useParams<{
+    pageType: string;
+    pageId: string;
+  }>();
   const [articleIndex, setArticleIndex] = useState(0);
   const [article, setArticle] = useState<ArticleData | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string | null>>({});
   const [questions, setQuestions] = useState<IQuestion[]>([
     {
-      id:'',
+      id: '',
       text: '',
-      options:[],
+      options: [],
     },
-
   ]);
   const [timer, setTimer] = useState(0);
   const [timeUp, setTimeUp] = useState<boolean>(false);
@@ -31,7 +33,7 @@ const InteractivePage: React.FC = () => {
       const articleData = articles.find((article) => article.id === pageId);
       if (articleData) {
         setArticle(articleData);
-        setQuestions(articleData.questions)
+        setQuestions(articleData.questions);
         articleData.questions.forEach((_, index) => {
           selectedAnswers[articleData.questions[index].id] = null;
         });
@@ -45,9 +47,7 @@ const InteractivePage: React.FC = () => {
     if (!timerInterval.current) {
       timerInterval.current = setInterval(() => {
         if (isTimerRunning) {
-          setTimer(prev => prev + 1);
-        } else {
-          
+          setTimer((prev) => prev + 1);
         }
       }, 1000);
     }
@@ -62,21 +62,16 @@ const InteractivePage: React.FC = () => {
       }
     };
   }, [isTimerRunning]);
-  
-  const handleOptionClick = (questionIndex: number, optionIndex: number) => {
-    const newQuestions = [...questions];
-    newQuestions[questionIndex].selected = optionIndex;
-    setQuestions(newQuestions);
-  };
+
   const nextQuestion = () => {
     if (articleIndex < questions.length - 1) {
-      setArticleIndex(index => index + 1);
+      setArticleIndex((index) => index + 1);
     }
   };
 
   const prevQuestion = () => {
     if (articleIndex > 0) {
-      setArticleIndex(index => index - 1);
+      setArticleIndex((index) => index - 1);
     }
   };
 
@@ -84,9 +79,9 @@ const InteractivePage: React.FC = () => {
     const data = {
       timer,
       selectedAnswers,
-      pageId
+      pageId,
     };
-  
+
     fetch('http://localhost:5000/api/submitAnswers', {
       method: 'POST',
       headers: {
@@ -94,26 +89,28 @@ const InteractivePage: React.FC = () => {
       },
       body: JSON.stringify(data),
     })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Success:', data);
-      navigate('/');
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Success:', data);
+        navigate('/');
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
   };
 
   const renderArticleContent = () => {
     if (!article) return null;
-  
+
     if (article.processed) {
       return (
         <div>
           <h2>Processed Article {pageId}: </h2>
-          <h2 style={{ height: '20px'}}></h2>
+          <h2 style={{ height: '20px' }}></h2>
           <div className="content-wrapper">
-          <p className="pre-wrap"><ArtcleProcess llmarticle={article.content}/></p>
+            <p className="pre-wrap">
+              <ArtcleProcess llmarticle={article.content} />
+            </p>
           </div>
         </div>
       );
@@ -128,14 +125,25 @@ const InteractivePage: React.FC = () => {
       </div>
     );
   };
-  
-  const renderQuestion = (question: IQuestion, selectedAnswers: Record<string, string | null>, handleAnswerChange:(optionId: string) => void) => {
+
+  const renderQuestion = (
+    question: IQuestion,
+    selectedAnswers: Record<string, string | null>,
+    handleAnswerChange: (optionId: string) => void
+  ) => {
     if (question.questionType === 'choice') {
       return (
         <div>
           <h2>{question.text}</h2>
-          {question.options.map((option, index) => (
-            <div key={option.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+          {question.options.map((option) => (
+            <div
+              key={option.id}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '10px',
+              }}
+            >
               <button
                 key={option.id}
                 onClick={() => handleAnswerChange(option.id)}
@@ -155,13 +163,11 @@ const InteractivePage: React.FC = () => {
             </div>
           ))}
           {selectedAnswers[question.id] && (
-            <p>Selected: {question.options.find(o => o.id === selectedAnswers[question.id])?.text}</p>
+            <p>Selected: {question.options.find((o) => o.id === selectedAnswers[question.id])?.text}</p>
           )}
         </div>
       );
-    } 
-    
-    else if (question.questionType === 'open') {
+    } else if (question.questionType === 'open') {
       return (
         <div>
           <h2>{question.text}</h2>
@@ -169,7 +175,14 @@ const InteractivePage: React.FC = () => {
             value={selectedAnswers[question.id] || ''}
             onChange={(e) => handleAnswerChange(e.target.value)}
             placeholder="请输入你的答案"
-            style={{ width: '100%', minHeight: '400px', margin: '10px 0', padding: '5px', border: '1px solid #ccc', borderRadius: '5px' }}
+            style={{
+              width: '100%',
+              minHeight: '400px',
+              margin: '10px 0',
+              padding: '5px',
+              border: '1px solid #ccc',
+              borderRadius: '5px',
+            }}
           />
         </div>
       );
@@ -178,40 +191,47 @@ const InteractivePage: React.FC = () => {
   const currentQuestion = article?.questions[articleIndex];
 
   return (
-    <div style={{ display: 'flex', height: '90vh', justifyContent: 'space-between', margin:'40px', gap:'40px' }}>
+    <div
+      style={{
+        display: 'flex',
+        height: '90vh',
+        justifyContent: 'space-between',
+        margin: '40px',
+        gap: '40px',
+      }}
+    >
       <div style={{ flex: 3, padding: '20px' }}>
-        <p>
-          {renderArticleContent()}
-        </p>
-          </div>
-          <div style={{ flex: 2, padding: '20px' }}>
-            <div>
-              {currentQuestion && renderQuestion(currentQuestion, selectedAnswers, (answer) => {
-                const questionId = article.questions[articleIndex].id;
-                setSelectedAnswers((prevAnswers) => ({
-                  ...prevAnswers,
-                  [questionId]: answer
-                }));
-              })}
-            </div>
-            <div style={{ marginTop: '20px' }}>
-              <button onClick={prevQuestion} disabled={articleIndex === 0 || timeUp}>
-                Previous
-              </button>
-              <button onClick={nextQuestion} disabled={articleIndex === questions.length - 1 || timeUp}>
-                Next
-              </button>
-            </div>
-          </div>
-          <div style={{ flex: 1, padding: '20px' }}>
-            <h3>Timer: {Math.floor(timer / 60)}:{timer % 60 < 10 ? '0' + (timer % 60) : timer % 60}</h3>
-            <button onClick={() => setIsTimerRunning(!isTimerRunning)}>
-              {isTimerRunning ? 'Pause' : 'Start'}
-            </button>
-            <Space/>
-            <button onClick={submitAnswers}>Submit</button>
-          </div>
+        <p>{renderArticleContent()}</p>
+      </div>
+      <div style={{ flex: 2, padding: '20px' }}>
+        <div>
+          {currentQuestion &&
+            renderQuestion(currentQuestion, selectedAnswers, (answer) => {
+              const questionId = article.questions[articleIndex].id;
+              setSelectedAnswers((prevAnswers) => ({
+                ...prevAnswers,
+                [questionId]: answer,
+              }));
+            })}
         </div>
+        <div style={{ marginTop: '20px' }}>
+          <button onClick={prevQuestion} disabled={articleIndex === 0 || timeUp}>
+            Previous
+          </button>
+          <button onClick={nextQuestion} disabled={articleIndex === questions.length - 1 || timeUp}>
+            Next
+          </button>
+        </div>
+      </div>
+      <div style={{ flex: 1, padding: '20px' }}>
+        <h3>
+          Timer: {Math.floor(timer / 60)}:{timer % 60 < 10 ? '0' + (timer % 60) : timer % 60}
+        </h3>
+        <button onClick={() => setIsTimerRunning(!isTimerRunning)}>{isTimerRunning ? 'Pause' : 'Start'}</button>
+        <Space />
+        <button onClick={submitAnswers}>Submit</button>
+      </div>
+    </div>
   );
 };
 

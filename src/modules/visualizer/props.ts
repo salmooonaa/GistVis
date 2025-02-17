@@ -1,4 +1,4 @@
-import { DataSpec } from "./types";
+import { DataSpec } from './types';
 
 export interface HorizontalStackedBarProps {
   dataSpec: DataSpec[];
@@ -6,4 +6,3 @@ export interface HorizontalStackedBarProps {
   selectedEntity: string;
   setSelectedEntity: (entity: string) => void;
 }
-

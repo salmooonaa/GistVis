@@ -1,11 +1,11 @@
-import { paragraphSpec } from "../../modules/visualizer/types";
+import { paragraphSpec } from '../../modules/visualizer/types';
 
 export interface IQuestion {
-  id: string;           
-  text: string;          
-  options: {              
-    id: string;          
-    text: string;         
+  id: string;
+  text: string;
+  options: {
+    id: string;
+    text: string;
   }[];
   questionType?: 'choice' | 'open';
   selected?: number | null;
@@ -14,7 +14,7 @@ export interface IQuestion {
 export type UnprocessedArticle = {
   id: string;
   title: string;
-  content: string ; 
+  content: string;
   questions: IQuestion[];
   processed: false;
 };
@@ -26,5 +26,5 @@ export type ProcessedArticle = {
   questions: IQuestion[];
   processed: true;
 };
-  
+
 export type ArticleData = UnprocessedArticle | ProcessedArticle;

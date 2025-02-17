@@ -1,40 +1,22 @@
-import React, { useEffect, useState } from "react";
-import * as d3 from "d3";
-import {
-  SVG_WIDTH,
-  SVG_HEIGHT,
-  SVG_PADDING,
-  SCALE_CONST,
-  SVG_UNIT_WIDTH,
-  SVG_INTERVAL,
-} from "../constants";
-import {
-  ChartProps,
-  DataPoint,
-  DataSpec,
-  GistvisSpec,
-  LineChartProps,
-  TrendAttribute,
-} from "../types";
-import { Tooltip } from "antd";
-import { capitalizeFirstLetter } from "../utils/utils";
+import React, { useState } from 'react';
+import * as d3 from 'd3';
+import { SVG_HEIGHT, SVG_PADDING, SVG_UNIT_WIDTH, SVG_INTERVAL } from '../constants';
+import { DataPoint, LineChartProps } from '../types';
+import { Tooltip } from 'antd';
+import { capitalizeFirstLetter } from '../utils/utils';
 
-const Line = ({
-  gistvisSpec,
-  visualizeData,
-  type,
-  colorScale,
-  selectedEntity,
-  setSelectedEntity,
-}: LineChartProps) => {
+interface LineChartTooltipProps {
+  x: number;
+  y: number;
+  value: number;
+}
+
+const Line = ({ gistvisSpec, visualizeData, type, colorScale, selectedEntity, setSelectedEntity }: LineChartProps) => {
   const dataSpec = gistvisSpec.dataSpec ?? [];
   const dataset = visualizeData;
 
   const svgRef = React.useRef<SVGSVGElement>(null);
-  const lineChartWidth =
-    type === "start-end"
-      ? SVG_UNIT_WIDTH * dataset.length * 2
-      : SVG_UNIT_WIDTH * dataset.length;
+  const lineChartWidth = type === 'start-end' ? SVG_UNIT_WIDTH * dataset.length * 2 : SVG_UNIT_WIDTH * dataset.length;
   const lineChartHeight = SVG_HEIGHT;
 
   const dataPosX = dataset[dataset.length - 1].x;
@@ -70,57 +52,50 @@ const Line = ({
     .y0(yScale(0));
 
   const getTooltipContnet = (selectionVal: number | null) => {
-    if (type === "nominal") {
+    if (type === 'nominal') {
       return (
         <div
           style={{
             lineHeight: 1.1,
-            fontSize: "14px",
+            fontSize: '14px',
             color: `${lineColor}`,
-            fontWeight: "bold",
+            fontWeight: 'bold',
           }}
         >
-          {gistvisSpec.unitSegmentSpec.attribute === "positive"
-            ? "↗ increasing"
-            : "↘ decreasing"}
+          {gistvisSpec.unitSegmentSpec.attribute === 'positive' ? '↗ increasing' : '↘ decreasing'}
         </div>
       );
-    } else if (type === "trending") {
+    } else if (type === 'trending') {
       return (
         <div
           style={{
             lineHeight: 1.1,
-            fontSize: "14px",
+            fontSize: '14px',
             color: `${lineColor}`,
-            fontWeight: "bold",
+            fontWeight: 'bold',
           }}
         >
-          {gistvisSpec.unitSegmentSpec.attribute === "positive"
-            ? "↗ increased"
-            : "↘ decreased"}{" "}
+          {gistvisSpec.unitSegmentSpec.attribute === 'positive' ? '↗ increased' : '↘ decreased'}{' '}
           {dataSpec[0].valueValue}
         </div>
       );
-    } else if (type === "start-end") {
+    } else if (type === 'start-end') {
       return (
         <div
           style={{
             lineHeight: 1.1,
-            fontSize: "14px",
+            fontSize: '14px',
             color: `${lineColor}`,
-            fontWeight: "bold",
+            fontWeight: 'bold',
           }}
         >
           {capitalizeFirstLetter(dataSpec[0].valueKey) +
-            " of " +
+            ' of ' +
             dataSpec.find((d) => d.valueValue === selectionVal)?.categoryValue +
-            ": " +
+            ': ' +
             selectionVal}
-          . The{" "}
-          {gistvisSpec.unitSegmentSpec.attribute === "positive"
-            ? "↗ increase"
-            : "↘ decrease"}{" "}
-          is {Math.abs(dataSpec[1].valueValue - dataSpec[0].valueValue)}.
+          . The {gistvisSpec.unitSegmentSpec.attribute === 'positive' ? '↗ increase' : '↘ decrease'} is{' '}
+          {Math.abs(dataSpec[1].valueValue - dataSpec[0].valueValue)}.
         </div>
       );
     } else {
@@ -128,22 +103,23 @@ const Line = ({
         <div
           style={{
             lineHeight: 1.1,
-            fontSize: "14px",
+            fontSize: '14px',
             color: `${lineColor}`,
-            fontWeight: "bold",
+            fontWeight: 'bold',
           }}
         >
           {capitalizeFirstLetter(dataSpec[0].valueKey) +
-            " of " +
+            ' of ' +
             dataSpec.find((d) => d.valueValue === selectionVal)?.categoryValue +
-            ": " +
-            selectionVal}.
+            ': ' +
+            selectionVal}
+          .
         </div>
       );
     }
   };
 
-  const [tooltip, setTooltip] = useState<any>(null);
+  const [tooltip, setTooltip] = useState<LineChartTooltipProps | null>(null);
 
   const handleMouseMove = (event: React.MouseEvent<SVGSVGElement>) => {
     const svg = svgRef.current;
@@ -163,7 +139,7 @@ const Line = ({
       x: xScale(closestPoint.x),
       y: yScale(closestPoint.y),
       value: closestPoint.y,
-    });
+    } as LineChartTooltipProps);
   };
 
   const handleMouseOut = () => {
@@ -171,18 +147,14 @@ const Line = ({
   };
 
   const lineColor =
-    type === "nominal" || type === "trending" || type === "start-end"
-      ? gistvisSpec.unitSegmentSpec.attribute === "positive"
-        ? "green"
-        : "red"
+    type === 'nominal' || type === 'trending' || type === 'start-end'
+      ? gistvisSpec.unitSegmentSpec.attribute === 'positive'
+        ? 'green'
+        : 'red'
       : colorScale(dataSpec[0].categoryValue);
 
   return (
-    <Tooltip
-      title={tooltip != null ? getTooltipContnet(tooltip.value) : ""}
-      placement="bottom"
-      color="#ffffff"
-    >
+    <Tooltip title={tooltip != null ? getTooltipContnet(tooltip.value) : ''} placement="bottom" color="#ffffff">
       <svg
         ref={svgRef}
         width={lineChartWidth + SVG_INTERVAL}
@@ -193,29 +165,16 @@ const Line = ({
         onMouseMove={handleMouseMove}
         onMouseOut={handleMouseOut}
       >
-        <path
-          d={areaGenerator(dataset) || undefined}
-          fill={`url(#${gistvisSpec.id}-areaGradient`}
-        />
-        <path
-          d={lineGenerator(dataset) || undefined}
-          fill="none"
-          strokeWidth={1.5}
-        />
+        <path d={areaGenerator(dataset) || undefined} fill={`url(#${gistvisSpec.id}-areaGradient`} />
+        <path d={lineGenerator(dataset) || undefined} fill="none" strokeWidth={1.5} />
         <defs>
-          <linearGradient
-            id={`${gistvisSpec.id}-areaGradient`}
-            x1="0%"
-            y1="0%"
-            x2="0%"
-            y2="100%"
-          >
+          <linearGradient id={`${gistvisSpec.id}-areaGradient`} x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor={lineColor} stopOpacity="1" />
             <stop offset="100%" stopColor={lineColor} stopOpacity="0.2" />
           </linearGradient>
         </defs>
 
-        {type === "trending" && (
+        {type === 'trending' && (
           <path
             d={lineGeneratorDifference(differenceLineDataset) || undefined}
             fill="none"
@@ -254,21 +213,8 @@ const Line = ({
           </marker>
         </defs>
 
-        <path
-          d={lineGenerator(dataset) || undefined}
-          fill="none"
-          stroke={lineColor}
-          strokeWidth={1}
-        />
-        {tooltip && (
-          <circle
-            cx={tooltip.x}
-            cy={tooltip.y}
-            r={2}
-            fill="black"
-            opacity={0.9}
-          />
-        )}
+        <path d={lineGenerator(dataset) || undefined} fill="none" stroke={lineColor} strokeWidth={1} />
+        {tooltip && <circle cx={tooltip.x} cy={tooltip.y} r={2} fill="black" opacity={0.9} />}
       </svg>
     </Tooltip>
   );

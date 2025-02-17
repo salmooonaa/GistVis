@@ -1,8 +1,8 @@
-import { convert } from "html-to-text";
-import { ChatOpenAI } from "@langchain/openai";
-import splitInsight from "./discoverer/discoverer";
-import { processParagraphs } from "./annotator/annotator";
-import { extractDataForParagraphs } from "./extractor/extractor";
+import { convert } from 'html-to-text';
+import { ChatOpenAI } from '@langchain/openai';
+import splitInsight from './discoverer/discoverer';
+import { processParagraphs } from './annotator/annotator';
+import { extractDataForParagraphs } from './extractor/extractor';
 
 const removeHTML = (input: string) => {
   const plainText = convert(input, {
@@ -14,14 +14,14 @@ const removeHTML = (input: string) => {
 
   // split by \n
   const textContent = plainText
-    .split("\n")
+    .split('\n')
     .map((line) => line.trim())
-    .filter((line) => line !== "");
+    .filter((line) => line !== '');
 
   return textContent;
 };
 
-const generateGistVisMarkup = async (input: string, setStage: any) => {
+const generateGistVisMarkup = async (input: string, setStage: (stage: number) => void) => {
   const paragraphList = removeHTML(input);
   // check if textContent is empty, if so, return null
   if (paragraphList.length === 0) {
@@ -44,35 +44,35 @@ const generateGistVisMarkup = async (input: string, setStage: any) => {
     topP: 1,
     n: 1,
     streaming: false,
-    openAIApiKey: localStorage.getItem('REACT_APP_LLM_API_KEY')||process.env.REACT_APP_LLM_API_KEY||'',
-    modelName: localStorage.getItem('REACT_APP_LLM_MODEL_NAME')||process.env.REACT_APP_LLM_MODEL_NAME||'',
+    openAIApiKey: localStorage.getItem('REACT_APP_LLM_API_KEY') || process.env.REACT_APP_LLM_API_KEY || '',
+    modelName: localStorage.getItem('REACT_APP_LLM_MODEL_NAME') || process.env.REACT_APP_LLM_MODEL_NAME || '',
     configuration: {
-      apiKey: localStorage.getItem('REACT_APP_LLM_API_KEY')||process.env.REACT_APP_LLM_API_KEY||'',
-      baseURL: localStorage.getItem('REACT_APP_LLM_URL_BASE')||process.env.REACT_APP_LLM_URL_BASE||'',
+      apiKey: localStorage.getItem('REACT_APP_LLM_API_KEY') || process.env.REACT_APP_LLM_API_KEY || '',
+      baseURL: localStorage.getItem('REACT_APP_LLM_URL_BASE') || process.env.REACT_APP_LLM_URL_BASE || '',
     },
     verbose: false,
   });
 
-  /** 
-   * Step 1: Discoverer 
+  /**
+   * Step 1: Discoverer
    * @param model: ChatOpenAI<ChatOpenAICallOptions> - An instance of the OpenAI chat model used for segmentation.
    * @param paragraphList: string[] - A list of paragraphs provided by the user for segmentation.
-   * 
+   *
    * @returns {Promise<paragraphSpec[]>} - Returns a list of paragraph specification objects (`paragraphSpec`)
    */
   const gistParagraphSpecList = await splitInsight(model, paragraphList);
   setStage(1); // Stage 1 complete
 
-  /** 
+  /**
    * Step 2: Annotator
-   * @param {paragraphSpec[]} gistParagraphSpecList - The list of paragraphs to be processed. Each paragraph contains multiple `GistvisSpec` 
+   * @param {paragraphSpec[]} gistParagraphSpecList - The list of paragraphs to be processed. Each paragraph contains multiple `GistvisSpec`
    * objects, each representing a smaller segment of the paragraph's content.
-   * 
-   * @param {ChatOpenAI<ChatOpenAICallOptions>} model 
-   * 
-   * @returns {Promise<paragraphSpec[]>} Returns a new list of paragraphs, where each paragraph's `insightType` has been updated 
+   *
+   * @param {ChatOpenAI<ChatOpenAICallOptions>} model
+   *
+   * @returns {Promise<paragraphSpec[]>} Returns a new list of paragraphs, where each paragraph's `insightType` has been updated
    * according to the inferred type.
-   * 
+   *
    * @description
    * This function uses asynchronous processing (`Promise.all`) to iterate over all paragraphs and performs the following steps for each:
    * - For each segment of the paragraph, it calls `runTypeCheck` to infer its type.
@@ -84,16 +84,16 @@ const generateGistVisMarkup = async (input: string, setStage: any) => {
 
   /**
    * step 3: Extractor
-   * @param {paragraphSpec[]} typedParagraphSpecList - A list of paragraph specifications to be processed. 
+   * @param {paragraphSpec[]} typedParagraphSpecList - A list of paragraph specifications to be processed.
    * Each specification contains paragraph content that may need further data extraction based on its `insightType`.
-   * @param {ChatOpenAI<ChatOpenAICallOptions>} model 
-   * 
-   * @returns {Promise<paragraphSpec[]>} - A promise that resolves to a list of enhanced paragraph specifications 
+   * @param {ChatOpenAI<ChatOpenAICallOptions>} model
+   *
+   * @returns {Promise<paragraphSpec[]>} - A promise that resolves to a list of enhanced paragraph specifications
    * with extracted data based on their respective insight types.
    */
   const fullList = await extractDataForParagraphs(typedParagraphSpecList, model);
-  setStage(3)  // stage 3 complete
-  console.log(fullList)
+  setStage(3); // stage 3 complete
+  console.log(fullList);
 
   return fullList;
 };

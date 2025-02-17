@@ -1,17 +1,15 @@
-import {
-  CustomListOutputParser,
-} from "langchain/output_parsers";
-import { PromptTemplate } from "@langchain/core/prompts";
-import { RunnableSequence } from "@langchain/core/runnables";
-import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
-import { gistKB } from "../visKB";
-import { paragraphSpec, UnitSegmentSpec, GistvisSpec } from "../../visualizer/types";
+import { CustomListOutputParser } from 'langchain/output_parsers';
+import { PromptTemplate } from '@langchain/core/prompts';
+import { RunnableSequence } from '@langchain/core/runnables';
+import { ChatOpenAI, ChatOpenAICallOptions } from '@langchain/openai';
+import { gistKB } from '../visKB';
+import { paragraphSpec, UnitSegmentSpec, GistvisSpec } from '../../visualizer/types';
 
 const splitInsight = async (model: ChatOpenAI<ChatOpenAICallOptions>, paragraphList: string[]) => {
-  const parser = new CustomListOutputParser({ separator: "<section>" });
+  const parser = new CustomListOutputParser({ separator: '<section>' });
 
   // easy support for added insight types, no prompt change required
-  const typeCandidates = Object.keys(gistKB).join(", ");
+  const typeCandidates = Object.keys(gistKB).join(', ');
 
   const divchain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
@@ -30,26 +28,29 @@ const splitInsight = async (model: ChatOpenAI<ChatOpenAICallOptions>, paragraphL
 
   const segmentationResult = await Promise.all(
     paragraphList.map(async (textContent) => {
-      const response = await divchain.invoke({ paragraph: "User:" + textContent });
+      const response = await divchain.invoke({
+        paragraph: 'User:' + textContent,
+      });
       return response
-        .filter((paragraph) => paragraph.trim() !== "")
-        .map((paragraph) => paragraph.replace("</section>", ""));
+        .filter((paragraph) => paragraph.trim() !== '')
+        .map((paragraph) => paragraph.replace('</section>', ''));
     })
   );
 
-  const gistParagraphSpecList: paragraphSpec[] = segmentationResult.map(
-    (item: string[], paragraphIdx: number) => ({
-      paragraphIdx,
-      paragraphContent: item.map((sentence: string, segmentIdx: number) => ({
-        id: `p${paragraphIdx}s${segmentIdx}`,
-        unitSegmentSpec: {
-          insightType: "noType",
-          segmentIdx,
-          context: sentence.trim(),
-        } as UnitSegmentSpec,
-      } as GistvisSpec)),
-    })
-  );
+  const gistParagraphSpecList: paragraphSpec[] = segmentationResult.map((item: string[], paragraphIdx: number) => ({
+    paragraphIdx,
+    paragraphContent: item.map(
+      (sentence: string, segmentIdx: number) =>
+        ({
+          id: `p${paragraphIdx}s${segmentIdx}`,
+          unitSegmentSpec: {
+            insightType: 'noType',
+            segmentIdx,
+            context: sentence.trim(),
+          } as UnitSegmentSpec,
+        }) as GistvisSpec
+    ),
+  }));
 
   return gistParagraphSpecList;
 };

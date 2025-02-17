@@ -1,8 +1,8 @@
 const THEME = {
   token: {
     // colorPrimary: "#B3E5FC",
-    colorPrimary: "rgb(200, 200, 200)",
-    colorBgLayout: "#ffffff",
+    colorPrimary: 'rgb(200, 200, 200)',
+    colorBgLayout: '#ffffff',
     borderRadius: 4,
     fontSize: 20,
     lineHeight: 1.2,
@@ -11,10 +11,10 @@ const THEME = {
   },
   components: {
     Layout: {
-      headerBg: "#ffffff",
+      headerBg: '#ffffff',
       headerPadding: 0,
       headerHeight: 60,
-      footerPadding: "50px 0px 50px 0px",
+      footerPadding: '50px 0px 50px 0px',
     },
     Menu: {
       itemBorderRadius: 12,
@@ -22,15 +22,15 @@ const THEME = {
       horizontalItemBorderRadius: 8,
     },
     Slider: {
-      trackBg: "#000000",
-      trackHoverBg: "#000000",
-      railBg: "rgba(0, 0, 0, 0.2)",
-      railHoverBg: "rgba(0, 0, 0, 0.4)",
-      handleColor: "#000000",
-      handleActiveColor: "#000000",
-      dotBorderColor: "#000000",
-      dotActiveBorderColor: "#000000",
-    }
+      trackBg: '#000000',
+      trackHoverBg: '#000000',
+      railBg: 'rgba(0, 0, 0, 0.2)',
+      railHoverBg: 'rgba(0, 0, 0, 0.4)',
+      handleColor: '#000000',
+      handleActiveColor: '#000000',
+      dotBorderColor: '#000000',
+      dotActiveBorderColor: '#000000',
+    },
   },
 };
 

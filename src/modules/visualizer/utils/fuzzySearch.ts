@@ -1,4 +1,4 @@
-import Fuse from "fuse.js";
+import Fuse from 'fuse.js';
 
 export const fuzzySearch = (queryString: string, context: string, isFuzzy: boolean = true) => {
   // const context =
@@ -6,11 +6,10 @@ export const fuzzySearch = (queryString: string, context: string, isFuzzy: boole
   // const queryString = "the rest of the top 5 companies";
   if (!isFuzzy) {
     // use direct match to find all matches, case insensitive
-    const regex = new RegExp(`\\b${queryString}\\b`, "i");
+    const regex = new RegExp(`\\b${queryString}\\b`, 'i');
     const matches = context.match(regex);
     if (matches) {
-      return matches.map((match) => [matches.index, matches.index? matches.index + match.length:0]);
-    
+      return matches.map((match) => [matches.index, matches.index ? matches.index + match.length : 0]);
     }
     return [];
   }
@@ -21,7 +20,7 @@ export const fuzzySearch = (queryString: string, context: string, isFuzzy: boole
     threshold: 0.6,
     findAllMatches: true,
     ignoreLocation: true,
-    keys: ["text"],
+    keys: ['text'],
     // tokenize: true,
     // tokenSeparator: /[\s.,;:!?]+/
   };
@@ -30,10 +29,7 @@ export const fuzzySearch = (queryString: string, context: string, isFuzzy: boole
   const result = fuse.search(queryString);
 
   const proposalIndicesList = result.flatMap(
-    (item) =>
-      item.matches?.map((match) =>
-        match.indices.map((index) => [index[0], index[1]])
-      ) || []
+    (item) => item.matches?.map((match) => match.indices.map((index) => [index[0], index[1]])) || []
   );
 
   if (proposalIndicesList.length === 0) {
@@ -41,12 +37,8 @@ export const fuzzySearch = (queryString: string, context: string, isFuzzy: boole
   } else {
     const queryStringLength = queryString.length;
     // use the best match
-    const proposedMatchLength = proposalIndicesList[0].map(
-      (item) => item[1] - item[0]
-    );
-    const proposedMatchDiff = proposedMatchLength.map((item) =>
-      Math.abs(item - queryStringLength)
-    );
+    const proposedMatchLength = proposalIndicesList[0].map((item) => item[1] - item[0]);
+    const proposedMatchDiff = proposedMatchLength.map((item) => Math.abs(item - queryStringLength));
     // console.log(proposedMatchDiff);
     // find a diff that is the closest to 0, if equal, return both, get the indices
     const minDiff = Math.min(...proposedMatchDiff);

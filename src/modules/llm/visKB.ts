@@ -1,6 +1,6 @@
-import { InsightType, VisInsightType } from "../visualizer/types";
-import { GistFactKnowledgeBase } from "./types";
-import lodash from "lodash";
+import { InsightType, VisInsightType } from '../visualizer/types';
+import { GistFactKnowledgeBase } from './types';
+import lodash from 'lodash';
 
 export const SystemInstruction = `You are a professional text preprocessing assistant specializing in text visualization.
   Please provide a well-structured response to the user's chunk of the text strictly according to rules. 
@@ -38,20 +38,15 @@ export function generateFewShotExample(
   if (!isRandomSample) {
     nullExamples = lodash
       .sampleSize(gistKB[type]?.negativeExamples || [])
-      .map((sentence) => getExample(sentence, "null"));
+      .map((sentence) => getExample(sentence, 'null'));
   } else {
     const otherTypes = Object.keys(gistKB).filter((key) => key !== type);
     nullExamples = lodash
-      .sampleSize(
-        lodash.flatten(
-          otherTypes.map((key) => gistKB[key as VisInsightType]?.examples || [])
-        ),
-        nullExample
-      )
-      .map((sentence) => getExample(sentence, "null"));
+      .sampleSize(lodash.flatten(otherTypes.map((key) => gistKB[key as VisInsightType]?.examples || [])), nullExample)
+      .map((sentence) => getExample(sentence, 'null'));
   }
 
-  const fewShotPrompt = [...positiveExamples, ...nullExamples].join("\n");
+  const fewShotPrompt = [...positiveExamples, ...nullExamples].join('\n');
   // console.log(fewShotPrompt);
   return fewShotPrompt;
 }
@@ -67,11 +62,9 @@ export const gistKB: { [key in VisInsightType]: GistFactKnowledgeBase } = {
       `China on Wednesday posted a robust GDP growth of 5.2 percent for 2023, successfully beating the government's pre-set yearly target of around 5 percent.`,
       `There are more blocked beds in the Royal London Hospital compared with the UK average.`,
     ],
-    negativeExamples: [
-      `The little boy was careful enough to come first in the exam.`,
-    ],
-  },      
-  // Trend presents a general tendency over a time segment. 
+    negativeExamples: [`The little boy was careful enough to come first in the exam.`],
+  },
+  // Trend presents a general tendency over a time segment.
 
   trend: {
     definition: `
@@ -81,9 +74,7 @@ export const gistKB: { [key in VisInsightType]: GistFactKnowledgeBase } = {
       `China's population decreased by 2.08 million people in 2023 to 1.40967 billion.`,
       `The budget for the Border Patrol Program has been rising from 1990 to 2013.`,
     ],
-    negativeExamples: [
-      `The little boy was careful enough to come first in the exam.`,
-    ],
+    negativeExamples: [`The little boy was careful enough to come first in the exam.`],
   },
   // association:
   //   "Association refers to the useful relationship between two data attributes or among multiple attributes and can be categorized as positive, negative, or neutral sentiment.",
@@ -96,9 +87,7 @@ export const gistKB: { [key in VisInsightType]: GistFactKnowledgeBase } = {
       `The little boy was careful enough to come first in the exam.`,
       `The top reason for consumers to engage in showrooming is (the) price (is) better online.`,
     ],
-    negativeExamples: [
-      `China's population decreased by 2.08 million people in 2023 to 1.40967 billion.`,
-    ],
+    negativeExamples: [`China's population decreased by 2.08 million people in 2023 to 1.40967 billion.`],
   },
   proportion: {
     definition: `
@@ -108,9 +97,7 @@ export const gistKB: { [key in VisInsightType]: GistFactKnowledgeBase } = {
       `Traffic is one of the biggest sources of carbon pollution in the country and accounts for 28% of the nation's greenhouse gas emissions.`,
       `Protein takes 66% of the diet on Sunday.`,
     ],
-    negativeExamples: [
-      `The little boy was careful enough to come first in the exam.`,
-    ],
+    negativeExamples: [`The little boy was careful enough to come first in the exam.`],
   },
   extreme: {
     definition: `
@@ -120,23 +107,19 @@ export const gistKB: { [key in VisInsightType]: GistFactKnowledgeBase } = {
       `The character with the most epigrams in the collected dataset is Oscar Wilde himself, who has 12.`,
       `The minimum wage is just $7.25.`,
     ],
-    negativeExamples: [
-      `The little boy was careful enough to come first in the exam.`,
-    ],
+    negativeExamples: [`The little boy was careful enough to come first in the exam.`],
   },
   // anomaly:
   //   "Anomalies are usually data points that are significantly different from expected patterns.",
   value: {
     definition: `
     Derived value is deﬁned on a 3-tuple (Xi, dn, R) where R is a derived value of Xi on dn. When Xi contains only 1 element, R is the value of the element on dn.
-    Values are usually numerical valuesthat have a significant impact on entities.`, 
-    // with special meanings 
+    Values are usually numerical valuesthat have a significant impact on entities.`,
+    // with special meanings
     examples: [
       `46 horses have won two out of three Triple Crown Races.`,
       `40 cities and counties also are hiking their minimum wages.`,
     ],
-    negativeExamples: [
-      `The little boy was careful enough to come first in the exam.`,
-    ],
+    negativeExamples: [`The little boy was careful enough to come first in the exam.`],
   },
 };

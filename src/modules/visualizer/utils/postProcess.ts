@@ -1,28 +1,19 @@
-import {
-  DataSpec,
-  DisplayPosition,
-  DisplaySpec,
-  EntitySpec,
-  GistvisSpec,
-} from "../types";
-import { fuzzySearch } from "./fuzzySearch";
-import lodash from "lodash";
+import { DataSpec, DisplayPosition, DisplaySpec, EntitySpec, GistvisSpec } from '../types';
+import { fuzzySearch } from './fuzzySearch';
+import lodash from 'lodash';
 
-export const getHighlightPos = (
-  gistVisSpec: GistvisSpec,
-  type: "phrase" | "entity"
-): EntitySpec[] => {
+export const getHighlightPos = (gistVisSpec: GistvisSpec, type: 'phrase' | 'entity'): EntitySpec[] => {
   let items: string[] | DataSpec[] = [];
- 
-  if (type === "phrase") {
+
+  if (type === 'phrase') {
     items = gistVisSpec.unitSegmentSpec.inSituPosition ?? [];
-  } else if (type === "entity") {
+  } else if (type === 'entity') {
     items = gistVisSpec.dataSpec ?? [];
   }
 
   return items
     .map((item: string | DataSpec) => {
-      const str = typeof item === "string" ? item : item.categoryValue;
+      const str = typeof item === 'string' ? item : item.categoryValue;
       const pos = fuzzySearch(str, gistVisSpec.unitSegmentSpec.context, false);
       const posArray = pos.map((p) => {
         return {
@@ -41,34 +32,24 @@ export const getHighlightPos = (
 export const getUniqueEntities = (entityPos: EntitySpec[]) => {
   return lodash.uniqBy(
     entityPos.map((d) => d.entity),
-    "entity"
+    'entity'
   );
 };
 
 export const getNonOverlappingEntities = (entityPos: EntitySpec[]) => {
   // Sort entityPos by start position using lodash
-  const sortedEntityPos = lodash.sortBy(entityPos, ["postion.start"]);
+  const sortedEntityPos = lodash.sortBy(entityPos, ['postion.start']);
   // Filter out overlapping entities using reduce
-  const nonOverlappingEntities = sortedEntityPos.reduce(
-    (acc: EntitySpec[], entity: EntitySpec) => {
-      if (
-        acc.length === 0 ||
-        entity.postion.start >= acc[acc.length - 1].postion.end
-      ) {
-        return [...acc, entity];
-      }
-      return acc;
-    },
-    []
-  );
+  const nonOverlappingEntities = sortedEntityPos.reduce((acc: EntitySpec[], entity: EntitySpec) => {
+    if (acc.length === 0 || entity.postion.start >= acc[acc.length - 1].postion.end) {
+      return [...acc, entity];
+    }
+    return acc;
+  }, []);
   return nonOverlappingEntities;
 };
 
-export const getProductionVisSpec = (
-  text: string,
-  entityPos: EntitySpec[],
-  displayPos: DisplayPosition = "none"
-) => {
+export const getProductionVisSpec = (text: string, entityPos: EntitySpec[], displayPos: DisplayPosition = 'none') => {
   const nonOverlappingEntities = getNonOverlappingEntities(entityPos);
 
   const contentArray: DisplaySpec[] = [];
@@ -76,25 +57,25 @@ export const getProductionVisSpec = (
   nonOverlappingEntities.forEach((entity) => {
     if (entity.postion.start > lastEnd) {
       contentArray.push({
-        displayType: "text",
+        displayType: 'text',
         content: text.slice(lastEnd, entity.postion.start),
       });
     }
-    if (displayPos === "left") {
+    if (displayPos === 'left') {
       contentArray.push({
-        displayType: "word-scale-vis",
-        content: " ",
+        displayType: 'word-scale-vis',
+        content: ' ',
       });
     }
     contentArray.push({
-      displayType: "entity",
+      displayType: 'entity',
       content: text.slice(entity.postion.start, entity.postion.end),
       entity: entity.entity,
     });
-    if (displayPos === "right") {
+    if (displayPos === 'right') {
       contentArray.push({
-        displayType: "word-scale-vis",
-        content: " ",
+        displayType: 'word-scale-vis',
+        content: ' ',
       });
     }
     lastEnd = entity.postion.end;
@@ -106,18 +87,18 @@ export const getProductionVisSpec = (
     const isPunctuation = /[.,;!?]/.test(lastChar);
     const endPos = isPunctuation ? text.length - 1 : text.length;
     contentArray.push({
-      displayType: "text",
+      displayType: 'text',
       content: text.slice(lastEnd, endPos),
     });
-    if (displayPos === "none") {
+    if (displayPos === 'none') {
       contentArray.push({
-        displayType: "word-scale-vis",
-        content: " ",
+        displayType: 'word-scale-vis',
+        content: ' ',
       });
     }
     contentArray.push({
-      displayType: "text",
-      content: text.slice(endPos) + " ",
+      displayType: 'text',
+      content: text.slice(endPos) + ' ',
     });
   }
   return contentArray;

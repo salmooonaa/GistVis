@@ -1,29 +1,15 @@
-import {
-  StructuredOutputParser,
-  RegexParser,
-  CombiningOutputParser,
-} from "langchain/output_parsers";
-import { PromptTemplate } from "@langchain/core/prompts";
-import { RunnableSequence } from "@langchain/core/runnables";
-import { z } from "zod";
-import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
+import { StructuredOutputParser, RegexParser, CombiningOutputParser } from 'langchain/output_parsers';
+import { PromptTemplate } from '@langchain/core/prompts';
+import { RunnableSequence } from '@langchain/core/runnables';
+import { ChatOpenAI, ChatOpenAICallOptions } from '@langchain/openai';
 // import TransformData from "../transSpec";
-import { ExtractorType, GistFactTypeAnnotation } from "../types";
-import { ExtractorSystemInstruction, SystemInstruction } from "../visKB";
-import { getZodFormatting } from "./utils";
+import { ExtractorType, GistFactTypeAnnotation } from '../types';
+import { ExtractorSystemInstruction, SystemInstruction } from '../visKB';
+import { getZodFormatting } from './utils';
 
-const extrProp = async (
-  model: ChatOpenAI<ChatOpenAICallOptions>,
-  textContent: GistFactTypeAnnotation
-) => {
-  const specParser = StructuredOutputParser.fromZodSchema(
-    getZodFormatting(textContent.type)
-  );
-  const typeParser = new RegexParser(
-    /insightType: (proportion)/,
-    ["insightType"],
-    "noType"
-  );
+const extrProp = async (model: ChatOpenAI<ChatOpenAICallOptions>, textContent: GistFactTypeAnnotation) => {
+  const specParser = StructuredOutputParser.fromZodSchema(getZodFormatting(textContent.type));
+  const typeParser = new RegexParser(/insightType: (proportion)/, ['insightType'], 'noType');
   const parser = new CombiningOutputParser(specParser, typeParser);
 
   const extrpropchain = RunnableSequence.from([
@@ -36,16 +22,16 @@ const extrProp = async (
         Specifically, for 'category_key', identify the subject of comparison with its context, e.g., "the category of GDP growth" instead of just "entity". But the 'value_key' of all data items should keep the same.
 
         The user intends to use a pie chart to represent the proportion. Please find the most suitable location for placing the pie chart and output it.
-        \n{format_instructions}\n{insightType}\n{paragraph}
+        \n{formatInstructions}\n{insightType}\n{paragraph}
         `),
     model as ChatOpenAI<ChatOpenAICallOptions>,
     parser,
   ]);
 
   const response = await extrpropchain.invoke({
-    format_instructions: parser.getFormatInstructions(),
-    insightType: "insightType:" + textContent.type,
-    paragraph: "User:" + textContent.text,
+    formatInstructions: parser.getFormatInstructions(),
+    insightType: 'insightType:' + textContent.type,
+    paragraph: 'User:' + textContent.text,
   });
   // console.dir(response);
   return response as ExtractorType;
@@ -60,7 +46,7 @@ const extrProp = async (
   //   })
   // };
   // console.log(newResponse);
-// return newResponse;
+  // return newResponse;
 };
 
 export default extrProp;

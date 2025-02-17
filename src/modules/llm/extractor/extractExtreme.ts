@@ -1,29 +1,19 @@
-import {
-  StructuredOutputParser,
-  RegexParser,
-  CombiningOutputParser,
-} from "langchain/output_parsers";
-import { PromptTemplate } from "@langchain/core/prompts";
-import { RunnableSequence } from "@langchain/core/runnables";
+import { StructuredOutputParser, RegexParser, CombiningOutputParser } from 'langchain/output_parsers';
+import { PromptTemplate } from '@langchain/core/prompts';
+import { RunnableSequence } from '@langchain/core/runnables';
 // import TransformData from "../transSpec";
-import { z } from "zod";
-import { ChatOpenAI, ChatOpenAICallOptions } from "@langchain/openai";
-import { ExtractorType, GistFactTypeAnnotation } from "../types";
-import { ExtractorSystemInstruction, SystemInstruction } from "../visKB";
-import { getZodFormatting } from "./utils";
+import { ChatOpenAI, ChatOpenAICallOptions } from '@langchain/openai';
+import { ExtractorType, GistFactTypeAnnotation } from '../types';
+import { SystemInstruction } from '../visKB';
+import { getZodFormatting } from './utils';
 
-const extrExtreme = async (
-  model: ChatOpenAI<ChatOpenAICallOptions>,
-  textContent: GistFactTypeAnnotation
-) => {
-  const specParser = StructuredOutputParser.fromZodSchema(
-    getZodFormatting(textContent.type)
-  );
+const extrExtreme = async (model: ChatOpenAI<ChatOpenAICallOptions>, textContent: GistFactTypeAnnotation) => {
+  const specParser = StructuredOutputParser.fromZodSchema(getZodFormatting(textContent.type));
 
   const typeParser = new RegexParser(
     /insightType: (extreme), attribute: (maximum|minimum)/,
-    ["type", "attribute"],
-    "noType"
+    ['type', 'attribute'],
+    'noType'
   );
   const parser = new CombiningOutputParser(specParser, typeParser);
 
@@ -36,16 +26,16 @@ const extrExtreme = async (
         Specifically, for 'categoryKey', identify the subject of comparison with its context, e.g., "the category of GDP growth" instead of just "entity". But the 'value_key' of all data items should keep the same.
         For 'value_key', specify the exact context of the value that is the extreme value, e.g., "the GDP growth rate" instead of just "value". But the 'category_key' of all data items should keep the same.
         The user intends to highlight the value of extreme. Please output the position of the extreme.
-        \n{format_instructions}\n{insightType}\n{paragraph}
+        \n{formatInstructions}\n{insightType}\n{paragraph}
         `),
     model as ChatOpenAI<ChatOpenAICallOptions>,
     parser,
   ]);
 
   const response = await extrextrechain.invoke({
-    format_instructions: parser.getFormatInstructions(),
-    insightType: "insightType:" + textContent.type,
-    paragraph: "User:" + textContent.text,
+    formatInstructions: parser.getFormatInstructions(),
+    insightType: 'insightType:' + textContent.type,
+    paragraph: 'User:' + textContent.text,
   });
 
   // console.dir(response);

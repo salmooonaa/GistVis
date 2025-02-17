@@ -1,25 +1,19 @@
-import React from "react";
-import * as d3 from "d3";
-import { SVG_WIDTH, SVG_HEIGHT } from "../constants";
-import { ChartProps, DataSpec } from "../types";
-import { Tooltip } from "antd";
-import { HorizontalStackedBarProps } from "../props";
+import React from 'react';
+import * as d3 from 'd3';
+import { SVG_WIDTH, SVG_HEIGHT } from '../constants';
+import { ChartProps, DataSpec } from '../types';
+import { Tooltip } from 'antd';
 
-const HorizontalStackedBar = ({
-  gistvisSpec,
-  colorScale,
-  selectedEntity,
-  setSelectedEntity,
-}: ChartProps) => {
+const HorizontalStackedBar = ({ gistvisSpec, colorScale, selectedEntity, setSelectedEntity }: ChartProps) => {
   const dataSpec = gistvisSpec.dataSpec ?? [];
   const xScale = d3.scaleLinear().domain([0, 1]).range([0, SVG_WIDTH]);
   let curSum = 0;
   const knownCategories = dataSpec.map((d: DataSpec, i: number) => {
-    let thisPos = xScale(curSum);
+    const thisPos = xScale(curSum);
     curSum += d.valueValue;
     const hoverStyle = {
       opacity: d.categoryValue === selectedEntity ? 1 : 0.5,
-      transition: "opacity 0.3s",
+      transition: 'opacity 0.3s',
     };
     return (
       <rect
@@ -35,7 +29,7 @@ const HorizontalStackedBar = ({
           setSelectedEntity(d.categoryValue);
         }}
         onMouseOut={() => {
-          setSelectedEntity("");
+          setSelectedEntity('');
         }}
       />
     );
@@ -48,7 +42,7 @@ const HorizontalStackedBar = ({
       width={SVG_WIDTH - xScale(curSum)}
       height={SVG_HEIGHT * 0.8}
       style={{ opacity: 0.5 }}
-      fill={colorScale("")}
+      fill={colorScale('')}
       // onClick={() => setCurrentEntity("unknown")}
     />
   );
@@ -57,21 +51,16 @@ const HorizontalStackedBar = ({
     <div
       style={{
         lineHeight: 1.1,
-        fontSize: "14px",
-        fontWeight: "bold",
-        color: "#000000",
+        fontSize: '14px',
+        fontWeight: 'bold',
+        color: '#000000',
       }}
     >
-      The proportion of{" "}
+      The proportion of{' '}
+      <span style={{ color: colorScale(selectedEntity) }}>{selectedEntity === '' ? 'others' : selectedEntity}</span> is{' '}
       <span style={{ color: colorScale(selectedEntity) }}>
-        {selectedEntity === "" ? "others": selectedEntity}
-      </span>{" "}
-      is{" "}
-      <span style={{ color: colorScale(selectedEntity) }}>
-        {dataSpec.find((d: DataSpec) => d.categoryValue === selectedEntity)
-          ?.valueValue !== undefined
-          ? (dataSpec.find((d: DataSpec) => d.categoryValue === selectedEntity)
-              ?.valueValue)?.toFixed(2)
+        {dataSpec.find((d: DataSpec) => d.categoryValue === selectedEntity)?.valueValue !== undefined
+          ? dataSpec.find((d: DataSpec) => d.categoryValue === selectedEntity)?.valueValue?.toFixed(2)
           : (1 - curSum).toFixed(2)}
       </span>
     </div>

@@ -1,21 +1,11 @@
-import React from "react";
-import * as d3 from "d3";
-import {
-  SVG_WIDTH,
-  SVG_HEIGHT,
-  SVG_UNIT_WIDTH,
-  SVG_PADDING,
-} from "../constants";
-import { ChartProps, DataSpec } from "../types";
-import { Tooltip } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import React from 'react';
+import * as d3 from 'd3';
+import { SVG_HEIGHT, SVG_PADDING } from '../constants';
+import { ChartProps, DataSpec } from '../types';
+import { Tooltip } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 
-const GlyphText = ({
-  gistvisSpec,
-  colorScale,
-  selectedEntity,
-  setSelectedEntity,
-}: ChartProps) => {
+const GlyphText = ({ gistvisSpec, colorScale, selectedEntity, setSelectedEntity }: ChartProps) => {
   const dataSpec = gistvisSpec.dataSpec ?? [];
   // process cases with one value only
   const value = dataSpec.map((d: DataSpec) => d.valueValue)[0];
@@ -24,7 +14,7 @@ const GlyphText = ({
   const targetEntity = dataSpec.map((d: DataSpec) => d.categoryValue)[0];
 
   const getToolTipContent = (value: number, category: string) => {
-    const formatter = new Intl.NumberFormat("en-US", {
+    const formatter = new Intl.NumberFormat('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
@@ -32,9 +22,9 @@ const GlyphText = ({
       <div
         style={{
           lineHeight: 1.1,
-          fontSize: "14px",
+          fontSize: '14px',
           color: colorScale(category),
-          fontWeight: "bold",
+          fontWeight: 'bold',
         }}
       >
         The value of {category} is {formatter.format(value)}
@@ -45,7 +35,7 @@ const GlyphText = ({
   const getVisElement = (value: number, currentEntity: string) => {
     const hoverStyle = {
       opacity: currentEntity === selectedEntity ? 1 : 0.5,
-      transition: "opacity 0.3s",
+      transition: 'opacity 0.3s',
     };
     // if value < 0, then return the value
     if (value > 0 && value <= 100) {
@@ -76,16 +66,10 @@ const GlyphText = ({
           height={SVG_HEIGHT}
           style={hoverStyle}
           onMouseOver={() => setSelectedEntity(currentEntity)}
-          onMouseOut={() => setSelectedEntity("")}
+          onMouseOut={() => setSelectedEntity('')}
         >
           {points.map((point, index) => (
-            <circle
-              key={index}
-              cx={point.x}
-              cy={point.y}
-              r={1.2}
-              fill={colorScale(currentEntity)}
-            />
+            <circle key={index} cx={point.x} cy={point.y} r={1.2} fill={colorScale(currentEntity)} />
           ))}
         </svg>
       );
@@ -94,7 +78,7 @@ const GlyphText = ({
         <SearchOutlined
           style={{ ...hoverStyle, color: colorScale(currentEntity) }}
           onMouseOver={() => setSelectedEntity(currentEntity)}
-          onMouseOut={() => setSelectedEntity("")}
+          onMouseOut={() => setSelectedEntity('')}
         />
       );
     }
@@ -103,14 +87,10 @@ const GlyphText = ({
   const mainElement = dataSpec.map((d: DataSpec, i: number) => {
     const hoverStyle = {
       opacity: d.categoryValue === selectedEntity ? 1 : 0.5,
-      transition: "opacity 0.3s",
+      transition: 'opacity 0.3s',
     };
     return (
-      <Tooltip
-        title={getToolTipContent(d.valueValue, d.categoryValue)}
-        placement="bottom"
-        color="#ffffff"
-      >
+      <Tooltip title={getToolTipContent(d.valueValue, d.categoryValue)} placement="bottom" color="#ffffff">
         {getVisElement(d.valueValue, d.categoryValue)}
       </Tooltip>
     );

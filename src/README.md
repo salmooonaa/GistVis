@@ -12,14 +12,14 @@ src/
 │   ├── articles/     # Articles and generated content for display, as exemple data structure of output of stage 3
 │   ├── homePage.tsx     # UserStudy portal page
 │   ├── articlePage.tsx  # UserStudy page: displays the article and related tasks
-│   └── us.css   
+│   └── us.css
 ├── modules/          # Core modules
 │   ├── llm/          #  Three modules related to large language model
-|   │   ├── dicoverer/      
+|   │   ├── dicoverer/
 |   │   │   └── discoverer.tsx
-|   │   ├── annotator/       
+|   │   ├── annotator/
 |   │   │   └── annotator.ts
-|   │   └── extractor/       
+|   │   └── extractor/
 |   │       └── extractor.ts
 │   └── visualizer/   # Model for stage 4
 │       ├── index.ts
@@ -56,4 +56,3 @@ These folders contain code related to different large models used in the project
 #### - `visualizer/`
 
 This folder handles the **visualization logic** and contains reusable components for displaying the generated visualizations:
-
