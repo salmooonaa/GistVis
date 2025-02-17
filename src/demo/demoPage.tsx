@@ -1,7 +1,7 @@
 import React from 'react';
 import { paragraphSpec } from '../modules/visualizer/types';
 import { Divider, Layout, Typography } from 'antd';
-import ArtcleProcess from './renderer';
+import ArtcleProcess from '../modules/visualizer/renderer/renderer';
 
 const { Text } = Typography;
 

@@ -3,7 +3,7 @@ import React from 'react';
 import HomePage from './userstudy/homePage';
 import InteractivePage from './userstudy/articlePage';
 import PublicityPage from './demo/Demo';
-import LLMConfigurationPage from './components/LLMConf';
+import LLMConfigurationPage from './demo/LLMConf';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 const App = () => {
