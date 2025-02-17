@@ -13,17 +13,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '16.x'
-
-      - name: Cache NPM
-        uses: actions/cache@v1
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
+          
       - name: Install Dependencies
-        run: npm install
+        run: yarn install
 
       - name: Run linter
-        run: npm run lint
+        run: yarn lint
