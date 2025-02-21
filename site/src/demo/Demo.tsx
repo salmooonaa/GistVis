@@ -165,7 +165,7 @@ const PublicityPage = () => {
               </Col>
             </Row> */}
           </Layout>
-          <Layout dir="vertical">
+          {/* <Layout dir="vertical">
             <Row gutter={[16, 16]}>
               <Col span={24}>
                 <DemoPage />
@@ -187,12 +187,11 @@ const PublicityPage = () => {
                   <Text style={{ whiteSpace: 'nowrap' }}>Progress: </Text>
                   <Progress percent={processStage * 25} />
                 </Flex>
-                {/* <ArticleWithImage article={article} /> */}
                 <ArtcleProcess llmarticle={llmarticle} />
               </Col>
             </Row>
-          </Layout>
-        </Content>
+          </Layout>*/}
+        </Content> 
       </ConfigProvider>
     </div>
   );
