@@ -1,6 +1,6 @@
 ## Running the demonstration page
 
-- Prerequisite: Node.js (We recommend Node.js v16 or higher and yarn as a package manager).
+- Prerequisite: Node.js (We recommend Node.js v18 or higher and yarn as a package manager).
 - Run `yarn install` or `npm install` to install the project's dependencies.
 - Run `yarn start` or `npm start` to run the application on localhost.
 - You can access the following information through the demo page:

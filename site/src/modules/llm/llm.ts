@@ -44,11 +44,11 @@ const generateGistVisMarkup = async (input: string, setStage: (stage: number) =>
     topP: 1,
     n: 1,
     streaming: false,
-    openAIApiKey: localStorage.getItem('REACT_APP_LLM_API_KEY') || process.env.REACT_APP_LLM_API_KEY || '',
-    modelName: localStorage.getItem('REACT_APP_LLM_MODEL_NAME') || process.env.REACT_APP_LLM_MODEL_NAME || '',
+    openAIApiKey: localStorage.getItem('REACT_APP_LLM_API_KEY') || import.meta.env.VITE_LLM_API_KEY || '',
+    modelName: localStorage.getItem('REACT_APP_LLM_MODEL_NAME') || import.meta.env.VITE_LLM_MODEL_NAME || '',
     configuration: {
-      apiKey: localStorage.getItem('REACT_APP_LLM_API_KEY') || process.env.REACT_APP_LLM_API_KEY || '',
-      baseURL: localStorage.getItem('REACT_APP_LLM_URL_BASE') || process.env.REACT_APP_LLM_URL_BASE || '',
+      apiKey: localStorage.getItem('REACT_APP_LLM_API_KEY') || import.meta.env.VITE_LLM_API_KEY || '',
+      baseURL: localStorage.getItem('REACT_APP_LLM_URL_BASE') || import.meta.env.VITE_LLM_URL_BASE || '',
     },
     verbose: false,
   });

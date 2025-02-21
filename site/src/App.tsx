@@ -1,5 +1,4 @@
 import './style/page.css';
-import React from 'react';
 import HomePage from './userstudy/homePage';
 import InteractivePage from './userstudy/articlePage';
 import PublicityPage from './demo/Demo';

@@ -1,0 +1,14 @@
+{
+  "npmClient": "pnpm",
+  "command": {
+    "publish": {
+      "registry": "https://registry.npmjs.org/",
+      "message": "chore(release): publish"
+    },
+    "bootstrap": {
+      "npmClientArgs": ["--no-lockfile", "--no-package-lock"]
+    }
+  },
+  "version": "independent",
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
+}
