@@ -1,4 +1,4 @@
-import { ConfigProvider, Layout, Typography, Row, Col, Divider, Flex, Button, Carousel } from 'antd';
+import { ConfigProvider, Layout, Typography, Row, Col, Divider, Flex, Button, Carousel, Progress } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import THEME from '../style/theme';
 import ArtcleProcess from '../modules/visualizer/renderer/renderer';
@@ -9,6 +9,7 @@ import { paragraphSpec } from '../modules/visualizer/types';
 import { processStageAtom } from '../globalState';
 import { useAtom } from 'jotai';
 import { articles } from '../userstudy/articles/articledata';
+import Editor from './editor';
 
 const { Header, Content, Footer } = Layout;
 const { Title, Text } = Typography;
@@ -163,6 +164,33 @@ const PublicityPage = () => {
                 </div>
               </Col>
             </Row> */}
+          </Layout>
+          <Layout dir="vertical">
+            <Row gutter={[16, 16]}>
+              <Col span={24}>
+                <DemoPage />
+              </Col>
+            </Row>
+            <Row gutter={[16, 16]}>
+              <Col span={12}>
+                <Text style={{ fontSize: '20px', fontWeight: 'bold' }}>Input Article</Text>
+                <Divider style={{ margin: '0 0 2% 0' }} />
+                <Editor
+                  // changeArticle={changeArticle}
+                  changeLlmArticle={setLlmArticle}
+                />
+              </Col>
+              <Col span={12}>
+                <Text style={{ fontSize: '20px', fontWeight: 'bold' }}>Rendered Result</Text>
+                <Divider style={{ margin: '0 0 2% 0' }} />
+                <Flex gap="middle" justify="space-around" wrap="nowrap">
+                  <Text style={{ whiteSpace: 'nowrap' }}>Progress: </Text>
+                  <Progress percent={processStage * 25} />
+                </Flex>
+                {/* <ArticleWithImage article={article} /> */}
+                <ArtcleProcess llmarticle={llmarticle} />
+              </Col>
+            </Row>
           </Layout>
         </Content>
       </ConfigProvider>

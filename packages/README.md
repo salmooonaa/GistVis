@@ -1,0 +1,1 @@
+- Note: We are migrating to pnpm package manager. Code in this folder should be maintained with pnpm.
