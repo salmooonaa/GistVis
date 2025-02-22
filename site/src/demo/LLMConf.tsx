@@ -9,13 +9,13 @@ const { Text } = Typography;
 
 const LLMConfigurationPage = () => {
   const [envVariables, setEnvVariables] = useState<{
-    REACT_APP_LLM_URL_BASE?: string;
-    REACT_APP_LLM_API_KEY?: string;
-    REACT_APP_LLM_MODEL_NAME?: string;
+    VITE_LLM_URL_BASE?: string;
+    VITE_LLM_API_KEY?: string;
+    VITE_LLM_MODEL_NAME?: string;
   }>({});
-  const ENV_URL_STRING = 'REACT_APP_LLM_URL_BASE';
-  const ENV_KEY_STRING = 'REACT_APP_LLM_API_KEY';
-  const ENV_MODEL_STRING = 'REACT_APP_LLM_MODEL_NAME';
+  const ENV_URL_STRING = 'VITE_LLM_URL_BASE';
+  const ENV_KEY_STRING = 'VITE_LLM_API_KEY';
+  const ENV_MODEL_STRING = 'VITE_LLM_MODEL_NAME';
 
   const [chatInput, setChatInput] = useState('');
 
@@ -44,9 +44,9 @@ const LLMConfigurationPage = () => {
       setEnvVariables(JSON.parse(storedEnvVariables));
     } else {
       setEnvVariables({
-        REACT_APP_LLM_URL_BASE: process.env.REACT_APP_LLM_URL_BASE,
-        REACT_APP_LLM_API_KEY: process.env.REACT_APP_LLM_API_KEY,
-        REACT_APP_LLM_MODEL_NAME: process.env.REACT_APP_LLM_MODEL_NAME,
+        VITE_LLM_URL_BASE: import.meta.env.VITE_LLM_URL_BASE,
+        VITE_LLM_API_KEY: import.meta.env.VITE_LLM_API_KEY,
+        VITE_LLM_MODEL_NAME: import.meta.env.VITE_LLM_MODEL_NAME,
       });
     }
   }, []);
@@ -57,13 +57,13 @@ const LLMConfigurationPage = () => {
 
   // return chat object from the dynamic envVariables
   const chat = () => {
-    return envVariables.REACT_APP_LLM_API_KEY && envVariables.REACT_APP_LLM_MODEL_NAME
+    return envVariables.VITE_LLM_API_KEY && envVariables.VITE_LLM_MODEL_NAME
       ? new ChatOpenAI({
-          modelName: envVariables.REACT_APP_LLM_MODEL_NAME,
-          openAIApiKey: envVariables.REACT_APP_LLM_API_KEY,
+          modelName: envVariables.VITE_LLM_MODEL_NAME,
+          openAIApiKey: envVariables.VITE_LLM_API_KEY,
           configuration: {
-            apiKey: envVariables.REACT_APP_LLM_API_KEY,
-            baseURL: envVariables.REACT_APP_LLM_URL_BASE,
+            apiKey: envVariables.VITE_LLM_API_KEY,
+            baseURL: envVariables.VITE_LLM_URL_BASE,
           },
         })
       : null;
@@ -96,21 +96,21 @@ const LLMConfigurationPage = () => {
     const newMessages = [...messages, inp];
     setMessages(newMessages);
     // call LLM API to get AI reply
-    if (!envVariables.REACT_APP_LLM_URL_BASE) {
-      console.error('REACT_APP_LLM_URL_BASE is not defined');
+    if (!envVariables.VITE_LLM_URL_BASE) {
+      console.error('VITE_LLM_URL_BASE is not defined');
       return -flag;
     }
     try {
-      const url = envVariables.REACT_APP_LLM_URL_BASE + `/chat/completions`;
+      const url = envVariables.VITE_LLM_URL_BASE + `/chat/completions`;
       console.log(`url=${url}`);
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${envVariables.REACT_APP_LLM_API_KEY}`,
+          Authorization: `Bearer ${envVariables.VITE_LLM_API_KEY}`,
         },
         body: JSON.stringify({
-          model: envVariables.REACT_APP_LLM_MODEL_NAME,
+          model: envVariables.VITE_LLM_MODEL_NAME,
           messages: [
             {
               role: 'system',
@@ -175,9 +175,9 @@ const LLMConfigurationPage = () => {
   const handleLoadEnvVariables = () => {
     try {
       const newEnvVariables = {
-        REACT_APP_LLM_URL_BASE: process.env.REACT_APP_LLM_URL_BASE,
-        REACT_APP_LLM_API_KEY: process.env.REACT_APP_LLM_API_KEY,
-        REACT_APP_LLM_MODEL_NAME: process.env.REACT_APP_LLM_MODEL_NAME,
+        VITE_LLM_URL_BASE: import.meta.env.VITE_LLM_URL_BASE,
+        VITE_LLM_API_KEY: import.meta.env.VITE_LLM_API_KEY,
+        VITE_LLM_MODEL_NAME: import.meta.env.VITE_LLM_MODEL_NAME,
       };
       setEnvVariables(newEnvVariables);
       localStorage.setItem('envVariables', JSON.stringify(newEnvVariables));
