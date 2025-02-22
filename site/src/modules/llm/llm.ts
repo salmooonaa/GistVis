@@ -44,11 +44,11 @@ const generateGistVisMarkup = async (input: string, setStage: (stage: number) =>
     topP: 1,
     n: 1,
     streaming: false,
-    openAIApiKey: localStorage.getItem('VITE_LLM_API_KEY') || import.meta.env.VITE_LLM_API_KEY || '',
-    modelName: localStorage.getItem('VITE_LLM_MODEL_NAME') || import.meta.env.VITE_LLM_MODEL_NAME || '',
+    openAIApiKey: JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_API_KEY || import.meta.env.VITE_LLM_API_KEY || '',
+    modelName: JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_MODEL_NAME || import.meta.env.VITE_LLM_MODEL_NAME || '',
     configuration: {
-      apiKey: localStorage.getItem('VITE_LLM_API_KEY') || import.meta.env.VITE_LLM_API_KEY || '',
-      baseURL: localStorage.getItem('VITE_LLM_URL_BASE') || import.meta.env.VITE_LLM_URL_BASE || '',
+      apiKey: JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_API_KEY || import.meta.env.VITE_LLM_API_KEY || '',
+      baseURL: JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_URL_BASE || import.meta.env.VITE_LLM_URL_BASE || '',
     },
     verbose: false,
   });
