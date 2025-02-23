@@ -37,7 +37,7 @@ type StageContentType = {
   dataList?: boolean;
   json?: boolean;
   rawData?: DataSpec[];
-  rawJson?: Object;
+  rawJson?: Record<string, unknown>;
 };
 
 export const SpecEditor: React.FC<SpecEditorProps> = ({ spec, onSave, stage = 0 }) => {
@@ -95,9 +95,9 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({ spec, onSave, stage = 0 
               <Text strong>{`#${index+1}`}</Text>
               <Text style={{ whiteSpace: 'pre-wrap' }}>
                 {Object.keys(item).map(key => (
-                  <div>
-                    <Text type="secondary" key={key}>{`${key} `}</Text>
-                    <Text italic key={key}>{`${item[key as keyof typeof item]}\n`}</Text>
+                  <div key={key}>
+                    <Text type="secondary">{`${key} `}</Text>
+                    <Text italic>{`${item[key as keyof typeof item]}\n`}</Text>
                   </div>
                 ))}
               </Text>
@@ -115,9 +115,9 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({ spec, onSave, stage = 0 
               <Text style={{ whiteSpace: 'pre-wrap' }}>
                 {Object.keys(data).map(key => (
                   data[key as keyof typeof data]?(
-                    <div>
-                      <Text type="secondary" key={key}>{`${key} `}</Text>
-                      <Text italic key={key}>{`${data[key as keyof typeof data]}\n`}</Text>
+                    <div key={key}>
+                      <Text type="secondary">{`${key} `}</Text>
+                      <Text italic>{`${data[key as keyof typeof data]}\n`}</Text>
                     </div>
                   ):null
                 ))}
