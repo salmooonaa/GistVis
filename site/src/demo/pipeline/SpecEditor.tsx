@@ -12,10 +12,18 @@ import {
   ConfigProvider,
   Row
 } from 'antd';
-import { 
-  GistvisSpec, 
-  DataSpec
+import {
+  GistvisSpec,
+  DataSpec,
+  InsightType,
+  Attribute
 } from '../../modules/visualizer/types';
+
+type FieldValue<T extends string> = T extends 'insightType' ? InsightType :
+  T extends 'context' ? string :
+  T extends 'attribute' ? Attribute | undefined :
+  T extends 'inSituPosition' ? string[] | undefined :
+  never;
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -148,18 +156,23 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({ spec, onSave, stage = 0 
     );
   };
 
-  const handleFieldChange = (field: string, value: any, parent?: string) => {
+  const handleFieldChange = <T extends 'insightType' | 'context' | 'attribute' | 'inSituPosition'>(
+    field: T,
+    value: FieldValue<T>,
+    parent?: 'unitSegmentSpec'
+  ) => {
     setIsOutdated(true);
     setEditingSpec(prev => {
       if (parent === 'unitSegmentSpec') {
         if (field === 'insightType') {
-          if (value === 'extreme' || value === 'trend') {
+          const insightTypeValue = value as InsightType;
+          if (insightTypeValue === 'extreme' || insightTypeValue === 'trend') {
             return {
               ...prev,
               unitSegmentSpec: {
                 ...prev.unitSegmentSpec,
-                insightType: value,
-                attribute: value === 'extreme' ? 'maximum' : 'positive'
+                insightType: insightTypeValue,
+                attribute: insightTypeValue === 'extreme' ? 'maximum' : 'positive'
               }
             };
           } else {
@@ -167,7 +180,7 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({ spec, onSave, stage = 0 
               ...prev,
               unitSegmentSpec: {
                 ...prev.unitSegmentSpec,
-                insightType: value,
+                insightType: insightTypeValue,
                 attribute: undefined
               }
             };
@@ -188,14 +201,25 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({ spec, onSave, stage = 0 
     });
   };
 
-  const handleDataSpecChange = (index: number, field: string, value: any) => {
+  const handleDataSpecChange = (
+    index: number,
+    field: keyof DataSpec,
+    value: string | number
+  ) => {
     setIsOutdated(true);
     setEditingSpec(prev => {
       const newDataSpec = [...(prev.dataSpec || [])];
-      newDataSpec[index] = {
-        ...newDataSpec[index],
-        [field]: field === 'valueValue' ? Number(value) : value
-      };
+      if (field === 'valueValue') {
+        newDataSpec[index] = {
+          ...newDataSpec[index],
+          valueValue: Number(value)
+        };
+      } else {
+        newDataSpec[index] = {
+          ...newDataSpec[index],
+          [field]: value as string
+        };
+      }
       return {
         ...prev,
         dataSpec: newDataSpec
