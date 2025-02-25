@@ -118,7 +118,6 @@ const InteractivePage: React.FC = () => {
     return (
       <div>
         <h2>Unprocessed Article {pageId}: </h2>
-        <h2>{article.title}</h2>
         <div className="content-wrapper">
           <p className="pre-wrap">{article.content}</p>
         </div>
