@@ -89,12 +89,6 @@ const PublicityPage = () => {
           <Layout dir="vertical">
             <Row gutter={[16, 16]}>
               <Col span={24}>
-                <DemoPipeline />
-              </Col>
-            </Row>
-            <Divider />
-            <Row gutter={[16, 16]}>
-              <Col span={24}>
                 <DemoPage />
               </Col>
             </Row>
@@ -172,7 +166,15 @@ const PublicityPage = () => {
               </Col>
             </Row> */}
           </Layout>
-          <Layout dir="vertical">
+            
+          <Divider />
+          <Row gutter={[16, 16]}>
+            <Col span={24}>
+              <DemoPipeline />
+            </Col>
+          </Row>
+
+          {/* <Layout dir="vertical">
             <Row gutter={[16, 16]}>
               <Col span={12}>
                 <Text style={{ fontSize: '20px', fontWeight: 'bold' }}>Input Article</Text>
@@ -192,7 +194,7 @@ const PublicityPage = () => {
                 <ArtcleProcess llmarticle={llmarticle} />
               </Col>
             </Row>
-          </Layout>
+          </Layout> */}
         </Content> 
       </ConfigProvider>
     </div>
