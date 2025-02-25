@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { SpecEditor } from './SpecEditor';
 import THEME from '../../style/theme';
 import { ChatOpenAI } from '@langchain/openai';
-import {processParagraphs} from '../../modules/llm/annotator/annotator';
-import {extractDataForParagraphs} from '../../modules/llm/extractor/extractor';
+import { processParagraphs } from '../../modules/llm/annotator/annotator';
+import { extractDataForParagraphs } from '../../modules/llm/extractor/extractor';
 import {
   Card,
   Button,

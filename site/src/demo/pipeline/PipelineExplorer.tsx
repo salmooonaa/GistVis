@@ -1,13 +1,13 @@
 import React, { useState, useReducer } from 'react';
-import { Card, Input, Button, List, Typography, Space, ConfigProvider } from 'antd';
+import { Card, Input, Button, List, Typography, Space, ConfigProvider, Row } from 'antd';
 import { ChatOpenAI } from '@langchain/openai';
 import THEME from '../../style/theme';
 import SpecProcessEditor from './SpecProcessEditor';
 import splitInsight from '../../modules/llm/discoverer/discoverer';
 import { GistvisSpec, paragraphSpec } from '../../modules/visualizer/types';
+import ArtcleProcess from '../../modules/visualizer/renderer/renderer';
 
 const { TextArea } = Input;
-const { Text } = Typography;
 
 interface PipelineExplorerProps {
   style?: React.CSSProperties;
@@ -71,14 +71,27 @@ const PipelineExplorer: React.FC<PipelineExplorerProps> = ({ style }) => {
               onChange={(e) => setInputText(e.target.value)}
               placeholder="Enter text to analyze..."
             />
-            <Button 
-              type="primary" 
-              onClick={handleTextSubmit}
-              loading={isProcessing}
-              disabled={!inputText.trim()}
+            <Row
+              style={{gap:'10px'}}
             >
-              Generate Specs
-            </Button>
+              <Button 
+                type="primary" 
+                onClick={handleTextSubmit}
+                loading={isProcessing}
+                disabled={!inputText.trim()}
+              >
+                Generate Specs
+              </Button>
+              {import.meta.env.VITE_DINP_PIPELINEEXAMPLE?(
+                <Button 
+                  type="primary" 
+                  onClick={()=>{setInputText(import.meta.env.VITE_DINP_PIPELINEEXAMPLE)}}
+                  // loading={isProcessing}
+                >
+                  Load env input
+                </Button>
+              ):null}
+            </Row>
           </Space>
         </Card>
 
@@ -96,6 +109,7 @@ const PipelineExplorer: React.FC<PipelineExplorerProps> = ({ style }) => {
           )}
         />
       </Space>
+      <ArtcleProcess llmarticle={[{paragraphIdx:0,paragraphContent:specs}]} />
     </ConfigProvider>
   );
 };
