@@ -99,7 +99,7 @@ const PipelineExplorer: React.FC<PipelineExplorerProps> = ({ style }) => {
                     loading={isProcessing}
                     disabled={!inputText.trim()}
                   >
-                    {specs.length==0?"Generate Specs":"Re-Generate Specs"}
+                    Launch Pipeline
                   </Button>
                   <Button
                     type="default"
@@ -142,7 +142,7 @@ const PipelineExplorer: React.FC<PipelineExplorerProps> = ({ style }) => {
                       spec={spec}
                       onSave={(updatedSpec) => handleSpecUpdate(index, updatedSpec)}
                       style={{ width: '100%' }}
-                      example={true}
+                      example={false}
                     />
                   </List.Item>
                 )}
