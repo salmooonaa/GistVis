@@ -64,24 +64,49 @@ const exampleAnswer: GistvisSpec = {
 
 const processes = ['Discoverer','Annotator','Extractor','Visualizer']
 
-const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, example=false, style }) => {
+const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, example=false, style}) => {
   const [process, setProcess] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [taskId, setTaskId] = useState(0);
   const taskIdRef = useRef(0);
+  const specRef = useRef(spec);
+
+  const launchTrigger = useRef(true);
+  const close = useRef(false);
 
   useEffect(() => {
     taskIdRef.current = taskId;
   }, [taskId]);
 
+  useEffect(() => {
+    if (!launchTrigger.current) {
+      return;
+    }
+    handleRefresh(1);
+    console.log('Refresh triggered');
+    launchTrigger.current = false;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      console.log('stop');
+      close.current = true;
+    }
+  }, []);
+
   const internalSave = (updatedSpec: GistvisSpec, currentTaskId: number) => {    
     if (currentTaskId === taskIdRef.current) {
-      onSave(updatedSpec);
+      handleSave(updatedSpec);
     }
   };
 
   const handleSave = (updatedSpec: GistvisSpec) => {
-    onSave(updatedSpec);
+    try {
+      onSave(updatedSpec);
+      specRef.current = updatedSpec;
+    } catch (error) {
+      console.error('Error saving spec:', error);
+    }
   };
 
   const model = new ChatOpenAI({
@@ -115,18 +140,25 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
     handleBack(stage);
 
     try {
+      specRef.current = spec;
       for (let i = 1; i <= 3; i++) {
         if (i <= stage) {
           continue;
         }
 
         if (example) {
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await new Promise(resolve => setTimeout(resolve, 4500));
+          if (close.current) {
+            return;
+          }
           if (i === 2 || i === 3) {
             internalSave({...exampleAnswer}, newTaskId);
             if (newTaskId === taskIdRef.current) {
-              handleBack(i);
-              setProcess(i);
+              // handleBack(i);
+              setProcess(i); 
+              console.log('stage:', i);
+            }else{
+              break;
             }
           }
           continue;
@@ -135,11 +167,14 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
         const mockParagraphSpec = {
           paragraphId: "1",
           paragraphIdx: 0,
-          paragraphContent: [spec]
+          paragraphContent: [specRef.current]
         };
 
         if (i === 2) {  // 1->2: call annotator
           const processedParagraphs = await processParagraphs([mockParagraphSpec], model);
+          if (close.current) {
+            return;
+          }
           if (processedParagraphs[0].paragraphContent[0]) {
             console.log('Annotator output:', processedParagraphs[0].paragraphContent[0].unitSegmentSpec.insightType);
             internalSave(processedParagraphs[0].paragraphContent[0], newTaskId);
@@ -147,8 +182,11 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
               setProcess(i);
             }
           }
-        } else if (i === 3) {  // 2->3: call extractor
+        } else if (i === 3) {  // 2->3: call extractor    
           const processedParagraphs = await extractDataForParagraphs([mockParagraphSpec], model);
+          if (close.current) {
+            return;
+          }
           if (processedParagraphs[0].paragraphContent[0]) {
             console.log('Extractor output:', processedParagraphs[0].paragraphContent[0].dataSpec);
             internalSave(processedParagraphs[0].paragraphContent[0], newTaskId);
@@ -196,7 +234,7 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
         break;
     }
     setProcess(stage);
-    console.log('Back to process:', stage);
+    // console.log('Back to process:', stage);
     
   }
 
@@ -221,7 +259,7 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
   return (
     <ConfigProvider theme={THEME}>
       <Collapse 
-        defaultActiveKey={['1']}
+        defaultActiveKey={['0']}
         style={{ marginBottom: 16, ...style }}
         items={[
           {

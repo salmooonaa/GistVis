@@ -1,5 +1,5 @@
-import React, { useState, useReducer } from 'react';
-import { Card, Input, Button, List, Typography, Space, ConfigProvider, Row } from 'antd';
+import React, { useState, useReducer, useRef } from 'react';
+import { Card, Input, Button, List, Flex, Space, ConfigProvider, Row } from 'antd';
 import { ChatOpenAI } from '@langchain/openai';
 import THEME from '../../style/theme';
 import SpecProcessEditor from './SpecProcessEditor';
@@ -18,10 +18,28 @@ const PipelineExplorer: React.FC<PipelineExplorerProps> = ({ style }) => {
   const [specs, setSpecs] = useState<GistvisSpec[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [, forceUpdate] = useReducer(x => x + 1, 0);
+  const taskIdRef = useRef<number>(0);
+
+  const handleCancel = () => {
+    taskIdRef.current += 1;
+    setIsProcessing(false);
+  };
+
+  const handleClear = () => {
+    setSpecs([]);
+  };
+
+  const showEditor = () => {
+    return isProcessing||(specs.length > 0);
+  }
+
+  const showVisualization = () => {
+    return isProcessing||(specs.length > 0);
+  }
 
   const handleTextSubmit = async () => {
     if (!inputText.trim()) return;
-    
+    const taskId = taskIdRef.current;
     setIsProcessing(true);
     try {
       const model = new ChatOpenAI({
@@ -39,7 +57,7 @@ const PipelineExplorer: React.FC<PipelineExplorerProps> = ({ style }) => {
       });
 
       const results: paragraphSpec[] = await splitInsight(model, [inputText]);
-      if (results.length > 0) {
+      if (taskId === taskIdRef.current && results.length > 0) {
         setSpecs(results[0].paragraphContent);
       }
     } catch (error) {
@@ -55,8 +73,6 @@ const PipelineExplorer: React.FC<PipelineExplorerProps> = ({ style }) => {
       newSpecs[index] = updatedSpec;
       return newSpecs;
     });
-    console.log('Updated spec:', updatedSpec);
-    console.log('Result spec:', specs[index]);
     forceUpdate();
   };
 
@@ -64,52 +80,77 @@ const PipelineExplorer: React.FC<PipelineExplorerProps> = ({ style }) => {
     <ConfigProvider theme={THEME}>
       <Space direction="vertical" style={{ width: '100%', ...style }}>
         <Card title="Text Input">
-          <Space direction="vertical" style={{ width: '100%' }}>
-            <TextArea 
-              rows={4} 
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              placeholder="Enter text to analyze..."
-            />
-            <Row
-              style={{gap:'10px'}}
-            >
-              <Button 
-                type="primary" 
-                onClick={handleTextSubmit}
-                loading={isProcessing}
-                disabled={!inputText.trim()}
-              >
-                Generate Specs
-              </Button>
-              {import.meta.env.VITE_DINP_PIPELINEEXAMPLE?(
-                <Button 
-                  type="primary" 
-                  onClick={()=>{setInputText(import.meta.env.VITE_DINP_PIPELINEEXAMPLE)}}
-                  // loading={isProcessing}
-                >
-                  Load env input
-                </Button>
-              ):null}
-            </Row>
-          </Space>
-        </Card>
-
-        <List
-          dataSource={specs}
-          renderItem={(spec, index) => (
-            <List.Item>
-              <SpecProcessEditor
-                spec={spec}
-                onSave={(updatedSpec) => handleSpecUpdate(index, updatedSpec)}
-                style={{ width: '100%' }}
-                example={false}
+          <Flex style={{ width: '100%', gap: '10px' }}>
+            <Space direction="vertical" style={{ width: '100%' }}>
+              <TextArea 
+                rows={4} 
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                placeholder="Enter text to analyze..."
               />
-            </List.Item>
-          )}
-        />
+              <Row
+                style={{gap:'10px'}}
+                justify="space-between"
+              >
+                <Flex style={{gap:'10px'}}>
+                  <Button 
+                    type="default" 
+                    onClick={handleTextSubmit}
+                    loading={isProcessing}
+                    disabled={!inputText.trim()}
+                  >
+                    {specs.length==0?"Generate Specs":"Re-Generate Specs"}
+                  </Button>
+                  <Button
+                    type="default"
+                    onClick={isProcessing ? handleCancel : handleClear}
+                    disabled={isProcessing ? false : specs.length==0}
+                  >
+                    {isProcessing ? "Cancel" : "Clear"}
+                  </Button>
+                </Flex>
+                {import.meta.env.VITE_DINP_PIPELINEEXAMPLE?(
+                  <Button 
+                    type="default" 
+                    onClick={()=>{setInputText(import.meta.env.VITE_DINP_PIPELINEEXAMPLE)}}
+                    // loading={isProcessing}
+                  >
+                    Load env input
+                  </Button>
+                ):null}
+              </Row>
+            </Space>
+          </Flex>
+        </Card>
+        {
+          showVisualization()?(
+            <Card title="Visualization" loading={isProcessing}>
+              <Space direction="vertical" style={{ width: '100%' }}>
+                <ArtcleProcess llmarticle={[{paragraphIdx:0,paragraphContent:specs}]} />
+              </Space>
+            </Card>
+          ):null
+        }
+        {
+          showEditor()?(
+            <Card title="Specs Editor" loading={isProcessing}>
+              <List
+                dataSource={specs}
+                renderItem={(spec, index) => (
+                  <List.Item>
+                    <SpecProcessEditor
+                      spec={spec}
+                      onSave={(updatedSpec) => handleSpecUpdate(index, updatedSpec)}
+                      style={{ width: '100%' }}
+                      example={true}
+                    />
+                  </List.Item>
+                )}
+              />
+            </Card>
+          ):null
+        }
       </Space>
-      <ArtcleProcess llmarticle={[{paragraphIdx:0,paragraphContent:specs}]} />
     </ConfigProvider>
   );
 };
