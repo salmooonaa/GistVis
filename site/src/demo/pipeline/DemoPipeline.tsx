@@ -18,10 +18,30 @@ const DemoPipeline: React.FC = () => {
         <Card>
           <Paragraph>
             <Layout dir="vertical" style={{ gap: '10px', justifyContent: 'center' }}>
-              <li><Text italic>Discoverer</Text> <br /> <Text italic type='secondary'>Splits text into segments and generates initial specs</Text></li>
-              <li><Text italic>Annotator</Text> <br /> <Text italic type='secondary'>Analyzes and labels insight types</Text></li>
-              <li><Text italic>Extractor</Text> <br /> <Text italic type='secondary'>Extracts structured data from text</Text></li>
-              <li><Text italic>Visualizer</Text> <br /> <Text italic type='secondary'>Displays the final visualization</Text></li>
+              <li>
+                <Text italic>Discoverer</Text> <br />{' '}
+                <Text italic type="secondary">
+                  Splits text into segments and generates initial specs
+                </Text>
+              </li>
+              <li>
+                <Text italic>Annotator</Text> <br />{' '}
+                <Text italic type="secondary">
+                  Analyzes and labels insight types
+                </Text>
+              </li>
+              <li>
+                <Text italic>Extractor</Text> <br />{' '}
+                <Text italic type="secondary">
+                  Extracts structured data from text
+                </Text>
+              </li>
+              <li>
+                <Text italic>Visualizer</Text> <br />{' '}
+                <Text italic type="secondary">
+                  Displays the final visualization
+                </Text>
+              </li>
             </Layout>
           </Paragraph>
         </Card>

@@ -17,7 +17,7 @@ const PipelineExplorer: React.FC<PipelineExplorerProps> = ({ style }) => {
   const [inputText, setInputText] = useState('');
   const [specs, setSpecs] = useState<GistvisSpec[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [, forceUpdate] = useReducer(x => x + 1, 0);
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
   const taskIdRef = useRef<number>(0);
 
   const handleCancel = () => {
@@ -30,12 +30,12 @@ const PipelineExplorer: React.FC<PipelineExplorerProps> = ({ style }) => {
   };
 
   const showEditor = () => {
-    return isProcessing||(specs.length > 0);
-  }
+    return isProcessing || specs.length > 0;
+  };
 
   const showVisualization = () => {
-    return isProcessing||(specs.length > 0);
-  }
+    return isProcessing || specs.length > 0;
+  };
 
   const handleTextSubmit = async () => {
     if (!inputText.trim()) return;
@@ -47,11 +47,23 @@ const PipelineExplorer: React.FC<PipelineExplorerProps> = ({ style }) => {
         topP: 1,
         n: 1,
         streaming: false,
-        openAIApiKey: JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_API_KEY || import.meta.env.VITE_LLM_API_KEY || '',
-        modelName: JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_MODEL_NAME || import.meta.env.VITE_LLM_MODEL_NAME || '',
+        openAIApiKey:
+          JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_API_KEY ||
+          import.meta.env.VITE_LLM_API_KEY ||
+          '',
+        modelName:
+          JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_MODEL_NAME ||
+          import.meta.env.VITE_LLM_MODEL_NAME ||
+          '',
         configuration: {
-          apiKey: JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_API_KEY || import.meta.env.VITE_LLM_API_KEY || '',
-          baseURL: JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_URL_BASE || import.meta.env.VITE_LLM_URL_BASE || '',
+          apiKey:
+            JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_API_KEY ||
+            import.meta.env.VITE_LLM_API_KEY ||
+            '',
+          baseURL:
+            JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_URL_BASE ||
+            import.meta.env.VITE_LLM_URL_BASE ||
+            '',
         },
         verbose: false,
       });
@@ -68,7 +80,7 @@ const PipelineExplorer: React.FC<PipelineExplorerProps> = ({ style }) => {
   };
 
   const handleSpecUpdate = (index: number, updatedSpec: GistvisSpec) => {
-    setSpecs(prevSpecs => {
+    setSpecs((prevSpecs) => {
       const newSpecs = [...prevSpecs];
       newSpecs[index] = updatedSpec;
       return newSpecs;
@@ -82,74 +94,64 @@ const PipelineExplorer: React.FC<PipelineExplorerProps> = ({ style }) => {
         <Card title="Text Input">
           <Flex style={{ width: '100%', gap: '10px' }}>
             <Space direction="vertical" style={{ width: '100%' }}>
-              <TextArea 
-                rows={4} 
+              <TextArea
+                rows={4}
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="Enter text to analyze..."
               />
-              <Row
-                style={{gap:'10px'}}
-                justify="space-between"
-              >
-                <Flex style={{gap:'10px'}}>
-                  <Button 
-                    type="default" 
-                    onClick={handleTextSubmit}
-                    loading={isProcessing}
-                    disabled={!inputText.trim()}
-                  >
+              <Row style={{ gap: '10px' }} justify="space-between">
+                <Flex style={{ gap: '10px' }}>
+                  <Button type="default" onClick={handleTextSubmit} loading={isProcessing} disabled={!inputText.trim()}>
                     Launch Pipeline
                   </Button>
                   <Button
                     type="default"
                     onClick={isProcessing ? handleCancel : handleClear}
-                    disabled={isProcessing ? false : specs.length==0}
+                    disabled={isProcessing ? false : specs.length == 0}
                   >
-                    {isProcessing ? "Cancel" : "Clear"}
+                    {isProcessing ? 'Cancel' : 'Clear'}
                   </Button>
                 </Flex>
-                {import.meta.env.VITE_DINP_PIPELINEEXAMPLE?(
-                  <Button 
-                    type="default" 
-                    onClick={()=>{setInputText(import.meta.env.VITE_DINP_PIPELINEEXAMPLE)}}
+                {import.meta.env.VITE_DINP_PIPELINEEXAMPLE ? (
+                  <Button
+                    type="default"
+                    onClick={() => {
+                      setInputText(import.meta.env.VITE_DINP_PIPELINEEXAMPLE);
+                    }}
                     // loading={isProcessing}
                   >
                     Load env input
                   </Button>
-                ):null}
+                ) : null}
               </Row>
             </Space>
           </Flex>
         </Card>
-        {
-          showVisualization()?(
-            <Card title="Visualization" loading={isProcessing}>
-              <Space direction="vertical" style={{ width: '100%' }}>
-                <ArtcleProcess llmarticle={[{paragraphIdx:0,paragraphContent:specs}]} />
-              </Space>
-            </Card>
-          ):null
-        }
-        {
-          showEditor()?(
-            <Card title="Specs Editor" loading={isProcessing}>
-              <List
-                dataSource={specs}
-                renderItem={(spec, index) => (
-                  <List.Item>
-                    <SpecProcessEditor
-                      spec={spec}
-                      onSave={(updatedSpec) => handleSpecUpdate(index, updatedSpec)}
-                      style={{ width: '100%' }}
-                      example={false}
-                    />
-                  </List.Item>
-                )}
-              />
-            </Card>
-          ):null
-        }
+        {showVisualization() ? (
+          <Card title="Visualization" loading={isProcessing}>
+            <Space direction="vertical" style={{ width: '100%' }}>
+              <ArtcleProcess llmarticle={[{ paragraphIdx: 0, paragraphContent: specs }]} />
+            </Space>
+          </Card>
+        ) : null}
+        {showEditor() ? (
+          <Card title="Specs Editor" loading={isProcessing}>
+            <List
+              dataSource={specs}
+              renderItem={(spec, index) => (
+                <List.Item>
+                  <SpecProcessEditor
+                    spec={spec}
+                    onSave={(updatedSpec) => handleSpecUpdate(index, updatedSpec)}
+                    style={{ width: '100%' }}
+                    example={false}
+                  />
+                </List.Item>
+              )}
+            />
+          </Card>
+        ) : null}
       </Space>
     </ConfigProvider>
   );

@@ -1,29 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import THEME from '../../style/theme';
-import { 
-  Card, 
-  Button, 
-  Input, 
-  Select, 
-  Modal, 
-  Space, 
-  Typography,
-  Form,
-  ConfigProvider,
-  Row
-} from 'antd';
-import {
-  GistvisSpec,
-  DataSpec,
-  InsightType,
-  Attribute
-} from '../../modules/visualizer/types';
+import { Card, Button, Input, Select, Modal, Space, Typography, Form, ConfigProvider, Row } from 'antd';
+import { GistvisSpec, DataSpec, InsightType, Attribute } from '../../modules/visualizer/types';
 
-type FieldValue<T extends string> = T extends 'insightType' ? InsightType :
-  T extends 'context' ? string :
-  T extends 'attribute' ? Attribute | undefined :
-  T extends 'inSituPosition' ? string[] | undefined :
-  never;
+type FieldValue<T extends string> = T extends 'insightType'
+  ? InsightType
+  : T extends 'context'
+    ? string
+    : T extends 'attribute'
+      ? Attribute | undefined
+      : T extends 'inSituPosition'
+        ? string[] | undefined
+        : never;
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -76,7 +64,7 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({
         return {
           title: 'Context',
           content: spec.unitSegmentSpec.context,
-          centered: true
+          centered: true,
         };
       case 2:
         return {
@@ -86,20 +74,20 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({
           rawJson: {
             type: spec.unitSegmentSpec.insightType,
             attribute: spec.unitSegmentSpec.attribute,
-          }
+          },
         };
       case 3:
         return {
           title: 'Data Spec',
           content: '',
           dataList: true,
-          rawData: spec.dataSpec || []
+          rawData: spec.dataSpec || [],
         };
       default:
         return {
           title: 'Spec',
           content: JSON.stringify(spec, null, 2),
-          json: true
+          json: true,
         };
     }
   };
@@ -107,12 +95,12 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({
   const renderContent = (stageContent: StageContentType) => {
     if (stageContent.dataList && stageContent.rawData) {
       return (
-        <Space direction="vertical" style={{ width: '100%', textAlign:'start'}}>
+        <Space direction="vertical" style={{ width: '100%', textAlign: 'start' }}>
           {stageContent.rawData.map((item, index) => (
             <Card key={index} size="small">
-              <Text strong>{`#${index+1}`}</Text>
+              <Text strong>{`#${index + 1}`}</Text>
               <Text style={{ whiteSpace: 'pre-wrap' }}>
-                {Object.keys(item).map(key => (
+                {Object.keys(item).map((key) => (
                   <div key={key}>
                     <Text type="secondary">{`${key} `}</Text>
                     <Text italic>{`${item[key as keyof typeof item]}\n`}</Text>
@@ -128,19 +116,19 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({
     if (stageContent.json && stageContent.rawJson) {
       const data = stageContent.rawJson;
       return (
-        <Space direction="vertical" style={{ width: '100%', textAlign:'center'}}>
-            <Card size="small">
-              <Text style={{ whiteSpace: 'pre-wrap' }}>
-                {Object.keys(data).map(key => (
-                  data[key as keyof typeof data]?(
-                    <div key={key}>
-                      <Text type="secondary">{`${key} `}</Text>
-                      <Text italic>{`${data[key as keyof typeof data]}\n`}</Text>
-                    </div>
-                  ):null
-                ))}
-              </Text>
-            </Card>
+        <Space direction="vertical" style={{ width: '100%', textAlign: 'center' }}>
+          <Card size="small">
+            <Text style={{ whiteSpace: 'pre-wrap' }}>
+              {Object.keys(data).map((key) =>
+                data[key as keyof typeof data] ? (
+                  <div key={key}>
+                    <Text type="secondary">{`${key} `}</Text>
+                    <Text italic>{`${data[key as keyof typeof data]}\n`}</Text>
+                  </div>
+                ) : null
+              )}
+            </Text>
+          </Card>
         </Space>
       );
     }
@@ -154,11 +142,11 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({
     }
 
     return (
-      <Text 
-        style={{ 
+      <Text
+        style={{
           textAlign: stageContent.centered ? 'center' : 'left',
           display: 'block',
-          width: '100%'
+          width: '100%',
         }}
       >
         {stageContent.content}
@@ -172,7 +160,7 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({
     parent?: 'unitSegmentSpec'
   ) => {
     setIsOutdated(true);
-    setEditingSpec(prev => {
+    setEditingSpec((prev) => {
       if (parent === 'unitSegmentSpec') {
         if (field === 'insightType') {
           const insightTypeValue = value as InsightType;
@@ -182,8 +170,8 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({
               unitSegmentSpec: {
                 ...prev.unitSegmentSpec,
                 insightType: insightTypeValue,
-                attribute: insightTypeValue === 'extreme' ? 'maximum' : 'positive'
-              }
+                attribute: insightTypeValue === 'extreme' ? 'maximum' : 'positive',
+              },
             };
           } else {
             return {
@@ -191,8 +179,8 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({
               unitSegmentSpec: {
                 ...prev.unitSegmentSpec,
                 insightType: insightTypeValue,
-                attribute: undefined
-              }
+                attribute: undefined,
+              },
             };
           }
         }
@@ -200,46 +188,42 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({
           ...prev,
           unitSegmentSpec: {
             ...prev.unitSegmentSpec,
-            [field]: value
-          }
+            [field]: value,
+          },
         };
       }
       return {
         ...prev,
-        [field]: value
+        [field]: value,
       };
     });
   };
 
-  const handleDataSpecChange = (
-    index: number,
-    field: keyof DataSpec,
-    value: string | number
-  ) => {
+  const handleDataSpecChange = (index: number, field: keyof DataSpec, value: string | number) => {
     setIsOutdated(true);
-    setEditingSpec(prev => {
+    setEditingSpec((prev) => {
       const newDataSpec = [...(prev.dataSpec || [])];
       if (field === 'valueValue') {
         newDataSpec[index] = {
           ...newDataSpec[index],
-          valueValue: Number(value)
+          valueValue: Number(value),
         };
       } else {
         newDataSpec[index] = {
           ...newDataSpec[index],
-          [field]: value as string
+          [field]: value as string,
         };
       }
       return {
         ...prev,
-        dataSpec: newDataSpec
+        dataSpec: newDataSpec,
       };
     });
   };
 
   const handleAddDataSpecItem = () => {
     setIsOutdated(true);
-    setEditingSpec(prev => ({
+    setEditingSpec((prev) => ({
       ...prev,
       dataSpec: [
         ...(prev.dataSpec || []),
@@ -247,17 +231,17 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({
           categoryKey: '',
           categoryValue: '',
           valueKey: '',
-          valueValue: 0
-        }
-      ]
+          valueValue: 0,
+        },
+      ],
     }));
   };
 
   const handleRemoveDataSpecItem = (index: number) => {
     setIsOutdated(true);
-    setEditingSpec(prev => ({
+    setEditingSpec((prev) => ({
       ...prev,
-      dataSpec: prev.dataSpec?.filter((_, i) => i !== index)
+      dataSpec: prev.dataSpec?.filter((_, i) => i !== index),
     }));
   };
 
@@ -302,13 +286,9 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({
           <Button key="cancel" onClick={handleCancel}>
             Cancel
           </Button>,
-          <Button
-            key="save"
-            onClick={handleSave}
-            disabled={!isOutdated}
-          >
+          <Button key="save" onClick={handleSave} disabled={!isOutdated}>
             Save
-          </Button>
+          </Button>,
         ]}
         width={800}
       >
@@ -318,31 +298,30 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({
               <Item label="Context">
                 <TextArea
                   value={editingSpec.unitSegmentSpec.context}
-                  onChange={e => handleFieldChange('context', e.target.value, 'unitSegmentSpec')}
+                  onChange={(e) => handleFieldChange('context', e.target.value, 'unitSegmentSpec')}
                   rows={4}
                 />
               </Item>
               <Item label="Insight Type">
                 <Select
                   value={editingSpec.unitSegmentSpec.insightType}
-                  onChange={value => handleFieldChange('insightType', value, 'unitSegmentSpec')}
-                  options={[
-                    'noType', 'comparison', 'trend', 'rank', 'proportion', 'extreme', 'value'
-                  ].map(type => ({ label: type, value: type }))}
+                  onChange={(value) => handleFieldChange('insightType', value, 'unitSegmentSpec')}
+                  options={['noType', 'comparison', 'trend', 'rank', 'proportion', 'extreme', 'value'].map((type) => ({
+                    label: type,
+                    value: type,
+                  }))}
                 />
               </Item>
               {['extreme', 'trend'].includes(editingSpec.unitSegmentSpec.insightType) && (
-                <Item 
-                  label="Attribute"
-                  style={{ marginBottom: 16 }}
-                >
+                <Item label="Attribute" style={{ marginBottom: 16 }}>
                   {editingSpec.unitSegmentSpec.attribute && (
                     <Select
                       value={editingSpec.unitSegmentSpec.attribute}
-                      onChange={value => handleFieldChange('attribute', value, 'unitSegmentSpec')}
+                      onChange={(value) => handleFieldChange('attribute', value, 'unitSegmentSpec')}
                       options={(editingSpec.unitSegmentSpec.insightType === 'extreme'
                         ? ['maximum', 'minimum']
-                        : ['positive', 'negative']).map(opt => ({ label: opt, value: opt }))}
+                        : ['positive', 'negative']
+                      ).map((opt) => ({ label: opt, value: opt }))}
                       style={{ width: '100%' }}
                     />
                   )}
@@ -351,7 +330,7 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text>InSituPosition</Text>
                 {editingSpec.unitSegmentSpec.inSituPosition ? (
-                  <Button 
+                  <Button
                     danger
                     size="small"
                     onClick={() => handleFieldChange('inSituPosition', undefined, 'unitSegmentSpec')}
@@ -359,10 +338,7 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({
                     {DEL_TEXT}
                   </Button>
                 ) : (
-                  <Button
-                    size="small"
-                    onClick={() => handleFieldChange('inSituPosition', [''], 'unitSegmentSpec')}
-                  >
+                  <Button size="small" onClick={() => handleFieldChange('inSituPosition', [''], 'unitSegmentSpec')}>
                     {ADD_TEXT}
                   </Button>
                 )}
@@ -373,17 +349,19 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({
                     <Space key={index}>
                       <Input
                         value={pos}
-                        onChange={e => {
+                        onChange={(e) => {
                           const newPositions = [...editingSpec.unitSegmentSpec.inSituPosition!];
                           newPositions[index] = e.target.value;
                           handleFieldChange('inSituPosition', newPositions, 'unitSegmentSpec');
                         }}
                       />
-                      <Button 
-                        danger 
+                      <Button
+                        danger
                         size="small"
                         onClick={() => {
-                          const newPositions = editingSpec.unitSegmentSpec.inSituPosition!.filter((_, i) => i !== index);
+                          const newPositions = editingSpec.unitSegmentSpec.inSituPosition!.filter(
+                            (_, i) => i !== index
+                          );
                           handleFieldChange('inSituPosition', newPositions, 'unitSegmentSpec');
                         }}
                       >
@@ -405,89 +383,88 @@ export const SpecEditor: React.FC<SpecEditorProps> = ({
             </Form>
           </Card>
 
-          <Card title={
-            <Row
-              justify="space-between"
-            >
-              <Text>Data Spec</Text>
-              {editingSpec.dataSpec ? (
-                <Button 
-                  danger
-                  size="small"
-                  onClick={() => setEditingSpec(prev => ({ ...prev, dataSpec: undefined }))}
-                >
-                  {DEL_TEXT}
-                </Button>
-              ) : (
-                <Button
-                  size="small"
-                  onClick={() => setEditingSpec(prev => ({
-                    ...prev,
-                    dataSpec: [{
-                      categoryKey: '',
-                      categoryValue: '',
-                      valueKey: '',
-                      valueValue: 0
-                    }]
-                  }))}
-                >
-                  {ADD_TEXT}
-                </Button>
-              )}
-            </Row>
+          <Card
+            title={
+              <Row justify="space-between">
+                <Text>Data Spec</Text>
+                {editingSpec.dataSpec ? (
+                  <Button
+                    danger
+                    size="small"
+                    onClick={() => setEditingSpec((prev) => ({ ...prev, dataSpec: undefined }))}
+                  >
+                    {DEL_TEXT}
+                  </Button>
+                ) : (
+                  <Button
+                    size="small"
+                    onClick={() =>
+                      setEditingSpec((prev) => ({
+                        ...prev,
+                        dataSpec: [
+                          {
+                            categoryKey: '',
+                            categoryValue: '',
+                            valueKey: '',
+                            valueValue: 0,
+                          },
+                        ],
+                      }))
+                    }
+                  >
+                    {ADD_TEXT}
+                  </Button>
+                )}
+              </Row>
             }
             size="small"
           >
-          {editingSpec.dataSpec?.map((data, index) => (
-            <Card
-              key={index}
-              size="small"
-              title={`#${index + 1}`}
-              extra={
-                <Button 
-                  danger 
-                  size="small"
-                  onClick={() => handleRemoveDataSpecItem(index)}
-                >
-                  {DEL_TEXT}
-                </Button>
-              }
-            >
-              <Form layout="vertical">
-                <Item label="Category Key">
-                  <Input
-                    value={data.categoryKey}
-                    onChange={e => handleDataSpecChange(index, 'categoryKey', e.target.value)}
-                  />
-                </Item>
-                <Item label="Category Value">
-                  <Input
-                    value={data.categoryValue}
-                    onChange={e => handleDataSpecChange(index, 'categoryValue', e.target.value)}
-                  />
-                </Item>
-                <Item label="Value Key">
-                  <Input
-                    value={data.valueKey}
-                    onChange={e => handleDataSpecChange(index, 'valueKey', e.target.value)}
-                  />
-                </Item>
-                <Item label="Value">
-                  <Input
-                    type="number"
-                    value={data.valueValue}
-                    onChange={e => handleDataSpecChange(index, 'valueValue', e.target.value)}
-                  />
-                </Item>
-              </Form>
-            </Card>
-          ))}
+            {editingSpec.dataSpec?.map((data, index) => (
+              <Card
+                key={index}
+                size="small"
+                title={`#${index + 1}`}
+                extra={
+                  <Button danger size="small" onClick={() => handleRemoveDataSpecItem(index)}>
+                    {DEL_TEXT}
+                  </Button>
+                }
+              >
+                <Form layout="vertical">
+                  <Item label="Category Key">
+                    <Input
+                      value={data.categoryKey}
+                      onChange={(e) => handleDataSpecChange(index, 'categoryKey', e.target.value)}
+                    />
+                  </Item>
+                  <Item label="Category Value">
+                    <Input
+                      value={data.categoryValue}
+                      onChange={(e) => handleDataSpecChange(index, 'categoryValue', e.target.value)}
+                    />
+                  </Item>
+                  <Item label="Value Key">
+                    <Input
+                      value={data.valueKey}
+                      onChange={(e) => handleDataSpecChange(index, 'valueKey', e.target.value)}
+                    />
+                  </Item>
+                  <Item label="Value">
+                    <Input
+                      type="number"
+                      value={data.valueValue}
+                      onChange={(e) => handleDataSpecChange(index, 'valueValue', e.target.value)}
+                    />
+                  </Item>
+                </Form>
+              </Card>
+            ))}
 
-          {(editingSpec.dataSpec || []).length > 0 && (
-            <Button block onClick={handleAddDataSpecItem}>
-              New Item
-            </Button>
-          )}
+            {(editingSpec.dataSpec || []).length > 0 && (
+              <Button block onClick={handleAddDataSpecItem}>
+                New Item
+              </Button>
+            )}
           </Card>
         </Space>
       </Modal>

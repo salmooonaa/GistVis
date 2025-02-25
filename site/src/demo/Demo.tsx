@@ -1,4 +1,4 @@
-import { ConfigProvider, Layout, Typography, Row, Col, Divider, Flex, Button, Carousel, Progress } from 'antd';
+import { ConfigProvider, Layout, Typography, Row, Col, Divider, Flex, Button, Carousel } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import THEME from '../style/theme';
 import ArtcleProcess from '../modules/visualizer/renderer/renderer';
@@ -10,7 +10,6 @@ import { paragraphSpec } from '../modules/visualizer/types';
 import { processStageAtom } from '../globalState';
 import { useAtom } from 'jotai';
 import { articles } from '../userstudy/articles/articledata';
-import Editor from './editor';
 
 const { Header, Content, Footer } = Layout;
 const { Title, Text } = Typography;
@@ -166,7 +165,7 @@ const PublicityPage = () => {
               </Col>
             </Row> */}
           </Layout>
-            
+
           <Divider />
           <Row gutter={[16, 16]}>
             <Col span={24}>
@@ -195,7 +194,7 @@ const PublicityPage = () => {
               </Col>
             </Row>
           </Layout> */}
-        </Content> 
+        </Content>
       </ConfigProvider>
     </div>
   );

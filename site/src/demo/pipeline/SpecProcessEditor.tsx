@@ -4,17 +4,7 @@ import THEME from '../../style/theme';
 import { ChatOpenAI } from '@langchain/openai';
 import { processParagraphs } from '../../modules/llm/annotator/annotator';
 import { extractDataForParagraphs } from '../../modules/llm/extractor/extractor';
-import {
-  Card,
-  Button,
-  Space,
-  Typography,
-  ConfigProvider,
-  Row,
-  Col,
-  Tooltip,
-  Collapse
-} from 'antd';
+import { Card, Button, Space, Typography, ConfigProvider, Row, Col, Tooltip, Collapse } from 'antd';
 import {
   ComparisonTextRenderer,
   ExtremeTextRenderer,
@@ -24,9 +14,7 @@ import {
   ValueTextRenderer,
   TrendTextRenderer,
 } from '../../modules/visualizer/renderer/rendererList';
-import {
-  GistvisSpec,
-} from '../../modules/visualizer/types';
+import { GistvisSpec } from '../../modules/visualizer/types';
 
 const { Text } = Typography;
 
@@ -38,33 +26,33 @@ interface SpecProcessEditorProps {
 }
 
 const exampleAnswer: GistvisSpec = {
-  "id": "p0s0",
-  "unitSegmentSpec": {
-    "insightType": "trend",
-    "segmentIdx": 0,
-    "context": "I will be 18 years old in 2025 and I was 16 years old in 2023.",
-    "inSituPosition": [],
-    "attribute": "positive"
+  id: 'p0s0',
+  unitSegmentSpec: {
+    insightType: 'trend',
+    segmentIdx: 0,
+    context: 'I will be 18 years old in 2025 and I was 16 years old in 2023.',
+    inSituPosition: [],
+    attribute: 'positive',
   },
-  "dataSpec": [
+  dataSpec: [
     {
-      "categoryKey": "time segment",
-      "categoryValue": "2023",
-      "valueKey": "I",
-      "valueValue": 16
+      categoryKey: 'time segment',
+      categoryValue: '2023',
+      valueKey: 'I',
+      valueValue: 16,
     },
     {
-      "categoryKey": "time segment",
-      "categoryValue": "2025",
-      "valueKey": "I",
-      "valueValue": 18
-    }
-  ]
-}
+      categoryKey: 'time segment',
+      categoryValue: '2025',
+      valueKey: 'I',
+      valueValue: 18,
+    },
+  ],
+};
 
-const processes = ['Discoverer','Annotator','Extractor','Visualizer']
+const processes = ['Discoverer', 'Annotator', 'Extractor', 'Visualizer'];
 
-const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, example=false, style}) => {
+const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, example = false, style }) => {
   const [process, setProcess] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [taskId, setTaskId] = useState(0);
@@ -91,10 +79,10 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
     return () => {
       console.log('stop');
       close.current = true;
-    }
+    };
   }, []);
 
-  const internalSave = (updatedSpec: GistvisSpec, currentTaskId: number) => {    
+  const internalSave = (updatedSpec: GistvisSpec, currentTaskId: number) => {
     if (currentTaskId === taskIdRef.current) {
       handleSave(updatedSpec);
     }
@@ -114,11 +102,23 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
     topP: 1,
     n: 1,
     streaming: false,
-    openAIApiKey: JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_API_KEY || import.meta.env.VITE_LLM_API_KEY || '',
-    modelName: JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_MODEL_NAME || import.meta.env.VITE_LLM_MODEL_NAME || '',
+    openAIApiKey:
+      JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_API_KEY ||
+      import.meta.env.VITE_LLM_API_KEY ||
+      '',
+    modelName:
+      JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_MODEL_NAME ||
+      import.meta.env.VITE_LLM_MODEL_NAME ||
+      '',
     configuration: {
-      apiKey: JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_API_KEY || import.meta.env.VITE_LLM_API_KEY || '',
-      baseURL: JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_URL_BASE || import.meta.env.VITE_LLM_URL_BASE || '',
+      apiKey:
+        JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_API_KEY ||
+        import.meta.env.VITE_LLM_API_KEY ||
+        '',
+      baseURL:
+        JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_URL_BASE ||
+        import.meta.env.VITE_LLM_URL_BASE ||
+        '',
     },
     verbose: false,
   });
@@ -129,14 +129,14 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
     taskIdRef.current = newTaskId;
     setTaskId(newTaskId);
   };
- 
+
   const handleRefresh = async (stage: number) => {
     setIsProcessing(true);
-    
+
     const newTaskId = taskIdRef.current + 1;
     taskIdRef.current = newTaskId;
     setTaskId(newTaskId);
-    
+
     handleBack(stage);
 
     try {
@@ -147,17 +147,17 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
         }
 
         if (example) {
-          await new Promise(resolve => setTimeout(resolve, 4500));
+          await new Promise((resolve) => setTimeout(resolve, 4500));
           if (close.current) {
             return;
           }
           if (i === 2 || i === 3) {
-            internalSave({...exampleAnswer}, newTaskId);
+            internalSave({ ...exampleAnswer }, newTaskId);
             if (newTaskId === taskIdRef.current) {
               // handleBack(i);
-              setProcess(i); 
+              setProcess(i);
               console.log('stage:', i);
-            }else{
+            } else {
               break;
             }
           }
@@ -165,12 +165,13 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
         }
 
         const mockParagraphSpec = {
-          paragraphId: "1",
+          paragraphId: '1',
           paragraphIdx: 0,
-          paragraphContent: [specRef.current]
+          paragraphContent: [specRef.current],
         };
 
-        if (i === 2) {  // 1->2: call annotator
+        if (i === 2) {
+          // 1->2: call annotator
           const processedParagraphs = await processParagraphs([mockParagraphSpec], model);
           if (close.current) {
             return;
@@ -182,7 +183,8 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
               setProcess(i);
             }
           }
-        } else if (i === 3) {  // 2->3: call extractor    
+        } else if (i === 3) {
+          // 2->3: call extractor
           const processedParagraphs = await extractDataForParagraphs([mockParagraphSpec], model);
           if (close.current) {
             return;
@@ -216,7 +218,7 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
           unitSegmentSpec: {
             insightType: 'noType',
             segmentIdx: spec.unitSegmentSpec.segmentIdx,
-            context: spec.unitSegmentSpec.context
+            context: spec.unitSegmentSpec.context,
           },
         });
         break;
@@ -226,7 +228,7 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
           unitSegmentSpec: {
             insightType: spec.unitSegmentSpec.insightType,
             segmentIdx: spec.unitSegmentSpec.segmentIdx,
-            context: spec.unitSegmentSpec.context
+            context: spec.unitSegmentSpec.context,
           },
         });
         break;
@@ -235,8 +237,7 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
     }
     setProcess(stage);
     // console.log('Back to process:', stage);
-    
-  }
+  };
 
   const renderVisualizer = (spec: GistvisSpec) => {
     const renderMap = {
@@ -258,7 +259,7 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
 
   return (
     <ConfigProvider theme={THEME}>
-      <Collapse 
+      <Collapse
         defaultActiveKey={['0']}
         style={{ marginBottom: 16, ...style }}
         items={[
@@ -267,13 +268,10 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
             label: (
               <Space align="center" wrap={false}>
                 <div style={{ whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Text code style={{ padding: '2px 6px'}}>
+                  <Text code style={{ padding: '2px 6px' }}>
                     {insightType}
                   </Text>
-                  <Text
-                    style={{ maxWidth: '500px' }}
-                    ellipsis={{ tooltip: spec.unitSegmentSpec.context }}
-                  >
+                  <Text style={{ maxWidth: '500px' }} ellipsis={{ tooltip: spec.unitSegmentSpec.context }}>
                     {spec.unitSegmentSpec.context}
                   </Text>
                 </div>
@@ -282,10 +280,10 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
             children: (
               <div>
                 <Row gutter={16}>
-                  {[1,2,3].map((i) => (
-                    process>=i ? (
-                      <Col span={6} key={i} style={{textAlign:'center'}}>
-                        <span style={{textAlign:'start'}}>
+                  {[1, 2, 3].map((i) =>
+                    process >= i ? (
+                      <Col span={6} key={i} style={{ textAlign: 'center' }}>
+                        <span style={{ textAlign: 'start' }}>
                           <SpecEditor
                             spec={spec}
                             onSave={handleSave}
@@ -302,43 +300,48 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
                                 >
                                   {'▷'}
                                 </Button>
-                              </Tooltip>
+                              </Tooltip>,
                             ]}
                           />
                         </span>
-                        <Text italic type='secondary'>{`${processes[i-1]} output`}</Text>
+                        <Text italic type="secondary">{`${processes[i - 1]} output`}</Text>
                       </Col>
                     ) : null
-                  ))}
+                  )}
                   {process >= 3 && (
-                    <Col span={6} style={{textAlign:'center'}}>
+                    <Col span={6} style={{ textAlign: 'center' }}>
                       <Card
                         title="Preview"
-                        style={{ width: '100%', textAlign:'start'}}
+                        style={{ width: '100%', textAlign: 'start' }}
                         bodyStyle={{ height: 200, overflow: 'auto' }}
                       >
-                        <div style={{ padding: '8px' }}>
-                          {renderVisualizer(spec)}
-                        </div>
+                        <div style={{ padding: '8px' }}>{renderVisualizer(spec)}</div>
                       </Card>
-                      <Text italic type='secondary'>{`${processes[3]} output`}</Text>
+                      <Text italic type="secondary">{`${processes[3]} output`}</Text>
                     </Col>
                   )}
                   {isProcessing && (
-                    <Col span={(4-process)*6} style={{textAlign:'center', height: 248, display: 'flex', flexDirection:'column', alignItems: 'center', justifyContent: 'center'}}>
-                      <Button
-                        onClick={handleStop}
-                        danger
-                      >
+                    <Col
+                      span={(4 - process) * 6}
+                      style={{
+                        textAlign: 'center',
+                        height: 248,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Button onClick={handleStop} danger>
                         stop
                       </Button>
-                      <Text italic type='secondary'>{`${processes[process]} working...`}</Text>
+                      <Text italic type="secondary">{`${processes[process]} working...`}</Text>
                     </Col>
                   )}
                 </Row>
               </div>
-            )
-          }
+            ),
+          },
         ]}
       />
     </ConfigProvider>
