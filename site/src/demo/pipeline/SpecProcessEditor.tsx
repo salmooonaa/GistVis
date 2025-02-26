@@ -2,19 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { SpecEditor } from './SpecEditor';
 import THEME from '../../style/theme';
 import { ChatOpenAI } from '@langchain/openai';
-import {processParagraphs} from '../../modules/llm/annotator/annotator';
-import {extractDataForParagraphs} from '../../modules/llm/extractor/extractor';
-import {
-  Card,
-  Button,
-  Space,
-  Typography,
-  ConfigProvider,
-  Row,
-  Col,
-  Tooltip,
-  Collapse
-} from 'antd';
+import { processParagraphs } from '../../modules/llm/annotator/annotator';
+import { extractDataForParagraphs } from '../../modules/llm/extractor/extractor';
+import { Card, Button, Typography, ConfigProvider, Row, Col, Tooltip, Collapse } from 'antd';
 import {
   ComparisonTextRenderer,
   ExtremeTextRenderer,
@@ -24,64 +14,97 @@ import {
   ValueTextRenderer,
   TrendTextRenderer,
 } from '../../modules/visualizer/renderer/rendererList';
-import {
-  GistvisSpec,
-} from '../../modules/visualizer/types';
+import { GistvisSpec } from '../../modules/visualizer/types';
 
 const { Text } = Typography;
 
 interface SpecProcessEditorProps {
   spec: GistvisSpec;
   onSave: (updatedSpec: GistvisSpec) => void;
+  onProcessingChange?: (isProcessing: boolean) => void;
   example?: boolean;
   style?: React.CSSProperties;
+  autoPlay?: boolean;
 }
 
 const exampleAnswer: GistvisSpec = {
-  "id": "p0s0",
-  "unitSegmentSpec": {
-    "insightType": "trend",
-    "segmentIdx": 0,
-    "context": "I will be 18 years old in 2025 and I was 16 years old in 2023.",
-    "inSituPosition": [],
-    "attribute": "positive"
+  id: 'p0s0',
+  unitSegmentSpec: {
+    insightType: 'trend',
+    segmentIdx: 0,
+    context: 'I will be 18 years old in 2025 and I was 16 years old in 2023.',
+    inSituPosition: [],
+    attribute: 'positive',
   },
-  "dataSpec": [
+  dataSpec: [
     {
-      "categoryKey": "time segment",
-      "categoryValue": "2023",
-      "valueKey": "I",
-      "valueValue": 16
+      categoryKey: 'time segment',
+      categoryValue: '2023',
+      valueKey: 'I',
+      valueValue: 16,
     },
     {
-      "categoryKey": "time segment",
-      "categoryValue": "2025",
-      "valueKey": "I",
-      "valueValue": 18
-    }
-  ]
-}
+      categoryKey: 'time segment',
+      categoryValue: '2025',
+      valueKey: 'I',
+      valueValue: 18,
+    },
+  ],
+};
 
-const processes = ['Discoverer','Annotator','Extractor','Visualizer']
+const processes = ['Discoverer', 'Annotator', 'Extractor', 'Visualizer'];
 
-const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, example=false, style }) => {
-  const [process, setProcess] = useState(3);
+const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({
+  spec,
+  onSave,
+  onProcessingChange,
+  example = false,
+  style,
+  autoPlay = true,
+}) => {
+  const [process, setProcess] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [taskId, setTaskId] = useState(0);
   const taskIdRef = useRef(0);
+  const specRef = useRef(spec);
+
+  const launchTrigger = useRef(autoPlay);
+  const close = useRef(false);
 
   useEffect(() => {
     taskIdRef.current = taskId;
   }, [taskId]);
 
+  useEffect(() => {
+    if (!launchTrigger.current) {
+      renewStage();
+      return;
+    }
+    handleRefresh(1);
+    console.log('Refresh triggered');
+    launchTrigger.current = false;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      console.log('stop');
+      close.current = true;
+    };
+  }, []);
+
   const internalSave = (updatedSpec: GistvisSpec, currentTaskId: number) => {
     if (currentTaskId === taskIdRef.current) {
-      onSave(updatedSpec);
+      handleSave(updatedSpec);
     }
   };
 
   const handleSave = (updatedSpec: GistvisSpec) => {
-    onSave(updatedSpec);
+    try {
+      onSave(updatedSpec);
+      specRef.current = updatedSpec;
+    } catch (error) {
+      console.error('Error saving spec:', error);
+    }
   };
 
   const model = new ChatOpenAI({
@@ -89,67 +112,98 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
     topP: 1,
     n: 1,
     streaming: false,
-    openAIApiKey: JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_API_KEY || import.meta.env.VITE_LLM_API_KEY || '',
-    modelName: JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_MODEL_NAME || import.meta.env.VITE_LLM_MODEL_NAME || '',
+    openAIApiKey:
+      JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_API_KEY ||
+      import.meta.env.VITE_LLM_API_KEY ||
+      '',
+    modelName:
+      JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_MODEL_NAME ||
+      import.meta.env.VITE_LLM_MODEL_NAME ||
+      '',
     configuration: {
-      apiKey: JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_API_KEY || import.meta.env.VITE_LLM_API_KEY || '',
-      baseURL: JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_URL_BASE || import.meta.env.VITE_LLM_URL_BASE || '',
+      apiKey:
+        JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_API_KEY ||
+        import.meta.env.VITE_LLM_API_KEY ||
+        '',
+      baseURL:
+        JSON.parse(localStorage.getItem('envVariables') || '{}')?.VITE_LLM_URL_BASE ||
+        import.meta.env.VITE_LLM_URL_BASE ||
+        '',
     },
     verbose: false,
   });
 
   const handleStop = () => {
     setIsProcessing(false);
+    onProcessingChange?.(false);
     const newTaskId = taskIdRef.current + 1;
     taskIdRef.current = newTaskId;
     setTaskId(newTaskId);
   };
- 
+
   const handleRefresh = async (stage: number) => {
     setIsProcessing(true);
-    
+    onProcessingChange?.(true);
+
     const newTaskId = taskIdRef.current + 1;
     taskIdRef.current = newTaskId;
     setTaskId(newTaskId);
-    
+
     handleBack(stage);
 
     try {
+      specRef.current = spec;
       for (let i = 1; i <= 3; i++) {
         if (i <= stage) {
           continue;
         }
 
         if (example) {
-          await new Promise(resolve => setTimeout(resolve, 3000));
+          await new Promise((resolve) => setTimeout(resolve, 4500));
+          if (close.current) {
+            return;
+          }
           if (i === 2 || i === 3) {
-            internalSave({...exampleAnswer}, newTaskId);
+            internalSave({ ...exampleAnswer }, newTaskId);
             if (newTaskId === taskIdRef.current) {
               handleBack(i);
               setProcess(i);
+              console.log('stage:', i);
+            } else {
+              break;
             }
           }
           continue;
         }
 
         const mockParagraphSpec = {
-          paragraphId: "1",
+          paragraphId: '1',
           paragraphIdx: 0,
-          paragraphContent: [spec]
+          paragraphContent: [specRef.current],
         };
 
-        if (i === 2) {  // 1->2: call annotator
-          const [processedParagraph] = await processParagraphs([mockParagraphSpec], model);
-          if (processedParagraph.paragraphContent[0]) {
-            internalSave(processedParagraph.paragraphContent[0], newTaskId);
+        if (i === 2) {
+          // 1->2: call annotator
+          const processedParagraphs = await processParagraphs([mockParagraphSpec], model);
+          if (close.current) {
+            return;
+          }
+          if (processedParagraphs[0].paragraphContent[0]) {
+            console.log('Annotator output:', processedParagraphs[0].paragraphContent[0].unitSegmentSpec.insightType);
+            internalSave(processedParagraphs[0].paragraphContent[0], newTaskId);
             if (newTaskId === taskIdRef.current) {
               setProcess(i);
             }
           }
-        } else if (i === 3) {  // 2->3: call extractor
-          const [processedParagraph] = await extractDataForParagraphs([mockParagraphSpec], model);
-          if (processedParagraph.paragraphContent[0]) {
-            internalSave(processedParagraph.paragraphContent[0], newTaskId);
+        } else if (i === 3) {
+          // 2->3: call extractor
+          const processedParagraphs = await extractDataForParagraphs([mockParagraphSpec], model);
+          if (close.current) {
+            return;
+          }
+          if (processedParagraphs[0].paragraphContent[0]) {
+            console.log('Extractor output:', processedParagraphs[0].paragraphContent[0].dataSpec);
+            internalSave(processedParagraphs[0].paragraphContent[0], newTaskId);
             if (newTaskId === taskIdRef.current) {
               setProcess(i);
             }
@@ -162,7 +216,16 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
 
     if (newTaskId === taskIdRef.current) {
       setIsProcessing(false);
+      onProcessingChange?.(false);
     }
+  };
+
+  const renewStage = () => {
+    if (spec.dataSpec) {
+      setProcess(3);
+      return;
+    }
+    setProcess(1);
   };
 
   const handleBack = (stage: number) => {
@@ -176,7 +239,7 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
           unitSegmentSpec: {
             insightType: 'noType',
             segmentIdx: spec.unitSegmentSpec.segmentIdx,
-            context: spec.unitSegmentSpec.context
+            context: spec.unitSegmentSpec.context,
           },
         });
         break;
@@ -186,7 +249,7 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
           unitSegmentSpec: {
             insightType: spec.unitSegmentSpec.insightType,
             segmentIdx: spec.unitSegmentSpec.segmentIdx,
-            context: spec.unitSegmentSpec.context
+            context: spec.unitSegmentSpec.context,
           },
         });
         break;
@@ -194,7 +257,8 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
         break;
     }
     setProcess(stage);
-  }
+    // console.log('Back to process:', stage);
+  };
 
   const renderVisualizer = (spec: GistvisSpec) => {
     const renderMap = {
@@ -216,34 +280,32 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
 
   return (
     <ConfigProvider theme={THEME}>
-      <Collapse 
-        defaultActiveKey={['1']}
+      <Collapse
+        defaultActiveKey={['0']}
         style={{ marginBottom: 16, ...style }}
         items={[
           {
             key: '1',
             label: (
-              <Space align="center" wrap={false}>
+              <Row wrap={false} justify={'space-between'} align={'middle'} style={{ width: '100%' }}>
                 <div style={{ whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Text code style={{ padding: '2px 6px'}}>
+                  <Text code style={{ padding: '2px 6px' }}>
                     {insightType}
                   </Text>
-                  <Text
-                    style={{ maxWidth: '500px' }}
-                    ellipsis={{ tooltip: spec.unitSegmentSpec.context }}
-                  >
+                  <Text style={{ maxWidth: '500px' }} ellipsis={{ tooltip: spec.unitSegmentSpec.context }}>
                     {spec.unitSegmentSpec.context}
                   </Text>
                 </div>
-              </Space>
+                <Button loading={isProcessing} type="text" />
+              </Row>
             ),
             children: (
               <div>
                 <Row gutter={16}>
-                  {[1,2,3].map((i) => (
-                    process>=i ? (
-                      <Col span={6} key={i} style={{textAlign:'center'}}>
-                        <span style={{textAlign:'start'}}>
+                  {[1, 2, 3].map((i) =>
+                    process >= i ? (
+                      <Col span={6} key={i} style={{ textAlign: 'center' }}>
+                        <span style={{ textAlign: 'start' }}>
                           <SpecEditor
                             spec={spec}
                             onSave={handleSave}
@@ -253,50 +315,58 @@ const SpecProcessEditor: React.FC<SpecProcessEditorProps> = ({ spec, onSave, exa
                             extra={[
                               <Tooltip key={`tooltip-${i}`} title={`Refresh ${processes[i]}`}>
                                 <Button
-                                  onClick={() => handleRefresh(i)}
+                                  onClick={() => {
+                                    close.current = false;
+                                    handleRefresh(i);
+                                  }}
                                   disabled={isProcessing}
                                   type="default"
                                   style={{ marginLeft: 8, marginRight: 8 }}
                                 >
                                   {'▷'}
                                 </Button>
-                              </Tooltip>
+                              </Tooltip>,
                             ]}
                           />
                         </span>
-                        <Text italic type='secondary'>{`${processes[i-1]} output`}</Text>
+                        <Text italic type="secondary">{`${processes[i - 1]} output`}</Text>
                       </Col>
                     ) : null
-                  ))}
+                  )}
                   {process >= 3 && (
-                    <Col span={6} style={{textAlign:'center'}}>
+                    <Col span={6} style={{ textAlign: 'center' }}>
                       <Card
                         title="Preview"
-                        style={{ width: '100%', textAlign:'start'}}
+                        style={{ width: '100%', textAlign: 'start' }}
                         bodyStyle={{ height: 200, overflow: 'auto' }}
                       >
-                        <div style={{ padding: '8px' }}>
-                          {renderVisualizer(spec)}
-                        </div>
+                        <div style={{ padding: '8px' }}>{renderVisualizer(spec)}</div>
                       </Card>
-                      <Text italic type='secondary'>{`${processes[3]} output`}</Text>
+                      <Text italic type="secondary">{`${processes[3]} output`}</Text>
                     </Col>
                   )}
                   {isProcessing && (
-                    <Col span={(4-process)*6} style={{textAlign:'center', height: 248, display: 'flex', flexDirection:'column', alignItems: 'center', justifyContent: 'center'}}>
-                      <Button
-                        onClick={handleStop}
-                        danger
-                      >
+                    <Col
+                      span={(4 - process) * 6}
+                      style={{
+                        textAlign: 'center',
+                        height: 248,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Button onClick={handleStop} danger>
                         stop
                       </Button>
-                      <Text italic type='secondary'>{`${processes[process]} working...`}</Text>
+                      <Text italic type="secondary">{`${processes[process]} working...`}</Text>
                     </Col>
                   )}
                 </Row>
               </div>
-            )
-          }
+            ),
+          },
         ]}
       />
     </ConfigProvider>

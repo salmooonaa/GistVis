@@ -1,15 +1,15 @@
-import { ConfigProvider, Layout, Typography, Row, Col, Divider, Flex, Button, Carousel, Progress } from 'antd';
+import { ConfigProvider, Layout, Typography, Row, Col, Divider, Flex, Button, Carousel } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import THEME from '../style/theme';
 import ArtcleProcess from '../modules/visualizer/renderer/renderer';
 // import Editor from "./editor";
 import { DemoPage } from './demoPage';
+import DemoPipeline from './pipeline/DemoPipeline';
 import React, { useState } from 'react';
 import { paragraphSpec } from '../modules/visualizer/types';
 import { processStageAtom } from '../globalState';
 import { useAtom } from 'jotai';
 import { articles } from '../userstudy/articles/articledata';
-import Editor from './editor';
 
 const { Header, Content, Footer } = Layout;
 const { Title, Text } = Typography;
@@ -165,7 +165,15 @@ const PublicityPage = () => {
               </Col>
             </Row> */}
           </Layout>
-          <Layout dir="vertical">
+
+          <Divider />
+          <Row gutter={[16, 16]}>
+            <Col span={24}>
+              <DemoPipeline />
+            </Col>
+          </Row>
+
+          {/* <Layout dir="vertical">
             <Row gutter={[16, 16]}>
               <Col span={12}>
                 <Text style={{ fontSize: '20px', fontWeight: 'bold' }}>Input Article</Text>
@@ -185,8 +193,8 @@ const PublicityPage = () => {
                 <ArtcleProcess llmarticle={llmarticle} />
               </Col>
             </Row>
-          </Layout>
-        </Content> 
+          </Layout> */}
+        </Content>
       </ConfigProvider>
     </div>
   );
